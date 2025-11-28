@@ -452,7 +452,9 @@ function addBoldToKeywords(text) {
         'PROHIBITED', 'Prohibited', 'REQUIRED', 'Required',
         'DANGEROUS', 'Dangerous', 'IMPORTANT', 'Important',
         'RESTRICTED', 'Restricted', 'NOT ALLOWED', 'Not allowed',
-        'CONFISCATED', 'Confiscated', 'ILLEGAL', 'Illegal'
+        'CONFISCATED', 'Confiscated', 'ILLEGAL', 'Illegal',
+        'CARRY-ON', 'CHECKED', 'INTERNATIONAL', 'EXCEPTION', 'REQUIREMENTS',
+        'TIP', 'TIPS', 'ALLOWED', 'NOT', 'NO', 'YES'
     ];
 
     let result = text;
@@ -572,6 +574,15 @@ function displayCategoryResults(category) {
     // Filter items
     const items = itemsData.filter(item => item.category && item.category.includes(category));
     console.log(`Found ${items.length} items in "${category}"`);
+
+    // Sort items: allowed in both → allowed in one → not allowed in either
+    items.sort((a, b) => {
+        const aScore = (a.carryOn === 'allowed' ? 2 : 0) + (a.checked === 'allowed' ? 2 : 0) +
+                      (a.carryOn === 'restricted' ? 1 : 0) + (a.checked === 'restricted' ? 1 : 0);
+        const bScore = (b.carryOn === 'allowed' ? 2 : 0) + (b.checked === 'allowed' ? 2 : 0) +
+                      (b.carryOn === 'restricted' ? 1 : 0) + (b.checked === 'restricted' ? 1 : 0);
+        return bScore - aScore; // Higher score = more allowed = higher in list
+    });
 
     // Update title
     const categoryNames = {
