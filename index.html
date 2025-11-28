@@ -10,7 +10,13 @@
 <body>
     <!-- Ad Banner Top -->
     <div class="ad-banner-top">
-        <p class="ad-placeholder">Ad Space - 728x90 Banner</p>
+        <div class="ad-container">
+            <span class="ad-label">Advertisement</span>
+            <div class="ad-placeholder">
+                <p>📢 Premium Ad Space - 728x90 Leaderboard Banner</p>
+                <p class="ad-subtext">Your travel brand here | High visibility placement</p>
+            </div>
+        </div>
     </div>
 
     <!-- Header -->
@@ -23,6 +29,26 @@
 
     <!-- Main Content -->
     <main class="container">
+        <!-- Country Selector -->
+        <section class="country-section">
+            <div class="country-selector-wrapper">
+                <label for="countrySelector">
+                    <span class="country-icon">🌍</span> Where are you traveling?
+                </label>
+                <select id="countrySelector" class="country-selector">
+                    <option value="USA">🇺🇸 United States (TSA)</option>
+                    <option value="China">🇨🇳 China (CAAC)</option>
+                    <option value="EU">🇪🇺 European Union (EASA)</option>
+                    <option value="UK">🇬🇧 United Kingdom</option>
+                    <option value="Canada">🇨🇦 Canada</option>
+                    <option value="Australia">🇦🇺 Australia</option>
+                    <option value="Japan">🇯🇵 Japan</option>
+                    <option value="International">🌐 General International Rules</option>
+                </select>
+                <p class="country-note">Rules may vary by country. Select your destination for specific guidelines.</p>
+            </div>
+        </section>
+
         <!-- Search Section -->
         <section class="search-section">
             <h2>Search Any Item</h2>
@@ -64,7 +90,14 @@
 
         <!-- Ad Below Result -->
         <div id="resultAd" class="ad-inline hidden">
-            <p class="ad-placeholder">Ad Space - 336x280 Rectangle</p>
+            <div class="ad-container">
+                <span class="ad-label">Advertisement</span>
+                <div class="ad-placeholder ad-rectangle">
+                    <p>💼 Featured Ad Space - 336x280 Rectangle</p>
+                    <p class="ad-subtext">Travel accessories | Luggage | TSA-approved items</p>
+                    <p class="ad-cta">Shop Now →</p>
+                </div>
+            </div>
         </div>
 
         <!-- Categories Section -->
@@ -124,20 +157,9 @@
 
         <!-- Info Section -->
         <section class="info-section">
-            <h3>Important TSA Rules</h3>
-            <div class="info-cards">
-                <div class="info-card">
-                    <h4>3-1-1 Liquids Rule</h4>
-                    <p>Carry-on liquids must be in containers of 3.4 oz (100ml) or less, all fitting in one quart-sized clear plastic bag.</p>
-                </div>
-                <div class="info-card">
-                    <h4>Lithium Batteries</h4>
-                    <p>Spare lithium batteries and power banks must be in carry-on luggage only. Maximum 100Wh without approval.</p>
-                </div>
-                <div class="info-card">
-                    <h4>Sharp Objects</h4>
-                    <p>Scissors under 4 inches allowed in carry-on. All knives must be checked. Tools under 7 inches generally allowed.</p>
-                </div>
+            <h3 id="rulesTitle">Important Travel Rules</h3>
+            <div id="countrySpecificRules" class="info-cards">
+                <!-- Rules will be dynamically populated based on selected country -->
             </div>
         </section>
 
@@ -157,8 +179,13 @@
 
     <!-- Sticky Bottom Ad -->
     <div class="ad-banner-bottom">
-        <button class="ad-close">&times;</button>
-        <p class="ad-placeholder">Ad Space - 320x50 Mobile Banner</p>
+        <button class="ad-close" title="Close ad">&times;</button>
+        <div class="ad-container">
+            <span class="ad-label">Ad</span>
+            <div class="ad-placeholder ad-mobile">
+                <p>🛫 Sticky Ad - 320x50 Mobile Banner | Premium Placement</p>
+            </div>
+        </div>
     </div>
 
     <script src="js/app.js"></script>
