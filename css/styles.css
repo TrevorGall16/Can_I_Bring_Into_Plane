@@ -131,13 +131,18 @@ header h1 {
     opacity: 0.95;
 }
 
-/* SPLIT LAYOUT - Main Container */
-.split-container {
+/* THREE-COLUMN LAYOUT - Main Container */
+.three-column-container {
     display: grid;
-    grid-template-columns: 400px 1fr;
+    grid-template-columns: 350px 300px 1fr;
     gap: 0;
     min-height: calc(100vh - 250px);
     background: white;
+}
+
+/* When middle panel is hidden, collapse to two columns */
+.three-column-container:has(.middle-panel.hidden) {
+    grid-template-columns: 350px 1fr;
 }
 
 /* LEFT PANEL - Search & Categories */
@@ -145,6 +150,97 @@ header h1 {
     background: #f8f9fa;
     padding: 25px;
     border-right: 2px solid #e0e0e0;
+    overflow-y: auto;
+    max-height: calc(100vh - 250px);
+}
+
+/* MIDDLE PANEL - Category Items List */
+.middle-panel {
+    background: #ffffff;
+    border-right: 2px solid #e0e0e0;
+    overflow-y: auto;
+    max-height: calc(100vh - 250px);
+}
+
+.middle-panel .panel-header {
+    position: sticky;
+    top: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-bottom: 2px solid #e0e0e0;
+    z-index: 10;
+}
+
+.middle-panel .panel-header h3 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.middle-panel .item-count {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+.category-items-list {
+    padding: 0;
+}
+
+.category-item-card {
+    padding: 15px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.category-item-card:hover {
+    background: #f8f9fa;
+    border-left: 4px solid #667eea;
+}
+
+.category-item-card.active {
+    background: #e8ecff;
+    border-left: 4px solid #667eea;
+}
+
+.category-item-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.category-item-status {
+    display: flex;
+    gap: 10px;
+    font-size: 0.8rem;
+}
+
+.category-item-status span {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.status-allowed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-restricted {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-prohibited {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* RIGHT PANEL - stays the same but adjusted */
+.right-panel {
+    background: white;
+    padding: 30px;
     overflow-y: auto;
     max-height: calc(100vh - 250px);
 }
@@ -489,6 +585,28 @@ header h1 {
     border-left: 4px solid #667eea;
     margin-bottom: 20px;
     font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+.item-note ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.item-note li {
+    margin-bottom: 10px;
+    padding-left: 0;
+    position: relative;
+}
+
+.item-note li:last-child {
+    margin-bottom: 0;
+}
+
+.item-note strong {
+    font-weight: 600;
+    color: #333;
 }
 
 .related-items {

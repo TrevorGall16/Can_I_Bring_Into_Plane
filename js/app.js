@@ -115,15 +115,7 @@ function initializeEventListeners() {
         }
     });
 
-    // Close result
-    closeResult.addEventListener('click', () => {
-        document.getElementById('resultCard').classList.add('hidden');
-        document.getElementById('categoryResults').classList.add('hidden');
-        document.getElementById('countryRulesSection').classList.add('hidden');
-        document.getElementById('resultAd').classList.add('hidden');
-        document.getElementById('welcomeMessage').classList.remove('hidden');
-        document.getElementById('searchInput').value = '';
-    });
+    // Close result (note: this is handled dynamically now in displayItemResult)
 
     // Category buttons
     categoryButtons.forEach(button => {
@@ -226,34 +218,110 @@ function hideAutocomplete() {
 }
 
 // Display item result
-function displayItemResult(item) {
-    // Hide welcome and category results
+function displayItemResult(item, keepMiddlePanel = false) {
+    // Hide welcome message and country rules
     document.getElementById('welcomeMessage').classList.add('hidden');
-    document.getElementById('categoryResults').classList.add('hidden');
     document.getElementById('countryRulesSection').classList.add('hidden');
+
+    // Hide middle panel unless we're browsing a category
+    if (!keepMiddlePanel) {
+        document.getElementById('middlePanel').classList.add('hidden');
+    }
 
     // Find variants of this item
     const variants = findItemVariants(item);
 
-    // Show result card
-    const resultCard = document.getElementById('resultCard');
+    // Get right panel and build the result card HTML
+    const rightPanel = document.getElementById('rightPanel');
 
-    // If item has variants, show selector
+    // If item has variants, build selector HTML
+    let variantSelectorHTML = '';
     if (variants.length > 1) {
-        setupVariantSelector(item, variants);
-    } else {
-        document.getElementById('variantSelector').classList.add('hidden');
+        variantSelectorHTML = `
+            <div class="variant-selector" id="variantSelector">
+                <label for="variantSelect">Select option:</label>
+                <select id="variantSelect" class="variant-select">
+                    ${variants.map(variant => {
+                        const match = variant.name.match(/\(([^)]+)\)/);
+                        const variantDesc = match ? match[1] : variant.name;
+                        const selected = variant.id === item.id ? 'selected' : '';
+                        return `<option value="${variant.id}" ${selected}>${variantDesc}</option>`;
+                    }).join('')}
+                </select>
+            </div>
+        `;
     }
 
-    // Display the selected item
-    updateItemDisplay(item);
+    // Build the complete item result HTML
+    rightPanel.innerHTML = `
+        <div class="result-card" id="resultCard">
+            ${keepMiddlePanel ? '' : '<button class="close-btn" id="closeResult">&times;</button>'}
+            <h2 class="item-name">${item.name}</h2>
 
-    // Related items
+            ${variantSelectorHTML}
+
+            <div class="status-grid">
+                <div class="status-box carry-on">
+                    <div class="status-icon">🎒</div>
+                    <div class="status-label">Carry-On</div>
+                    <div class="status-value ${item.carryOn}">${formatStatus(item.carryOn)}</div>
+                </div>
+
+                <div class="status-box checked">
+                    <div class="status-icon">🧳</div>
+                    <div class="status-label">Checked Luggage</div>
+                    <div class="status-value ${item.checked}">${formatStatus(item.checked)}</div>
+                </div>
+            </div>
+
+            <div class="item-note">${formatNoteToBulletPoints(item.note)}</div>
+            <div class="related-items" id="relatedItems"></div>
+        </div>
+
+        <div class="ad-inline" id="resultAd">
+            <div class="ad-container">
+                <span class="ad-label">Advertisement</span>
+                <div class="ad-placeholder ad-rectangle">
+                    <p>💼 Featured Ad - 336x280</p>
+                    <p class="ad-subtext">Travel accessories | TSA-approved items</p>
+                    <p class="ad-cta">Shop Now →</p>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Add event listener for variant selector if it exists
+    if (variants.length > 1) {
+        const variantSelect = document.getElementById('variantSelect');
+        variantSelect.addEventListener('change', (e) => {
+            const newItemId = parseInt(e.target.value);
+            const newItem = itemsData.find(i => i.id === newItemId);
+            if (newItem) {
+                displayItemResult(newItem, keepMiddlePanel);
+            }
+        });
+    }
+
+    // Add event listener for close button if it exists
+    if (!keepMiddlePanel) {
+        const closeBtn = document.getElementById('closeResult');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                rightPanel.innerHTML = `
+                    <div class="welcome-message">
+                        <div class="welcome-icon">🔍</div>
+                        <h2>Search for any item</h2>
+                        <p>Type an item name in the search box or browse by category to see if it's allowed on your flight.</p>
+                        <p class="welcome-note">Results will appear here →</p>
+                    </div>
+                `;
+                document.getElementById('searchInput').value = '';
+            });
+        }
+    }
+
+    // Display related items
     displayRelatedItems(item);
-
-    // Show result and ad
-    resultCard.classList.remove('hidden');
-    document.getElementById('resultAd').classList.remove('hidden');
 }
 
 // Find variants of an item (similar items with different sizes/types)
@@ -322,13 +390,54 @@ function updateItemDisplay(item) {
     checkedStatus.textContent = formatStatus(item.checked);
     checkedStatus.className = `status-value ${item.checked}`;
 
-    // Note
+    // Note - Convert to bullet points
     const itemNote = document.getElementById('itemNote');
     if (item.note) {
-        itemNote.textContent = `ℹ️ ${item.note}`;
+        itemNote.innerHTML = formatNoteToBulletPoints(item.note);
         itemNote.style.display = 'block';
     } else {
         itemNote.style.display = 'none';
+    }
+}
+
+// Convert note text to bullet points
+function formatNoteToBulletPoints(note) {
+    // Split by common delimiters that indicate separate points
+    // Look for: ✅ ❌ ⚠️ 💡 📞 🚨 and numbered lists (1), (2), etc.
+    let points = [];
+
+    // Split by emoji markers or numbered points
+    const segments = note.split(/(?=✅|❌|⚠️|💡|📞|🚨|👶|🎒|🧳|\(\d+\))/);
+
+    segments.forEach(segment => {
+        segment = segment.trim();
+        if (segment) {
+            points.push(segment);
+        }
+    });
+
+    // If no splitting occurred (no emojis), try splitting by sentences
+    if (points.length <= 1) {
+        // Split by period followed by space and capital letter or emoji
+        points = note.split(/\.\s+(?=[A-Z✅❌⚠️💡📞🚨])/);
+        points = points.map(p => p.trim()).filter(p => p);
+        // Add period back if removed
+        points = points.map(p => p.endsWith('.') || p.endsWith('!') || p.endsWith('?') ? p : p + '.');
+    }
+
+    // If we have multiple points, create a bullet list
+    if (points.length > 1) {
+        let html = '<ul>';
+        points.forEach(point => {
+            if (point.trim()) {
+                html += `<li>${point}</li>`;
+            }
+        });
+        html += '</ul>';
+        return html;
+    } else {
+        // Single point, return as is
+        return `<p>${note}</p>`;
     }
 }
 
@@ -372,17 +481,17 @@ function showItemById(itemId) {
     if (item) displayItemResult(item);
 }
 
-// Display category results
+// Display category results in middle panel
 function displayCategoryResults(category) {
     console.log('Displaying category:', category);
 
-    // Hide welcome and result card
+    // Show middle panel, hide welcome message
+    const middlePanel = document.getElementById('middlePanel');
+    const rightPanel = document.getElementById('rightPanel');
     document.getElementById('welcomeMessage').classList.add('hidden');
     document.getElementById('resultCard').classList.add('hidden');
-    document.getElementById('resultAd').classList.add('hidden');
     document.getElementById('countryRulesSection').classList.add('hidden');
 
-    const categoryResults = document.getElementById('categoryResults');
     const categoryTitle = document.getElementById('categoryTitle');
     const categoryCount = document.getElementById('categoryCount');
     const categoryItemsList = document.getElementById('categoryItemsList');
@@ -406,23 +515,48 @@ function displayCategoryResults(category) {
     categoryTitle.textContent = categoryNames[category] || category;
     categoryCount.textContent = `${items.length} items`;
 
-    // Display items
+    // Display items in middle panel
     categoryItemsList.innerHTML = '';
     items.forEach(item => {
         const div = document.createElement('div');
-        div.className = 'category-item';
-        div.onclick = () => displayItemResult(item);
+        div.className = 'category-item-card';
+        div.onclick = () => {
+            // Remove active class from all items
+            document.querySelectorAll('.category-item-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            // Add active class to clicked item
+            div.classList.add('active');
+            // Show item details in right panel
+            displayItemResult(item, true); // true = keep middle panel visible
+        };
+
+        const statusCarryOn = item.carryOn === 'allowed' ? 'status-allowed' :
+                             item.carryOn === 'restricted' ? 'status-restricted' : 'status-prohibited';
+        const statusChecked = item.checked === 'allowed' ? 'status-allowed' :
+                             item.checked === 'restricted' ? 'status-restricted' : 'status-prohibited';
+
         div.innerHTML = `
-            <h4>${item.name}</h4>
+            <div class="category-item-name">${item.name}</div>
             <div class="category-item-status">
-                <span class="status-value ${item.carryOn}">Carry-on: ${formatStatus(item.carryOn)}</span>
-                <span class="status-value ${item.checked}">Checked: ${formatStatus(item.checked)}</span>
+                <span class="${statusCarryOn}">🎒 ${formatStatus(item.carryOn)}</span>
+                <span class="${statusChecked}">🧳 ${formatStatus(item.checked)}</span>
             </div>
         `;
         categoryItemsList.appendChild(div);
     });
 
-    categoryResults.classList.remove('hidden');
+    // Show middle panel
+    middlePanel.classList.remove('hidden');
+
+    // Show a message in right panel prompting to select an item
+    rightPanel.innerHTML = `
+        <div class="welcome-message">
+            <div class="welcome-icon">👈</div>
+            <h2>Select an item</h2>
+            <p>Click on an item from the ${categoryNames[category]} category to see details.</p>
+        </div>
+    `;
 }
 
 // Show country rules (only when country changes)
