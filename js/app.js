@@ -3,6 +3,50 @@ let itemsData = ITEMS_DATA;
 let autocompleteTimeout = null;
 let currentCountry = 'USA';
 
+// Ad Provider - manages ad refreshes and prevents too frequent refreshes
+class AdProvider {
+    constructor() {
+        this.inlineAdCounter = 0;
+        this.lastRefreshTime = 0;
+        this.minRefreshInterval = 1000; // Minimum 1 second between refreshes
+    }
+
+    // Refresh inline ad (called on category/country/item changes)
+    refreshInlineAd() {
+        const now = Date.now();
+
+        // Prevent too frequent refreshes
+        if (now - this.lastRefreshTime < this.minRefreshInterval) {
+            return;
+        }
+
+        this.inlineAdCounter++;
+        this.lastRefreshTime = now;
+
+        // In a real implementation, this would reload the ad unit
+        // For now, we just update the counter to show the ad is refreshing
+        console.log(`📢 Inline ad refreshed (impression #${this.inlineAdCounter})`);
+
+        // Find all inline ads and update them (if they exist)
+        const inlineAds = document.querySelectorAll('.ad-inline .ad-placeholder');
+        inlineAds.forEach(ad => {
+            // Add a subtle animation to indicate refresh
+            ad.style.opacity = '0.7';
+            setTimeout(() => {
+                ad.style.opacity = '1';
+            }, 200);
+        });
+    }
+
+    // Get current ad counter (useful for debugging)
+    getImpressionCount() {
+        return this.inlineAdCounter;
+    }
+}
+
+// Initialize ad provider
+const adProvider = new AdProvider();
+
 // Country-specific rules database (copy from previous)
 const countryRules = {
     'USA': {
@@ -90,6 +134,7 @@ function initializeEventListeners() {
         currentCountry = e.target.value;
         console.log('Country changed to:', currentCountry);
         showCountryRules(currentCountry);
+        adProvider.refreshInlineAd(); // Refresh ad on country change
     });
 
     // Search input
@@ -121,6 +166,7 @@ function initializeEventListeners() {
         button.addEventListener('click', () => {
             const category = button.getAttribute('data-category');
             displayCategoryResults(category);
+            adProvider.refreshInlineAd(); // Refresh ad on category selection
         });
     });
 
@@ -129,16 +175,12 @@ function initializeEventListeners() {
         tag.addEventListener('click', () => {
             const itemName = tag.getAttribute('data-item');
             const item = findBestMatch(itemName);
-            if (item) displayItemResult(item);
+            if (item) {
+                displayItemResult(item);
+                adProvider.refreshInlineAd(); // Refresh ad on popular item click
+            }
         });
     });
-
-    // Close sticky ad
-    if (adClose) {
-        adClose.addEventListener('click', () => {
-            document.querySelector('.ad-banner-bottom').style.display = 'none';
-        });
-    }
 
     // Close autocomplete when clicking outside
     document.addEventListener('click', (e) => {
@@ -536,6 +578,7 @@ function displayCategoryResults(category) {
             div.classList.add('active');
             // Show item details in right panel
             displayItemResult(item, true); // true = keep middle panel visible
+            adProvider.refreshInlineAd(); // Refresh ad on item click
         };
 
         const statusCarryOn = item.carryOn === 'allowed' ? 'status-allowed' :
