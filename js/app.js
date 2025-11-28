@@ -232,8 +232,84 @@ function displayItemResult(item) {
     document.getElementById('categoryResults').classList.add('hidden');
     document.getElementById('countryRulesSection').classList.add('hidden');
 
+    // Find variants of this item
+    const variants = findItemVariants(item);
+
     // Show result card
     const resultCard = document.getElementById('resultCard');
+
+    // If item has variants, show selector
+    if (variants.length > 1) {
+        setupVariantSelector(item, variants);
+    } else {
+        document.getElementById('variantSelector').classList.add('hidden');
+    }
+
+    // Display the selected item
+    updateItemDisplay(item);
+
+    // Related items
+    displayRelatedItems(item);
+
+    // Show result and ad
+    resultCard.classList.remove('hidden');
+    document.getElementById('resultAd').classList.remove('hidden');
+}
+
+// Find variants of an item (similar items with different sizes/types)
+function findItemVariants(item) {
+    // Extract base name (remove parentheses content)
+    const baseName = item.name.replace(/\s*\([^)]*\)/g, '').trim();
+
+    // Find all items that share the same base name
+    const variants = itemsData.filter(i => {
+        const iBaseName = i.name.replace(/\s*\([^)]*\)/g, '').trim();
+        return iBaseName.toLowerCase() === baseName.toLowerCase();
+    });
+
+    return variants;
+}
+
+// Setup variant selector dropdown
+function setupVariantSelector(selectedItem, variants) {
+    const variantSelector = document.getElementById('variantSelector');
+    const variantSelect = document.getElementById('variantSelect');
+
+    // Clear existing options
+    variantSelect.innerHTML = '';
+
+    // Add options for each variant
+    variants.forEach(variant => {
+        const option = document.createElement('option');
+        option.value = variant.id;
+
+        // Extract the variant description (content in parentheses)
+        const match = variant.name.match(/\(([^)]+)\)/);
+        const variantDesc = match ? match[1] : variant.name;
+
+        option.textContent = variantDesc;
+        if (variant.id === selectedItem.id) {
+            option.selected = true;
+        }
+        variantSelect.appendChild(option);
+    });
+
+    // Show the selector
+    variantSelector.classList.remove('hidden');
+
+    // Add change event listener
+    variantSelect.onchange = (e) => {
+        const newItemId = parseInt(e.target.value);
+        const newItem = itemsData.find(i => i.id === newItemId);
+        if (newItem) {
+            updateItemDisplay(newItem);
+        }
+    };
+}
+
+// Update the display with item details
+function updateItemDisplay(item) {
+    // Update item name
     document.getElementById('itemName').textContent = item.name;
 
     // Carry-on status
@@ -254,13 +330,6 @@ function displayItemResult(item) {
     } else {
         itemNote.style.display = 'none';
     }
-
-    // Related items
-    displayRelatedItems(item);
-
-    // Show result and ad
-    resultCard.classList.remove('hidden');
-    document.getElementById('resultAd').classList.remove('hidden');
 }
 
 // Format status

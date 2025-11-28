@@ -394,8 +394,42 @@ header h1 {
 .item-name {
     font-size: 1.8rem;
     color: #333;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
     padding-right: 40px;
+}
+
+/* Variant Selector */
+.variant-selector {
+    background: #fff3e0;
+    padding: 15px 20px;
+    border-radius: 8px;
+    border: 2px solid #ff9800;
+    margin-bottom: 25px;
+}
+
+.variant-selector label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #e65100;
+    font-size: 0.95rem;
+}
+
+.variant-select {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 15px;
+    border: 2px solid #ff9800;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    outline: none;
+    font-weight: 500;
+}
+
+.variant-select:focus {
+    border-color: #e65100;
+    box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.2);
 }
 
 .status-grid {
