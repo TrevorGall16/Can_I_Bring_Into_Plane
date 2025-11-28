@@ -25,8 +25,8 @@
         <p class="tagline">Know what you can bring on a plane</p>
     </header>
 
-    <!-- Main Split Layout -->
-    <div class="split-container">
+    <!-- Main Three-Column Layout -->
+    <div class="three-column-container">
         <!-- LEFT PANEL - Search & Categories -->
         <div class="left-panel">
             <!-- Country Selector -->
@@ -90,8 +90,17 @@
             </section>
         </div>
 
-        <!-- RIGHT PANEL - Results -->
-        <div class="right-panel">
+        <!-- MIDDLE PANEL - Category Items List -->
+        <div class="middle-panel hidden" id="middlePanel">
+            <div class="panel-header">
+                <h3 id="categoryTitle"></h3>
+                <span class="item-count" id="categoryCount"></span>
+            </div>
+            <div id="categoryItemsList" class="category-items-list"></div>
+        </div>
+
+        <!-- RIGHT PANEL - Item Details -->
+        <div class="right-panel" id="rightPanel">
             <!-- Welcome Message (shown by default) -->
             <div id="welcomeMessage" class="welcome-message">
                 <div class="welcome-icon">🔍</div>
