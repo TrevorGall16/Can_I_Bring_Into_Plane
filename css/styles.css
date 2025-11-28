@@ -23,10 +23,15 @@ body {
 
 .ad-label {
     display: block;
-    font-size: 10px;
-    color: #999;
+    font-size: 11px;
+    color: #e74c3c;
+    font-weight: 700;
     text-transform: uppercase;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    background: #ffe5e0;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
 }
 
 .ad-placeholder {
@@ -127,6 +132,22 @@ header h1 {
     opacity: 0.95;
 }
 
+/* Persistent Disclaimer Banner */
+.disclaimer-banner {
+    background: #fff3cd;
+    border-bottom: 2px solid #ffc107;
+    padding: 8px 20px;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #856404;
+    line-height: 1.4;
+}
+
+.disclaimer-banner strong {
+    font-weight: 700;
+    color: #721c24;
+}
+
 /* THREE-COLUMN LAYOUT - Main Container */
 .three-column-container {
     display: grid;
@@ -145,7 +166,7 @@ header h1 {
 .left-panel {
     background: #f8f9fa;
     padding: 25px;
-    border-right: 2px solid #e0e0e0;
+    border-right: 3px solid #bbb;
     overflow-y: auto;
     max-height: calc(100vh - 250px);
 }
@@ -153,7 +174,7 @@ header h1 {
 /* MIDDLE PANEL - Category Items List */
 .middle-panel {
     background: #ffffff;
-    border-right: 2px solid #e0e0e0;
+    border-right: 3px solid #bbb;
     overflow-y: auto;
     max-height: calc(100vh - 250px);
 }
