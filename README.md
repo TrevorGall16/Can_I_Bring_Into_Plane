@@ -4,26 +4,32 @@ A lightweight, fast-loading website that helps travelers instantly find out if i
 
 ## Features
 
+- **✨ Works Offline**: No server needed! Data embedded directly in JavaScript
+- **Split-Screen Layout**: Search/categories on left, results on right (desktop)
 - **Instant Search**: Search 120+ common travel items with autocomplete
-- **Clear Results**: Shows carry-on and checked luggage status with TSA guidelines
+- **Clear Results**: Shows carry-on and checked luggage status
+- **Country-Specific Rules**: Select from 8 countries (USA, China, EU, UK, Canada, Australia, Japan, International)
 - **Category Browsing**: Browse items by category (Liquids, Electronics, Food, Tools, etc.)
-- **Mobile-First Design**: Optimized for mobile devices with responsive layout
-- **Fast Loading**: Minimal dependencies, loads in under 1 second
-- **No Backend Required**: Static website using JSON data
+- **Mobile-First Design**: Fully responsive layout
+- **Fast Loading**: Loads instantly, no dependencies
 
 ## Usage
 
-Simply open `index.html` in a web browser, or host it on any static web server.
+**✨ No Server Required!** Just double-click `index.html` - it works immediately!
 
-### Running Locally
+### Quick Start
 
 1. Clone the repository
-2. Open `index.html` in your browser, or
-3. Start a local server:
-   ```bash
-   python3 -m http.server 8000
-   ```
-4. Visit `http://localhost:8000`
+2. **Double-click `index.html`** to open in any browser
+3. Start searching items or browse categories
+
+### Optional: With Server
+
+If you prefer a local server:
+```bash
+python3 -m http.server 8000
+```
+Visit `http://localhost:8000`
 
 ### Deploying
 

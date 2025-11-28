@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Can I bring this on a plane? Instantly check if items are allowed in carry-on or checked luggage. Fast, simple airport security rules for travelers.">
     <title>Can I Bring This On A Plane? | Airport Carry-On Checker</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles-new.css">
 </head>
 <body>
     <!-- Ad Banner Top -->
@@ -21,17 +21,16 @@
 
     <!-- Header -->
     <header>
-        <div class="container">
-            <h1>✈️ Airport Carry-On Checker</h1>
-            <p class="tagline">Know what you can bring on a plane</p>
-        </div>
+        <h1>✈️ Airport Carry-On Checker</h1>
+        <p class="tagline">Know what you can bring on a plane</p>
     </header>
 
-    <!-- Main Content -->
-    <main class="container">
-        <!-- Country Selector -->
-        <section class="country-section">
-            <div class="country-selector-wrapper">
+    <!-- Main Split Layout -->
+    <div class="split-container">
+        <!-- LEFT PANEL - Search & Categories -->
+        <div class="left-panel">
+            <!-- Country Selector -->
+            <section class="country-section">
                 <label for="countrySelector">
                     <span class="country-icon">🌍</span> Where are you traveling?
                 </label>
@@ -45,136 +44,118 @@
                     <option value="Japan">🇯🇵 Japan</option>
                     <option value="International">🌐 General International Rules</option>
                 </select>
-                <p class="country-note">Rules may vary by country. Select your destination for specific guidelines.</p>
+            </section>
+
+            <!-- Search Section -->
+            <section class="search-section">
+                <h2>Search Any Item</h2>
+                <div class="search-container">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        class="search-input"
+                        placeholder="Type an item (e.g., water bottle)..."
+                        autocomplete="off"
+                    >
+                    <div id="autocompleteResults" class="autocomplete-results hidden"></div>
+                </div>
+            </section>
+
+            <!-- Categories Section -->
+            <section class="categories-section">
+                <h3>Browse by Category</h3>
+                <div class="categories-grid">
+                    <button class="category-btn" data-category="liquids">💧 Liquids</button>
+                    <button class="category-btn" data-category="electronics">📱 Electronics</button>
+                    <button class="category-btn" data-category="food">🍎 Food</button>
+                    <button class="category-btn" data-category="toiletries">🧴 Toiletries</button>
+                    <button class="category-btn" data-category="medication">💊 Medication</button>
+                    <button class="category-btn" data-category="tools">🔧 Tools</button>
+                    <button class="category-btn" data-category="sports">⚽ Sports</button>
+                    <button class="category-btn" data-category="baby">👶 Baby</button>
+                </div>
+            </section>
+
+            <!-- Popular Searches -->
+            <section class="popular-section">
+                <h3>Popular Searches</h3>
+                <div class="popular-tags">
+                    <button class="popular-tag" data-item="laptop">Laptop</button>
+                    <button class="popular-tag" data-item="water bottle">Water Bottle</button>
+                    <button class="popular-tag" data-item="power bank">Power Bank</button>
+                    <button class="popular-tag" data-item="scissors">Scissors</button>
+                    <button class="popular-tag" data-item="shampoo">Shampoo</button>
+                    <button class="popular-tag" data-item="lighter">Lighter</button>
+                </div>
+            </section>
+        </div>
+
+        <!-- RIGHT PANEL - Results -->
+        <div class="right-panel">
+            <!-- Welcome Message (shown by default) -->
+            <div id="welcomeMessage" class="welcome-message">
+                <div class="welcome-icon">🔍</div>
+                <h2>Search for any item</h2>
+                <p>Type an item name in the search box or browse by category to see if it's allowed on your flight.</p>
+                <p class="welcome-note">Results will appear here →</p>
             </div>
-        </section>
 
-        <!-- Search Section -->
-        <section class="search-section">
-            <h2>Search Any Item</h2>
-            <div class="search-container">
-                <input
-                    type="text"
-                    id="searchInput"
-                    class="search-input"
-                    placeholder="Type an item (e.g., water bottle, laptop, scissors)..."
-                    autocomplete="off"
-                >
-                <div id="autocompleteResults" class="autocomplete-results hidden"></div>
-            </div>
-        </section>
+            <!-- Item Result Card -->
+            <div id="resultCard" class="result-card hidden">
+                <button class="close-btn" id="closeResult">&times;</button>
+                <h2 id="itemName" class="item-name"></h2>
 
-        <!-- Result Card (Hidden by default) -->
-        <section id="resultCard" class="result-card hidden">
-            <button class="close-btn" id="closeResult">&times;</button>
-            <h2 id="itemName" class="item-name"></h2>
+                <div class="status-grid">
+                    <div class="status-box carry-on">
+                        <div class="status-icon">🎒</div>
+                        <div class="status-label">Carry-On</div>
+                        <div id="carryOnStatus" class="status-value"></div>
+                    </div>
 
-            <div class="status-grid">
-                <div class="status-box carry-on">
-                    <div class="status-icon">🎒</div>
-                    <div class="status-label">Carry-On</div>
-                    <div id="carryOnStatus" class="status-value"></div>
+                    <div class="status-box checked">
+                        <div class="status-icon">🧳</div>
+                        <div class="status-label">Checked Luggage</div>
+                        <div id="checkedStatus" class="status-value"></div>
+                    </div>
                 </div>
 
-                <div class="status-box checked">
-                    <div class="status-icon">🧳</div>
-                    <div class="status-label">Checked Luggage</div>
-                    <div id="checkedStatus" class="status-value"></div>
-                </div>
+                <div id="itemNote" class="item-note"></div>
+                <div id="relatedItems" class="related-items"></div>
             </div>
 
-            <div id="itemNote" class="item-note"></div>
+            <!-- Category Results List -->
+            <div id="categoryResults" class="category-results hidden">
+                <div class="category-header">
+                    <h3 id="categoryTitle"></h3>
+                    <span class="item-count" id="categoryCount"></span>
+                </div>
+                <div id="categoryItemsList" class="category-items-list"></div>
+            </div>
 
-            <div id="relatedItems" class="related-items"></div>
-        </section>
+            <!-- Country-Specific Rules (hidden by default) -->
+            <div id="countryRulesSection" class="country-rules-section hidden">
+                <h3 id="rulesTitle">Travel Rules</h3>
+                <div id="countrySpecificRules" class="info-cards"></div>
+            </div>
 
-        <!-- Ad Below Result -->
-        <div id="resultAd" class="ad-inline hidden">
-            <div class="ad-container">
-                <span class="ad-label">Advertisement</span>
-                <div class="ad-placeholder ad-rectangle">
-                    <p>💼 Featured Ad Space - 336x280 Rectangle</p>
-                    <p class="ad-subtext">Travel accessories | Luggage | TSA-approved items</p>
-                    <p class="ad-cta">Shop Now →</p>
+            <!-- Ad Below Result -->
+            <div id="resultAd" class="ad-inline hidden">
+                <div class="ad-container">
+                    <span class="ad-label">Advertisement</span>
+                    <div class="ad-placeholder ad-rectangle">
+                        <p>💼 Featured Ad - 336x280</p>
+                        <p class="ad-subtext">Travel accessories | TSA-approved items</p>
+                        <p class="ad-cta">Shop Now →</p>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Categories Section -->
-        <section class="categories-section">
-            <h2>Browse by Category</h2>
-            <div class="categories-grid">
-                <button class="category-btn" data-category="liquids">
-                    💧 Liquids
-                </button>
-                <button class="category-btn" data-category="electronics">
-                    📱 Electronics
-                </button>
-                <button class="category-btn" data-category="food">
-                    🍎 Food & Snacks
-                </button>
-                <button class="category-btn" data-category="toiletries">
-                    🧴 Toiletries
-                </button>
-                <button class="category-btn" data-category="medication">
-                    💊 Medication
-                </button>
-                <button class="category-btn" data-category="tools">
-                    🔧 Tools
-                </button>
-                <button class="category-btn" data-category="sports">
-                    ⚽ Sports Equipment
-                </button>
-                <button class="category-btn" data-category="baby">
-                    👶 Baby Items
-                </button>
-            </div>
-        </section>
-
-        <!-- Category Results -->
-        <section id="categoryResults" class="category-results hidden">
-            <div class="category-header">
-                <h3 id="categoryTitle"></h3>
-                <button class="close-category-btn" id="closeCategoryResults">Back to Categories</button>
-            </div>
-            <div id="categoryItemsList" class="category-items-list"></div>
-        </section>
-
-        <!-- Popular Searches -->
-        <section class="popular-section">
-            <h3>Popular Searches</h3>
-            <div class="popular-tags">
-                <button class="popular-tag" data-item="laptop">Laptop</button>
-                <button class="popular-tag" data-item="water bottle">Water Bottle</button>
-                <button class="popular-tag" data-item="power bank">Power Bank</button>
-                <button class="popular-tag" data-item="scissors">Scissors</button>
-                <button class="popular-tag" data-item="shampoo">Shampoo</button>
-                <button class="popular-tag" data-item="pocket knife">Pocket Knife</button>
-                <button class="popular-tag" data-item="lighter">Lighter</button>
-                <button class="popular-tag" data-item="hand sanitizer">Hand Sanitizer</button>
-            </div>
-        </section>
-
-        <!-- Info Section -->
-        <section class="info-section">
-            <h3 id="rulesTitle">Important Travel Rules</h3>
-            <div id="countrySpecificRules" class="info-cards">
-                <!-- Rules will be dynamically populated based on selected country -->
-            </div>
-        </section>
-
-        <!-- Disclaimer -->
-        <section class="disclaimer">
-            <p><strong>Disclaimer:</strong> This tool provides general TSA guidelines. Rules may vary by airline, country, and specific circumstances. Always verify with your airline before travel. Updated regularly but not guaranteed to be 100% current.</p>
-        </section>
-    </main>
+    </div>
 
     <!-- Footer -->
     <footer>
-        <div class="container">
-            <p>&copy; 2024 Airport Carry-On Checker | <a href="#privacy">Privacy Policy</a> | <a href="#about">About</a></p>
-            <p class="footer-note">Data based on TSA guidelines. Check with your airline for specific policies.</p>
-        </div>
+        <p>&copy; 2024 Airport Carry-On Checker | <a href="#privacy">Privacy</a> | <a href="#about">About</a></p>
+        <p class="footer-note">Check with your airline for specific policies. Rules may vary.</p>
     </footer>
 
     <!-- Sticky Bottom Ad -->
@@ -183,11 +164,13 @@
         <div class="ad-container">
             <span class="ad-label">Ad</span>
             <div class="ad-placeholder ad-mobile">
-                <p>🛫 Sticky Ad - 320x50 Mobile Banner | Premium Placement</p>
+                <p>🛫 Sticky Ad - 320x50 Mobile Banner</p>
             </div>
         </div>
     </div>
 
+    <!-- Load embedded data first, then main app -->
+    <script src="js/data-embedded.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
