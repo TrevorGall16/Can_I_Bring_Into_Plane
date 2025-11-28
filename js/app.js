@@ -324,11 +324,10 @@ function displayItemResult(item, keepMiddlePanel = false) {
 
         <div class="ad-inline" id="resultAd">
             <div class="ad-container">
-                <span class="ad-label">Advertisement</span>
+                <span class="ad-label">🔖 AD (DEBUG) - Inline 300x250 - Refreshes on interaction</span>
                 <div class="ad-placeholder ad-rectangle">
-                    <p>💼 Featured Ad - 336x280</p>
-                    <p class="ad-subtext">Travel accessories | TSA-approved items</p>
-                    <p class="ad-cta">Shop Now →</p>
+                    <p>💼 Ad Space - 300x250 Rectangle</p>
+                    <p class="ad-subtext">Replace with real ad network code</p>
                 </div>
             </div>
         </div>
@@ -444,6 +443,28 @@ function updateItemDisplay(item) {
     }
 }
 
+// Add bold formatting to important keywords
+function addBoldToKeywords(text) {
+    // List of keywords to make bold
+    const keywords = [
+        'CRITICAL', 'Critical', 'WARNING', 'Warning', 'VERIFY', 'Verify',
+        'ALWAYS', 'Always', 'NEVER', 'Never', 'MUST', 'Must',
+        'PROHIBITED', 'Prohibited', 'REQUIRED', 'Required',
+        'DANGEROUS', 'Dangerous', 'IMPORTANT', 'Important',
+        'RESTRICTED', 'Restricted', 'NOT ALLOWED', 'Not allowed',
+        'CONFISCATED', 'Confiscated', 'ILLEGAL', 'Illegal'
+    ];
+
+    let result = text;
+    keywords.forEach(keyword => {
+        // Use word boundaries to avoid partial matches
+        const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
+        result = result.replace(regex, '<strong>$1</strong>');
+    });
+
+    return result;
+}
+
 // Convert note text to bullet points
 function formatNoteToBulletPoints(note) {
     // Split by common delimiters that indicate separate points
@@ -469,6 +490,9 @@ function formatNoteToBulletPoints(note) {
         points = points.map(p => p.endsWith('.') || p.endsWith('!') || p.endsWith('?') ? p : p + '.');
     }
 
+    // Apply bold formatting to keywords in each point
+    points = points.map(point => addBoldToKeywords(point));
+
     // If we have multiple points, create a bullet list
     if (points.length > 1) {
         let html = '<ul>';
@@ -480,8 +504,8 @@ function formatNoteToBulletPoints(note) {
         html += '</ul>';
         return html;
     } else {
-        // Single point, return as is
-        return `<p>${note}</p>`;
+        // Single point, return as is with bold formatting
+        return `<p>${addBoldToKeywords(note)}</p>`;
     }
 }
 
