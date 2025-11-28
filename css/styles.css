@@ -779,6 +779,7 @@ footer {
     padding: 25px 20px;
     text-align: center;
     margin-top: 30px;
+    margin-bottom: 80px; /* Space for sticky bottom ad */
 }
 
 footer a {

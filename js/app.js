@@ -80,7 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // Initialize event listeners
 function initializeEventListeners() {
     const searchInput = document.getElementById('searchInput');
-    const closeResult = document.getElementById('closeResult');
     const categoryButtons = document.querySelectorAll('.category-btn');
     const popularTags = document.querySelectorAll('.popular-tag');
     const adClose = document.querySelector('.ad-close');
@@ -219,9 +218,12 @@ function hideAutocomplete() {
 
 // Display item result
 function displayItemResult(item, keepMiddlePanel = false) {
-    // Hide welcome message and country rules
-    document.getElementById('welcomeMessage').classList.add('hidden');
-    document.getElementById('countryRulesSection').classList.add('hidden');
+    // Hide welcome message and country rules if they exist
+    const welcomeMsg = document.getElementById('welcomeMessage');
+    if (welcomeMsg) welcomeMsg.classList.add('hidden');
+
+    const countryRulesSection = document.getElementById('countryRulesSection');
+    if (countryRulesSection) countryRulesSection.classList.add('hidden');
 
     // Hide middle panel unless we're browsing a category
     if (!keepMiddlePanel) {
@@ -488,9 +490,14 @@ function displayCategoryResults(category) {
     // Show middle panel, hide welcome message
     const middlePanel = document.getElementById('middlePanel');
     const rightPanel = document.getElementById('rightPanel');
-    document.getElementById('welcomeMessage').classList.add('hidden');
-    document.getElementById('resultCard').classList.add('hidden');
-    document.getElementById('countryRulesSection').classList.add('hidden');
+
+    // Hide welcome message if it exists
+    const welcomeMsg = document.getElementById('welcomeMessage');
+    if (welcomeMsg) welcomeMsg.classList.add('hidden');
+
+    // Hide country rules if they exist
+    const countryRules = document.getElementById('countryRulesSection');
+    if (countryRules) countryRules.classList.add('hidden');
 
     const categoryTitle = document.getElementById('categoryTitle');
     const categoryCount = document.getElementById('categoryCount');
@@ -564,28 +571,41 @@ function showCountryRules(country) {
     const rulesData = countryRules[country];
     if (!rulesData) return;
 
-    const rulesSection = document.getElementById('countryRulesSection');
-    const rulesTitle = document.getElementById('rulesTitle');
-    const rulesContainer = document.getElementById('countrySpecificRules');
+    // Get the right panel and rebuild it with country rules
+    const rightPanel = document.getElementById('rightPanel');
 
-    rulesTitle.textContent = rulesData.title;
-    rulesContainer.innerHTML = '';
-
+    // Build the country rules HTML
+    let rulesCardsHTML = '';
     rulesData.rules.forEach(rule => {
-        const card = document.createElement('div');
-        card.className = 'info-card';
-        card.innerHTML = `<h4>${rule.title}</h4><p>${rule.description}</p>`;
-        rulesContainer.appendChild(card);
+        rulesCardsHTML += `
+            <div class="info-card">
+                <h4>${rule.title}</h4>
+                <p>${rule.description}</p>
+            </div>
+        `;
     });
 
-    // Hide other sections
-    document.getElementById('welcomeMessage').classList.add('hidden');
-    document.getElementById('resultCard').classList.add('hidden');
-    document.getElementById('categoryResults').classList.add('hidden');
-    document.getElementById('resultAd').classList.add('hidden');
+    // Completely rebuild right panel with country rules
+    rightPanel.innerHTML = `
+        <div class="country-rules-section" id="countryRulesSection">
+            <!-- Disclaimer Banner -->
+            <div class="country-disclaimer">
+                <strong>⚠️ Important Disclaimer:</strong> This information is for general guidance only. We are NOT responsible for any misinformation or outdated data. Rules change frequently. <strong>ALWAYS verify with your airline and airport before travel.</strong> Failure to comply may result in confiscation or denied boarding.
+            </div>
 
-    // Show rules section
-    rulesSection.classList.remove('hidden');
+            <h3 id="rulesTitle">${rulesData.title}</h3>
+            <div class="info-cards">
+                ${rulesCardsHTML}
+            </div>
+
+            <div class="verify-reminder">
+                📞 <strong>Always verify:</strong> Call your airline, check their website, or contact the airport security directly before your flight.
+            </div>
+        </div>
+    `;
+
+    // Hide middle panel when showing country rules
+    document.getElementById('middlePanel').classList.add('hidden');
 
     console.log(`Showing rules for ${country}`);
 }
