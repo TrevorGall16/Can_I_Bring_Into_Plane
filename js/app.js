@@ -8,15 +8,16 @@ class AdProvider {
     constructor() {
         this.inlineAdCounter = 0;
         this.lastRefreshTime = 0;
-        this.minRefreshInterval = 1000; // Minimum 1 second between refreshes
+        this.minRefreshInterval = 30000; // 30 seconds - AdSense compliant rate limit
     }
 
     // Refresh inline ad (called on category/country/item changes)
     refreshInlineAd() {
         const now = Date.now();
 
-        // Prevent too frequent refreshes
+        // Prevent too frequent refreshes - AdSense policy compliance
         if (now - this.lastRefreshTime < this.minRefreshInterval) {
+            console.log(`⏱️ Ad refresh blocked - wait ${Math.ceil((this.minRefreshInterval - (now - this.lastRefreshTime)) / 1000)}s`);
             return;
         }
 
@@ -46,6 +47,82 @@ class AdProvider {
 
 // Initialize ad provider
 const adProvider = new AdProvider();
+
+// Navigation state manager for History API and deep linking
+class NavigationManager {
+    constructor() {
+        this.scrollPositions = new Map();
+    }
+
+    // Save current scroll position
+    saveScrollPosition(key) {
+        const rightPanel = document.getElementById('rightPanel');
+        if (rightPanel) {
+            this.scrollPositions.set(key, rightPanel.scrollTop);
+        }
+    }
+
+    // Restore scroll position
+    restoreScrollPosition(key) {
+        const rightPanel = document.getElementById('rightPanel');
+        if (rightPanel && this.scrollPositions.has(key)) {
+            setTimeout(() => {
+                rightPanel.scrollTop = this.scrollPositions.get(key);
+            }, 50); // Small delay to allow DOM to render
+        }
+    }
+
+    // Update URL without page reload
+    pushState(itemId, itemName) {
+        const url = new URL(window.location);
+        url.searchParams.set('item', itemId);
+        window.history.pushState(
+            { itemId, itemName, timestamp: Date.now() },
+            '',
+            url
+        );
+    }
+
+    // Update URL for category
+    pushCategoryState(category) {
+        const url = new URL(window.location);
+        url.searchParams.set('category', category);
+        url.searchParams.delete('item');
+        window.history.pushState(
+            { category, timestamp: Date.now() },
+            '',
+            url
+        );
+    }
+
+    // Clear URL parameters (go to home)
+    clearState() {
+        const url = new URL(window.location);
+        url.search = '';
+        window.history.pushState({ home: true }, '', url);
+    }
+
+    // Load initial state from URL
+    loadFromURL() {
+        const url = new URL(window.location);
+        const itemId = url.searchParams.get('item');
+        const category = url.searchParams.get('category');
+
+        if (itemId) {
+            const item = itemsData.find(i => i.id === parseInt(itemId));
+            if (item) {
+                displayItemResult(item, false);
+                return true;
+            }
+        } else if (category) {
+            displayCategoryResults(category);
+            return true;
+        }
+        return false;
+    }
+}
+
+const navManager = new NavigationManager();
 
 // Country-specific rules database (copy from previous)
 const countryRules = {
@@ -118,7 +195,72 @@ const countryRules = {
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', () => {
     console.log(`✅ Loaded ${itemsData.length} items from embedded data`);
+
+    // Detect :has() support and add fallback class if needed
+    if (!CSS.supports('selector(:has(*))')) {
+        console.warn('⚠️ Browser does not support :has() - applying fallback');
+        document.body.classList.add('no-has-support');
+
+        // Manual grid column management for browsers without :has()
+        const observer = new MutationObserver(() => {
+            const middlePanel = document.getElementById('middlePanel');
+            const container = document.querySelector('.three-column-container');
+
+            if (middlePanel && container) {
+                if (middlePanel.classList.contains('hidden')) {
+                    container.style.gridTemplateColumns = '350px 1fr';
+                } else {
+                    container.style.gridTemplateColumns = '350px 300px 1fr';
+                }
+            }
+        });
+
+        const middlePanel = document.getElementById('middlePanel');
+        if (middlePanel) {
+            observer.observe(middlePanel, { attributes: true, attributeFilter: ['class'] });
+        }
+    }
+
     initializeEventListeners();
+
+    // Load state from URL (deep linking support)
+    navManager.loadFromURL();
+});
+
+// Handle browser back/forward buttons
+window.addEventListener('popstate', (event) => {
+    console.log('Popstate event:', event.state);
+
+    if (event.state) {
+        if (event.state.itemId) {
+            const item = itemsData.find(i => i.id === parseInt(event.state.itemId));
+            if (item) {
+                displayItemResult(item, false, true); // skipHistoryPush=true
+            }
+        } else if (event.state.category) {
+            displayCategoryResults(event.state.category, true); // skipHistoryPush=true
+        } else if (event.state.home) {
+            // Go back to home state
+            const rightPanel = document.getElementById('rightPanel');
+            const middlePanel = document.getElementById('middlePanel');
+
+            middlePanel.classList.add('hidden');
+            rightPanel.innerHTML = `
+                <div class="welcome-message">
+                    <div class="welcome-icon">🔍</div>
+                    <h2>Search for any item</h2>
+                    <p>Type an item name in the search box or browse by category to see if it's allowed on your flight.</p>
+                    <p class="welcome-note">Results will appear here →</p>
+                </div>
+            `;
+
+            const welcomeMsg = document.getElementById('welcomeMessage');
+            if (welcomeMsg) welcomeMsg.classList.remove('hidden');
+        }
+    } else {
+        // No state, try loading from URL
+        navManager.loadFromURL();
+    }
 });
 
 // Initialize event listeners
@@ -259,7 +401,16 @@ function hideAutocomplete() {
 }
 
 // Display item result
-function displayItemResult(item, keepMiddlePanel = false) {
+function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = false) {
+    // Save scroll position before rebuilding
+    const scrollKey = `item-${item.id}`;
+    navManager.saveScrollPosition(scrollKey);
+
+    // Update URL for deep linking (unless called from popstate)
+    if (!skipHistoryPush) {
+        navManager.pushState(item.id, item.name);
+    }
+
     // Hide welcome message and country rules if they exist
     const welcomeMsg = document.getElementById('welcomeMessage');
     if (welcomeMsg) welcomeMsg.classList.add('hidden');
@@ -365,6 +516,9 @@ function displayItemResult(item, keepMiddlePanel = false) {
 
     // Display related items
     displayRelatedItems(item);
+
+    // Restore scroll position after DOM render
+    navManager.restoreScrollPosition(scrollKey);
 }
 
 // Find variants of an item (similar items with different sizes/types)
@@ -552,8 +706,13 @@ function showItemById(itemId) {
 }
 
 // Display category results in middle panel
-function displayCategoryResults(category) {
+function displayCategoryResults(category, skipHistoryPush = false) {
     console.log('Displaying category:', category);
+
+    // Update URL for deep linking
+    if (!skipHistoryPush) {
+        navManager.pushCategoryState(category);
+    }
 
     // Show middle panel, hide welcome message
     const middlePanel = document.getElementById('middlePanel');
