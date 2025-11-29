@@ -700,6 +700,9 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
                 </a>
             </div>
         `;
+        console.log(`✅ Amazon button will show for: ${item.name}`);
+    } else {
+        console.log(`❌ No Amazon button for: ${item.name} (has link: ${!!item.amazon_link}, status: carry=${item.carryOn}, checked=${item.checked})`);
     }
 
     // Check if item is restricted in current country (Customs/Biosecurity warning)
