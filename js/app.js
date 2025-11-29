@@ -447,6 +447,25 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
         `;
     }
 
+    // Check if item is restricted in current country (Customs/Biosecurity warning)
+    let customsWarningHTML = '';
+    if (item.customs_restricted && item.customs_restricted.includes(currentCountry)) {
+        const countryNames = {
+            'CN': 'China', 'TW': 'Taiwan', 'JP': 'Japan',
+            'AU': 'Australia', 'NZ': 'New Zealand', 'EU': 'European Union',
+            'USA': 'United States', 'CA': 'Canada', 'UK': 'United Kingdom'
+        };
+        const countryName = countryNames[currentCountry] || currentCountry;
+        customsWarningHTML = `
+            <div class="customs-warning-banner">
+                <div class="customs-warning-icon">🚨</div>
+                <div class="customs-warning-content">
+                    <strong>CUSTOMS WARNING:</strong> Allowed on plane, but <strong>BANNED entering ${countryName}</strong>. Discard before Customs or face fines.
+                </div>
+            </div>
+        `;
+    }
+
     // Build the complete item result HTML
     rightPanel.innerHTML = `
         <div class="result-card" id="resultCard">
@@ -468,6 +487,8 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
                     <div class="status-value ${item.checked}">${formatStatus(item.checked)}</div>
                 </div>
             </div>
+
+            ${customsWarningHTML}
 
             <div class="item-note">${formatNoteToBulletPoints(item.note)}</div>
             <div class="related-items" id="relatedItems"></div>
@@ -752,7 +773,8 @@ function displayCategoryResults(category, skipHistoryPush = false) {
         'medication': '💊 Medication',
         'tools': '🔧 Tools',
         'sports': '⚽ Sports Equipment',
-        'baby': '👶 Baby Items'
+        'baby': '👶 Baby Items',
+        'customs': '🚨 Customs & Biosecurity'
     };
 
     categoryTitle.textContent = categoryNames[category] || category;
