@@ -628,6 +628,46 @@ header h1 {
     color: #856404;
 }
 
+/* Customs Warning Banner */
+.customs-warning-banner {
+    background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
+    border: 3px solid #e53935;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 8px rgba(229, 57, 53, 0.15);
+    animation: pulse-warning 2s ease-in-out infinite;
+}
+
+.customs-warning-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.customs-warning-content {
+    flex: 1;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #b71c1c;
+}
+
+.customs-warning-content strong {
+    color: #b71c1c;
+    font-weight: 700;
+}
+
+@keyframes pulse-warning {
+    0%, 100% {
+        border-color: #e53935;
+    }
+    50% {
+        border-color: #f44336;
+    }
+}
+
 .item-note {
     background: #e8f4f8;
     padding: 15px 20px;
