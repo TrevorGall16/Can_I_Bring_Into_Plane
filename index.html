@@ -6,16 +6,17 @@
     <meta name="description" content="Can I bring this on a plane? Instantly check if items are allowed in carry-on or checked luggage. Fast, simple airport security rules for travelers.">
     <title>Can I Bring This On A Plane? | Airport Carry-On Checker</title>
     <link rel="stylesheet" href="css/styles.css">
+    <!-- Google AdSense Script -->
+    <!-- Replace 'client=ca-pub-XXXXXXXXXXXXXXXX' with your real ID after approval -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8732422930809097"
+     crossorigin="anonymous"></script>
 </head>
 <body>
     <!-- Ad Banner Top -->
     <div class="ad-banner-top">
         <div class="ad-container">
-            <span class="ad-label">🔖 AD (DEBUG) - Top Banner 728x90</span>
-            <div class="ad-placeholder">
-                <p>📢 Ad Space - 728x90 Leaderboard Banner</p>
-                <p class="ad-subtext">Replace with real ad network code</p>
-            </div>
+            <!-- This container will be populated by the AdProvider in app.js -->
+            <div id="ad-top-slot" class="ad-slot"></div>
         </div>
     </div>
 
@@ -117,68 +118,23 @@
 
             <!-- Item Result Card -->
             <div id="resultCard" class="result-card hidden">
-                <button class="close-btn" id="closeResult">&times;</button>
-                <h2 id="itemName" class="item-name"></h2>
-
-                <!-- Size/Variant Selector (shown when item has variants) -->
-                <div id="variantSelector" class="variant-selector hidden">
-                    <label for="variantSelect">Select option:</label>
-                    <select id="variantSelect" class="variant-select">
-                        <!-- Options populated by JS -->
-                    </select>
-                </div>
-
-                <div class="status-grid">
-                    <div class="status-box carry-on">
-                        <div class="status-icon">🎒</div>
-                        <div class="status-label">Carry-On</div>
-                        <div id="carryOnStatus" class="status-value"></div>
-                    </div>
-
-                    <div class="status-box checked">
-                        <div class="status-icon">🧳</div>
-                        <div class="status-label">Checked Luggage</div>
-                        <div id="checkedStatus" class="status-value"></div>
-                    </div>
-                </div>
-
-                <div id="itemNote" class="item-note"></div>
-                <div id="relatedItems" class="related-items"></div>
+                <!-- Content injected by JS -->
             </div>
 
             <!-- Category Results List -->
             <div id="categoryResults" class="category-results hidden">
-                <div class="category-header">
-                    <h3 id="categoryTitle"></h3>
-                    <span class="item-count" id="categoryCount"></span>
-                </div>
-                <div id="categoryItemsList" class="category-items-list"></div>
+                <!-- Content injected by JS -->
             </div>
 
             <!-- Country-Specific Rules (hidden by default) -->
             <div id="countryRulesSection" class="country-rules-section hidden">
-                <!-- Disclaimer Banner -->
-                <div class="country-disclaimer">
-                    <strong>⚠️ Important Disclaimer:</strong> This information is for general guidance only. We are NOT responsible for any misinformation or outdated data. Rules change frequently. <strong>ALWAYS verify with your airline and airport before travel.</strong> Failure to comply may result in confiscation or denied boarding.
-                </div>
-
-                <h3 id="rulesTitle">Travel Rules</h3>
-                <div id="countrySpecificRules" class="info-cards"></div>
-
-                <div class="verify-reminder">
-                    📞 <strong>Always verify:</strong> Call your airline, check their website, or contact the airport security directly before your flight.
-                </div>
+                <!-- Content injected by JS -->
             </div>
 
-            <!-- Ad Below Result -->
+            <!-- Ad Below Result - Inline Ad Slot -->
             <div id="resultAd" class="ad-inline hidden">
                 <div class="ad-container">
-                    <span class="ad-label">Advertisement</span>
-                    <div class="ad-placeholder ad-rectangle">
-                        <p>💼 Featured Ad - 336x280</p>
-                        <p class="ad-subtext">Travel accessories | TSA-approved items</p>
-                        <p class="ad-cta">Shop Now →</p>
-                    </div>
+                    <div id="ad-inline-slot" class="ad-slot"></div>
                 </div>
             </div>
         </div>
