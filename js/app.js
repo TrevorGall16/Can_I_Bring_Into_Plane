@@ -3,7 +3,199 @@ let itemsData = ITEMS_DATA;
 let autocompleteTimeout = null;
 let currentCountry = 'USA';
 
-// Ad Provider - Manages Google AdSense Injections
+// My Bag feature - saved items with localStorage persistence
+let savedItems = new Set();
+
+// Load saved items from localStorage on init
+function loadSavedItems() {
+    const saved = localStorage.getItem('myCarryOnBag');
+    if (saved) {
+        try {
+            const itemIds = JSON.parse(saved);
+            savedItems = new Set(itemIds);
+        } catch (e) {
+            console.error('Failed to load saved items:', e);
+            savedItems = new Set();
+        }
+    }
+}
+
+// Save items to localStorage
+function saveSavedItems() {
+    localStorage.setItem('myCarryOnBag', JSON.stringify([...savedItems]));
+}
+
+// Toggle item in bag
+function toggleItemInBag(itemId) {
+    if (savedItems.has(itemId)) {
+        savedItems.delete(itemId);
+    } else {
+        savedItems.add(itemId);
+    }
+    saveSavedItems();
+}
+
+// Update bag button state
+function updateBagButton(itemId) {
+    const btn = document.getElementById('addToBagBtn');
+    if (!btn) return;
+
+    if (savedItems.has(itemId)) {
+        btn.innerHTML = '<span class="btn-icon">➖</span><span class="btn-text">Remove from Bag</span>';
+        btn.classList.add('in-bag');
+    } else {
+        btn.innerHTML = '<span class="btn-icon">➕</span><span class="btn-text">Add to My Bag</span>';
+        btn.classList.remove('in-bag');
+    }
+}
+
+// Update FAB counter
+function updateBagFAB() {
+    const fab = document.getElementById('bagFAB');
+    if (fab) {
+        const counter = fab.querySelector('.bag-counter');
+        if (counter) {
+            counter.textContent = savedItems.size;
+        }
+    }
+}
+
+// Share item result
+function shareItemResult(item) {
+    const url = `${window.location.origin}${window.location.pathname}?item=${item.id}`;
+    const text = `Check if ${item.name} is allowed on a plane: ${url}`;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('✅ Link copied to clipboard!');
+        }).catch(() => {
+            showToast('❌ Failed to copy link');
+        });
+    } else {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showToast('✅ Link copied to clipboard!');
+        } catch (err) {
+            showToast('❌ Failed to copy link');
+        }
+        document.body.removeChild(textArea);
+    }
+}
+
+// Show toast notification
+function showToast(message) {
+    // Remove existing toast if any
+    const existingToast = document.getElementById('toast');
+    if (existingToast) {
+        existingToast.remove();
+    }
+
+    // Create toast
+    const toast = document.createElement('div');
+    toast.id = 'toast';
+    toast.className = 'toast show';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// Open bag modal
+function openBagModal() {
+    const bagItems = itemsData.filter(item => savedItems.has(item.id));
+
+    // Count by status
+    const allowed = bagItems.filter(item => item.carryOn === 'allowed' && item.checked === 'allowed').length;
+    const restricted = bagItems.filter(item => item.carryOn === 'restricted' || item.checked === 'restricted').length;
+    const prohibited = bagItems.filter(item => item.carryOn === 'prohibited' && item.checked === 'prohibited').length;
+
+    let itemsHTML = '';
+    if (bagItems.length === 0) {
+        itemsHTML = '<div class="empty-bag">🎒 Your bag is empty. Start adding items!</div>';
+    } else {
+        bagItems.forEach(item => {
+            const statusIcon = (item.carryOn === 'allowed' && item.checked === 'allowed') ? '✅' :
+                             (item.carryOn === 'prohibited' && item.checked === 'prohibited') ? '❌' : '⚠️';
+            itemsHTML += `
+                <div class="bag-item">
+                    <span class="bag-item-status">${statusIcon}</span>
+                    <span class="bag-item-name">${item.name}</span>
+                    <button class="bag-item-remove" onclick="removeFromBagAndUpdate(${item.id})">Remove</button>
+                </div>
+            `;
+        });
+    }
+
+    const summaryHTML = bagItems.length > 0 ? `
+        <div class="bag-summary">
+            <strong>Summary:</strong>
+            ${allowed > 0 ? `<span class="summary-allowed">${allowed} Allowed</span>` : ''}
+            ${restricted > 0 ? `<span class="summary-restricted">${restricted} Restricted</span>` : ''}
+            ${prohibited > 0 ? `<span class="summary-prohibited">${prohibited} Prohibited</span>` : ''}
+        </div>
+    ` : '';
+
+    // Create modal
+    const modal = document.createElement('div');
+    modal.id = 'bagModal';
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎒 My Carry-On Bag</h2>
+                <button class="modal-close" id="closeBagModal">&times;</button>
+            </div>
+            ${summaryHTML}
+            <div class="bag-items-list">
+                ${itemsHTML}
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Add event listener to close button
+    document.getElementById('closeBagModal').addEventListener('click', () => {
+        modal.remove();
+    });
+
+    // Close on backdrop click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+
+// Remove from bag and update UI
+function removeFromBagAndUpdate(itemId) {
+    savedItems.delete(itemId);
+    saveSavedItems();
+    updateBagFAB();
+
+    // Close and reopen modal to update
+    const modal = document.getElementById('bagModal');
+    if (modal) {
+        modal.remove();
+        openBagModal();
+    }
+}
+
+// Make globally accessible
+window.removeFromBagAndUpdate = removeFromBagAndUpdate;
+
+// Ad Provider - manages ad refreshes and prevents too frequent refreshes
 class AdProvider {
     constructor() {
         this.inlineAdCounter = 0;
@@ -239,6 +431,16 @@ const countryRules = {
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', () => {
     console.log(`✅ Loaded ${itemsData.length} items from embedded data`);
+
+    // Load saved items from localStorage
+    loadSavedItems();
+    updateBagFAB();
+
+    // Add event listener for bag FAB
+    const bagFAB = document.getElementById('bagFAB');
+    if (bagFAB) {
+        bagFAB.addEventListener('click', openBagModal);
+    }
 
     // Detect :has() support and add fallback class if needed
     if (!CSS.supports('selector(:has(*))')) {
@@ -487,6 +689,22 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
         `;
     }
 
+    // Amazon affiliate button (only for allowed/restricted items with amazon_link)
+    let amazonButtonHTML = '';
+    if (item.amazon_link && (item.carryOn === 'allowed' || item.carryOn === 'restricted' || item.checked === 'allowed' || item.checked === 'restricted')) {
+        const itemNameForButton = item.name.replace(/\s*\([^)]*\)/g, '').trim(); // Remove parentheses
+        amazonButtonHTML = `
+            <div class="amazon-button-container">
+                <a href="${item.amazon_link}" target="_blank" rel="noopener noreferrer" class="amazon-button">
+                    🛒 Shop TSA-Approved ${itemNameForButton}
+                </a>
+            </div>
+        `;
+        console.log(`✅ Amazon button will show for: ${item.name}`);
+    } else {
+        console.log(`❌ No Amazon button for: ${item.name} (has link: ${!!item.amazon_link}, status: carry=${item.carryOn}, checked=${item.checked})`);
+    }
+
     // Check if item is restricted in current country (Customs/Biosecurity warning)
     let customsWarningHTML = '';
     if (item.customs_restricted && item.customs_restricted.includes(currentCountry)) {
@@ -511,7 +729,18 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     rightPanel.innerHTML = `
         <div class="result-card" id="resultCard">
             ${keepMiddlePanel ? '' : '<button class="close-btn" id="closeResult">&times;</button>'}
-            <h2 class="item-name">${item.name}</h2>
+            <div class="item-header">
+                <h2 class="item-name">${item.name}</h2>
+                <button class="share-btn" id="shareBtn" title="Share this result">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                </button>
+            </div>
 
             ${variantSelectorHTML}
 
@@ -529,9 +758,18 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
                 </div>
             </div>
 
+            ${amazonButtonHTML}
             ${customsWarningHTML}
 
             <div class="item-note">${formatNoteToBulletPoints(item.note)}</div>
+
+            <div class="bag-actions">
+                <button class="add-to-bag-btn" id="addToBagBtn" data-item-id="${item.id}">
+                    <span class="btn-icon">➕</span>
+                    <span class="btn-text">Add to My Bag</span>
+                </button>
+            </div>
+
             <div class="related-items" id="relatedItems"></div>
         </div>
 
@@ -553,6 +791,27 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
             }
         });
     }
+
+    // Add event listener for share button
+    const shareBtn = document.getElementById('shareBtn');
+    if (shareBtn) {
+        shareBtn.addEventListener('click', () => {
+            shareItemResult(item);
+        });
+    }
+
+    // Add event listener for add to bag button
+    const addToBagBtn = document.getElementById('addToBagBtn');
+    if (addToBagBtn) {
+        addToBagBtn.addEventListener('click', () => {
+            toggleItemInBag(item.id);
+            updateBagButton(item.id);
+            updateBagFAB();
+        });
+    }
+
+    // Update bag button state if item is already in bag
+    updateBagButton(item.id);
 
     // Add event listener for close button if it exists
     if (!keepMiddlePanel) {

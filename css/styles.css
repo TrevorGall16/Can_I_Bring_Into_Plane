@@ -886,6 +886,348 @@ footer a:hover {
     opacity: 0.8;
 }
 
+/* Item Header with Share Button */
+.item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.item-header .item-name {
+    margin: 0;
+    flex: 1;
+}
+
+.share-btn {
+    background: #f0f0f0;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.share-btn:hover {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+}
+
+.share-btn svg {
+    display: block;
+}
+
+/* Amazon Affiliate Button */
+.amazon-button-container {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.amazon-button {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff9900 0%, #ffb84d 100%);
+    color: #111;
+    padding: 14px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    border: 2px solid #e88a00;
+    box-shadow: 0 4px 8px rgba(255, 153, 0, 0.3);
+    transition: all 0.2s;
+}
+
+.amazon-button:hover {
+    background: linear-gradient(135deg, #ffb84d 0%, #ff9900 100%);
+    box-shadow: 0 6px 12px rgba(255, 153, 0, 0.4);
+    transform: translateY(-2px);
+}
+
+.amazon-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(255, 153, 0, 0.3);
+}
+
+/* Add to Bag Button */
+.bag-actions {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.add-to-bag-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 3px 6px rgba(102, 126, 234, 0.3);
+}
+
+.add-to-bag-btn:hover {
+    background: #5568d3;
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+    transform: translateY(-1px);
+}
+
+.add-to-bag-btn.in-bag {
+    background: #e74c3c;
+}
+
+.add-to-bag-btn.in-bag:hover {
+    background: #c0392b;
+}
+
+.add-to-bag-btn .btn-icon {
+    font-size: 1.1rem;
+}
+
+/* Floating Action Button (FAB) */
+.bag-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s;
+    z-index: 1000;
+}
+
+.bag-fab:hover {
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+    transform: translateY(-3px);
+}
+
+.bag-fab .fab-icon {
+    font-size: 1.5rem;
+}
+
+.bag-fab .fab-text {
+    font-size: 0.95rem;
+}
+
+.bag-counter {
+    background: #ff4757;
+    color: white;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    min-width: 24px;
+    text-align: center;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    animation: fadeIn 0.2s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.modal-close:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.bag-summary {
+    padding: 15px 25px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.bag-summary strong {
+    color: #333;
+}
+
+.summary-allowed {
+    background: #d4edda;
+    color: #155724;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.summary-restricted {
+    background: #fff3cd;
+    color: #856404;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.summary-prohibited {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.bag-items-list {
+    padding: 20px 25px;
+}
+
+.bag-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.2s;
+}
+
+.bag-item:hover {
+    background: #f8f9fa;
+}
+
+.bag-item:last-child {
+    border-bottom: none;
+}
+
+.bag-item-status {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.bag-item-name {
+    flex: 1;
+    font-weight: 500;
+    color: #333;
+}
+
+.bag-item-remove {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.bag-item-remove:hover {
+    background: #c0392b;
+}
+
+.empty-bag {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+    font-size: 1.1rem;
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #2c3e50;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    z-index: 3000;
+    opacity: 0;
+    transition: all 0.3s;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
 /* Mobile Responsive */
 @media (max-width: 968px) {
     .split-container {
@@ -927,5 +1269,59 @@ footer a:hover {
     .left-panel,
     .right-panel {
         padding: 20px;
+    }
+
+    /* Mobile responsive for new features */
+    .bag-fab {
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+
+    .bag-fab .fab-text {
+        display: none;
+    }
+
+    .bag-fab .fab-icon {
+        font-size: 1.8rem;
+    }
+
+    .modal-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    .modal-header {
+        padding: 15px 20px;
+    }
+
+    .modal-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .bag-items-list {
+        padding: 15px 20px;
+    }
+
+    .bag-item {
+        padding: 10px;
+    }
+
+    .bag-item-name {
+        font-size: 0.9rem;
+    }
+
+    .amazon-button {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+
+    .share-btn {
+        padding: 8px;
+    }
+
+    .item-header {
+        gap: 10px;
     }
 }
