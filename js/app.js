@@ -62,7 +62,8 @@ function updateBagFAB() {
 
 // Share item result
 function shareItemResult(item) {
-    const url = `${window.location.origin}${window.location.pathname}?item=${item.id}`;
+    const slug = seoManager.createSlug(item.name);
+    const url = `${window.location.origin}${window.location.pathname}?item=${slug}`;
     const text = `Check if ${item.name} is allowed on a plane: ${url}`;
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -284,6 +285,74 @@ class AdProvider {
 // Initialize ad provider
 const adProvider = new AdProvider();
 
+// SEO Manager - handles dynamic meta tags for search engine optimization
+class SEOManager {
+    // Create URL-friendly slug from item name
+    createSlug(itemName) {
+        return itemName
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '') // Remove special chars except spaces and hyphens
+            .replace(/\s+/g, '-') // Replace spaces with hyphens
+            .replace(/-+/g, '-') // Replace multiple hyphens with single
+            .trim();
+    }
+
+    // Update page title and meta description for SEO
+    updateMetaTags(item) {
+        // Update page title
+        const title = `Can I bring ${item.name} on a plane? | Airport Carry-On Rules`;
+        document.title = title;
+
+        // Update meta description
+        const status = item.carryOn === 'allowed' ? 'allowed' :
+                      item.carryOn === 'restricted' ? 'restricted' : 'not allowed';
+        const description = `Find out if ${item.name} is ${status} in carry-on luggage. Get instant TSA and international airport security rules for ${item.name}.`;
+
+        // Find or create meta description tag
+        let metaDesc = document.querySelector('meta[name="description"]');
+        if (!metaDesc) {
+            metaDesc = document.createElement('meta');
+            metaDesc.name = 'description';
+            document.head.appendChild(metaDesc);
+        }
+        metaDesc.content = description;
+
+        // Update Open Graph tags for social sharing (optional but helps SEO)
+        this.updateOpenGraphTags(item, title, description);
+    }
+
+    // Update Open Graph meta tags for better social media sharing
+    updateOpenGraphTags(item, title, description) {
+        const ogTags = {
+            'og:title': title,
+            'og:description': description,
+            'og:type': 'website',
+            'og:url': window.location.href
+        };
+
+        Object.entries(ogTags).forEach(([property, content]) => {
+            let tag = document.querySelector(`meta[property="${property}"]`);
+            if (!tag) {
+                tag = document.createElement('meta');
+                tag.setAttribute('property', property);
+                document.head.appendChild(tag);
+            }
+            tag.content = content;
+        });
+    }
+
+    // Reset to default meta tags
+    resetMetaTags() {
+        document.title = 'Can I Bring This On A Plane? | Airport Carry-On Checker';
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) {
+            metaDesc.content = 'Can I bring this on a plane? Instantly check if items are allowed in carry-on or checked luggage. Fast, simple airport security rules for travelers.';
+        }
+    }
+}
+
+const seoManager = new SEOManager();
+
 // Navigation state manager for History API and deep linking
 class NavigationManager {
     constructor() {
@@ -308,12 +377,13 @@ class NavigationManager {
         }
     }
 
-    // Update URL without page reload
+    // Update URL without page reload (using slug for better SEO)
     pushState(itemId, itemName) {
         const url = new URL(window.location);
-        url.searchParams.set('item', itemId);
+        const slug = seoManager.createSlug(itemName);
+        url.searchParams.set('item', slug);
         window.history.pushState(
-            { itemId, itemName, timestamp: Date.now() },
+            { itemId, itemName, slug, timestamp: Date.now() },
             '',
             url
         );
@@ -341,11 +411,21 @@ class NavigationManager {
     // Load initial state from URL
     loadFromURL() {
         const url = new URL(window.location);
-        const itemId = url.searchParams.get('item');
+        const itemParam = url.searchParams.get('item');
         const category = url.searchParams.get('category');
 
-        if (itemId) {
-            const item = itemsData.find(i => i.id === parseInt(itemId));
+        if (itemParam) {
+            // Try to find by slug first (for SEO-friendly URLs)
+            let item = itemsData.find(i => seoManager.createSlug(i.name) === itemParam);
+
+            // Fallback to ID for backward compatibility
+            if (!item) {
+                const itemId = parseInt(itemParam);
+                if (!isNaN(itemId)) {
+                    item = itemsData.find(i => i.id === itemId);
+                }
+            }
+
             if (item) {
                 displayItemResult(item, false);
                 return true;
@@ -491,7 +571,7 @@ window.addEventListener('popstate', (event) => {
             const middlePanel = document.getElementById('middlePanel');
 
             if (middlePanel) middlePanel.classList.add('hidden');
-            
+
             // Restore welcome message
             rightPanel.innerHTML = `
                 <div class="welcome-message" id="welcomeMessage">
@@ -501,6 +581,9 @@ window.addEventListener('popstate', (event) => {
                     <p class="welcome-note">Results will appear here →</p>
                 </div>
             `;
+
+            // Reset meta tags to default
+            seoManager.resetMetaTags();
         }
     } else {
         // No state, try loading from URL
@@ -652,6 +735,9 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     if (!skipHistoryPush) {
         navManager.pushState(item.id, item.name);
     }
+
+    // Update SEO meta tags for this item (CRITICAL for Google indexing)
+    seoManager.updateMetaTags(item);
 
     // Hide welcome message and country rules if they exist
     const welcomeMsg = document.getElementById('welcomeMessage');
