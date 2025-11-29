@@ -3,19 +3,48 @@ let itemsData = ITEMS_DATA;
 let autocompleteTimeout = null;
 let currentCountry = 'USA';
 
-// Ad Provider - manages ad refreshes and prevents too frequent refreshes
+// Ad Provider - Manages Google AdSense Injections
 class AdProvider {
     constructor() {
         this.inlineAdCounter = 0;
         this.lastRefreshTime = 0;
         this.minRefreshInterval = 30000; // 30 seconds - AdSense compliant rate limit
+        this.clientId = 'ca-pub-8732422930809097'; // YOUR REAL ID
+
+        // Initialize Top Banner Ad immediately
+        this.initTopBanner();
+    }
+
+    initTopBanner() {
+        const adSlot = document.querySelector('.ad-banner-top .ad-placeholder');
+        if (adSlot) {
+            // Clear placeholder text
+            adSlot.innerHTML = '';
+            adSlot.className = ''; // Remove placeholder styling
+
+            // Inject Real Ad
+            adSlot.innerHTML = `
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="${this.clientId}"
+                     data-ad-slot="1234567890"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+            `;
+            // Push to Google
+            try {
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            } catch (e) {
+                console.error("AdSense top banner error:", e);
+            }
+        }
     }
 
     // Refresh inline ad (called on category/country/item changes)
     refreshInlineAd() {
         const now = Date.now();
 
-        // Prevent too frequent refreshes - AdSense policy compliance
+        // 1. Rate Limiting Check
         if (now - this.lastRefreshTime < this.minRefreshInterval) {
             console.log(`⏱️ Ad refresh blocked - wait ${Math.ceil((this.minRefreshInterval - (now - this.lastRefreshTime)) / 1000)}s`);
             return;
@@ -23,23 +52,38 @@ class AdProvider {
 
         this.inlineAdCounter++;
         this.lastRefreshTime = now;
-
-        // In a real implementation, this would reload the ad unit
-        // For now, we just update the counter to show the ad is refreshing
         console.log(`📢 Inline ad refreshed (impression #${this.inlineAdCounter})`);
 
-        // Find all inline ads and update them (if they exist)
-        const inlineAds = document.querySelectorAll('.ad-inline .ad-placeholder');
-        inlineAds.forEach(ad => {
-            // Add a subtle animation to indicate refresh
-            ad.style.opacity = '0.7';
-            setTimeout(() => {
-                ad.style.opacity = '1';
-            }, 200);
-        });
+        // 2. Find the ad container
+        // We look for the placeholder div inside the inline ad slot
+        const adContainer = document.querySelector('.ad-inline .ad-placeholder');
+
+        if (adContainer) {
+            // 3. Clear old ad/placeholder
+            adContainer.innerHTML = '';
+            adContainer.className = ''; // Remove placeholder styling if needed
+
+            // 4. Inject new AdSense Unit (Rectangle)
+            // Note: You will need to create a specific "Display Ad unit" in AdSense later
+            // and replace "0987654321" with that new number. For now, this is fine.
+            adContainer.innerHTML = `
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="${this.clientId}"
+                     data-ad-slot="0987654321"
+                     data-ad-format="rectangle"
+                     data-full-width-responsive="true"></ins>
+            `;
+
+            // 5. Trigger Google's script
+            try {
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            } catch (e) {
+                console.error("AdSense refresh error:", e);
+            }
+        }
     }
 
-    // Get current ad counter (useful for debugging)
     getImpressionCount() {
         return this.inlineAdCounter;
     }
@@ -124,7 +168,7 @@ class NavigationManager {
 
 const navManager = new NavigationManager();
 
-// Country-specific rules database (copy from previous)
+// Country-specific rules database
 const countryRules = {
     'USA': {
         title: 'Important TSA Rules (United States)',
@@ -244,18 +288,17 @@ window.addEventListener('popstate', (event) => {
             const rightPanel = document.getElementById('rightPanel');
             const middlePanel = document.getElementById('middlePanel');
 
-            middlePanel.classList.add('hidden');
+            if (middlePanel) middlePanel.classList.add('hidden');
+            
+            // Restore welcome message
             rightPanel.innerHTML = `
-                <div class="welcome-message">
+                <div class="welcome-message" id="welcomeMessage">
                     <div class="welcome-icon">🔍</div>
                     <h2>Search for any item</h2>
                     <p>Type an item name in the search box or browse by category to see if it's allowed on your flight.</p>
                     <p class="welcome-note">Results will appear here →</p>
                 </div>
             `;
-
-            const welcomeMsg = document.getElementById('welcomeMessage');
-            if (welcomeMsg) welcomeMsg.classList.remove('hidden');
         }
     } else {
         // No state, try loading from URL
@@ -268,7 +311,6 @@ function initializeEventListeners() {
     const searchInput = document.getElementById('searchInput');
     const categoryButtons = document.querySelectorAll('.category-btn');
     const popularTags = document.querySelectorAll('.popular-tag');
-    const adClose = document.querySelector('.ad-close');
     const countrySelector = document.getElementById('countrySelector');
 
     // Country selector change - show rules when changed
@@ -300,8 +342,6 @@ function initializeEventListeners() {
             }
         }
     });
-
-    // Close result (note: this is handled dynamically now in displayItemResult)
 
     // Category buttons
     categoryButtons.forEach(button => {
@@ -467,6 +507,7 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     }
 
     // Build the complete item result HTML
+    // IMPORTANT: Note how we include the ad-inline container here
     rightPanel.innerHTML = `
         <div class="result-card" id="resultCard">
             ${keepMiddlePanel ? '' : '<button class="close-btn" id="closeResult">&times;</button>'}
@@ -496,11 +537,7 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
 
         <div class="ad-inline" id="resultAd">
             <div class="ad-container">
-                <span class="ad-label">🔖 AD (DEBUG) - Inline 300x250 - Refreshes on interaction</span>
-                <div class="ad-placeholder ad-rectangle">
-                    <p>💼 Ad Space - 300x250 Rectangle</p>
-                    <p class="ad-subtext">Replace with real ad network code</p>
-                </div>
+                <div id="ad-inline-slot" class="ad-slot"></div>
             </div>
         </div>
     `;
@@ -522,8 +559,9 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
         const closeBtn = document.getElementById('closeResult');
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
+                // Restore welcome message
                 rightPanel.innerHTML = `
-                    <div class="welcome-message">
+                    <div class="welcome-message" id="welcomeMessage">
                         <div class="welcome-icon">🔍</div>
                         <h2>Search for any item</h2>
                         <p>Type an item name in the search box or browse by category to see if it's allowed on your flight.</p>
@@ -537,6 +575,9 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
 
     // Display related items
     displayRelatedItems(item);
+
+    // Refresh the ad because the container was just rebuilt
+    adProvider.refreshInlineAd();
 
     // Restore scroll position after DOM render
     navManager.restoreScrollPosition(scrollKey);
@@ -554,43 +595,6 @@ function findItemVariants(item) {
     });
 
     return variants;
-}
-
-// Setup variant selector dropdown
-function setupVariantSelector(selectedItem, variants) {
-    const variantSelector = document.getElementById('variantSelector');
-    const variantSelect = document.getElementById('variantSelect');
-
-    // Clear existing options
-    variantSelect.innerHTML = '';
-
-    // Add options for each variant
-    variants.forEach(variant => {
-        const option = document.createElement('option');
-        option.value = variant.id;
-
-        // Extract the variant description (content in parentheses)
-        const match = variant.name.match(/\(([^)]+)\)/);
-        const variantDesc = match ? match[1] : variant.name;
-
-        option.textContent = variantDesc;
-        if (variant.id === selectedItem.id) {
-            option.selected = true;
-        }
-        variantSelect.appendChild(option);
-    });
-
-    // Show the selector
-    variantSelector.classList.remove('hidden');
-
-    // Add change event listener
-    variantSelect.onchange = (e) => {
-        const newItemId = parseInt(e.target.value);
-        const newItem = itemsData.find(i => i.id === newItemId);
-        if (newItem) {
-            updateItemDisplay(newItem);
-        }
-    };
 }
 
 // Update the display with item details
@@ -794,7 +798,7 @@ function displayCategoryResults(category, skipHistoryPush = false) {
             div.classList.add('active');
             // Show item details in right panel
             displayItemResult(item, true); // true = keep middle panel visible
-            adProvider.refreshInlineAd(); // Refresh ad on item click
+            // Note: Ad refresh is handled inside displayItemResult
         };
 
         const statusCarryOn = item.carryOn === 'allowed' ? 'status-allowed' :
@@ -823,6 +827,9 @@ function displayCategoryResults(category, skipHistoryPush = false) {
             <p>Click on an item from the ${categoryNames[category]} category to see details.</p>
         </div>
     `;
+    
+    // Trigger an ad refresh when a category is opened
+    adProvider.refreshInlineAd();
 }
 
 // Show country rules (only when country changes)
@@ -861,12 +868,21 @@ function showCountryRules(country) {
                 📞 <strong>Always verify:</strong> Call your airline, check their website, or contact the airport security directly before your flight.
             </div>
         </div>
+        
+        <div class="ad-inline" id="resultAd">
+            <div class="ad-container">
+                <div id="ad-inline-slot" class="ad-slot"></div>
+            </div>
+        </div>
     `;
 
     // Hide middle panel when showing country rules
     document.getElementById('middlePanel').classList.add('hidden');
 
     console.log(`Showing rules for ${country}`);
+    
+    // Refresh the ad for the new view
+    adProvider.refreshInlineAd();
 }
 
 // Make globally accessible
