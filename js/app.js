@@ -606,6 +606,17 @@ function initializeEventListeners() {
         adProvider.refreshInlineAd(); // Refresh ad on country change
     });
 
+    // Mobile back button for middle panel
+    const panelBackBtn = document.getElementById('panelBackBtn');
+    if (panelBackBtn) {
+        panelBackBtn.addEventListener('click', () => {
+            const middlePanel = document.getElementById('middlePanel');
+            if (middlePanel) {
+                middlePanel.classList.add('hidden');
+            }
+        });
+    }
+
     // Search input
     searchInput.addEventListener('input', (e) => {
         clearTimeout(autocompleteTimeout);
