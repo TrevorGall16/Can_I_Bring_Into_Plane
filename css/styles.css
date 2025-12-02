@@ -179,20 +179,12 @@ header h1 {
 
 /* ===== MIDDLE PANEL (MOBILE: Fixed overlay when active) ===== */
 .middle-panel {
-    display: none; /* Hidden by default on mobile */
+    background: white;
+    overflow-y: auto;
 }
 
-.middle-panel:not(.hidden) {
-    /* When active on mobile: full-screen overlay */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: white;
-    z-index: 20;
-    overflow-y: auto;
-    display: block;
+.middle-panel.hidden {
+    display: none;
 }
 
 .middle-panel .panel-header {
@@ -218,6 +210,22 @@ header h1 {
 .middle-panel .item-count {
     font-size: 0.8rem;
     opacity: 0.9;
+}
+
+/* Mobile only: Fixed overlay behavior for middle panel */
+@media (max-width: 1023px) {
+    .middle-panel:not(.hidden) {
+        /* When active on mobile: full-screen overlay */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: white;
+        z-index: 20;
+        overflow-y: auto;
+        display: block;
+    }
 }
 
 /* Mobile Back Button (visible only on mobile) */
@@ -297,24 +305,33 @@ header h1 {
 
 /* ===== RIGHT PANEL (MOBILE: Fixed overlay when active) ===== */
 .right-panel {
-    display: none; /* Hidden by default on mobile */
+    background: white;
+    padding: 20px;
+    overflow-y: auto;
 }
 
-/* When result card is active on mobile */
-.right-panel:has(.result-card:not(.hidden)),
-.right-panel:has(.welcome-message:not(.hidden)),
-.right-panel:has(.country-rules-section:not(.hidden)) {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: white;
-    z-index: 30;
-    overflow-y: auto;
-    display: block;
-    padding: 20px;
-    padding-top: 60px; /* Space for close button */
+/* Mobile only: Fixed overlay behavior */
+@media (max-width: 1023px) {
+    .right-panel {
+        display: none; /* Hidden by default on mobile */
+    }
+
+    /* When result card is active on mobile */
+    .right-panel:has(.result-card:not(.hidden)),
+    .right-panel:has(.welcome-message:not(.hidden)),
+    .right-panel:has(.country-rules-section:not(.hidden)) {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: white;
+        z-index: 30;
+        overflow-y: auto;
+        display: block;
+        padding: 20px;
+        padding-top: 60px; /* Space for close button */
+    }
 }
 
 /* ===== COUNTRY SELECTOR ===== */
@@ -1208,7 +1225,7 @@ footer a:active {
         grid-template-columns: 350px 1fr;
     }
 
-    /* Reset panel positioning for desktop */
+    /* Desktop panel styling */
     .left-panel {
         border-right: 3px solid #bbb;
         max-height: calc(100vh - 250px);
@@ -1216,19 +1233,6 @@ footer a:active {
     }
 
     .middle-panel {
-        display: block;
-    }
-
-    .middle-panel.hidden {
-        display: none;
-    }
-
-    .middle-panel:not(.hidden) {
-        position: static;
-        width: auto;
-        height: auto;
-        z-index: auto;
-        background: white;
         border-right: 3px solid #bbb;
         max-height: calc(100vh - 250px);
     }
@@ -1256,16 +1260,6 @@ footer a:active {
     }
 
     .right-panel {
-        display: block;
-    }
-
-    .right-panel:has(.result-card:not(.hidden)),
-    .right-panel:has(.welcome-message:not(.hidden)),
-    .right-panel:has(.country-rules-section:not(.hidden)) {
-        position: static;
-        width: auto;
-        height: auto;
-        z-index: auto;
         padding: 30px;
         max-height: calc(100vh - 250px);
     }
