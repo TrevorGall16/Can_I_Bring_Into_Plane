@@ -17,183 +17,9 @@ if (localStorage.getItem('myBag')) {
     }
 }
 
-// Save items to localStorage
-function saveSavedItems() {
-    localStorage.setItem('myCarryOnBag', JSON.stringify([...savedItems]));
-}
-
-// Toggle item in bag
-function toggleItemInBag(itemId) {
-    if (savedItems.has(itemId)) {
-        savedItems.delete(itemId);
-    } else {
-        savedItems.add(itemId);
-    }
-    saveSavedItems();
-}
-
-// Update bag button state
-function updateBagButton(itemId) {
-    const btn = document.getElementById('addToBagBtn');
-    if (!btn) return;
-
-    if (savedItems.has(itemId)) {
-        btn.innerHTML = '<span class="btn-icon">➖</span><span class="btn-text">Remove from Bag</span>';
-        btn.classList.add('in-bag');
-    } else {
-        btn.innerHTML = '<span class="btn-icon">➕</span><span class="btn-text">Add to My Bag</span>';
-        btn.classList.remove('in-bag');
-    }
-}
-
-// Update FAB counter
-function updateBagFAB() {
-    const fab = document.getElementById('bagFAB');
-    if (fab) {
-        const counter = fab.querySelector('.bag-counter');
-        if (counter) {
-            counter.textContent = savedItems.size;
-        }
-    }
-}
-
-// Share item result
-function shareItemResult(item) {
-    const slug = seoManager.createSlug(item.name);
-    const url = `${window.location.origin}${window.location.pathname}?item=${slug}`;
-    const text = `Check if ${item.name} is allowed on a plane: ${url}`;
-
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-            showToast('✅ Link copied to clipboard!');
-        }).catch(() => {
-            showToast('❌ Failed to copy link');
-        });
-    } else {
-        // Fallback for older browsers
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.select();
-        try {
-            document.execCommand('copy');
-            showToast('✅ Link copied to clipboard!');
-        } catch (err) {
-            showToast('❌ Failed to copy link');
-        }
-        document.body.removeChild(textArea);
-    }
-}
-
-// Show toast notification
-function showToast(message) {
-    // Remove existing toast if any
-    const existingToast = document.getElementById('toast');
-    if (existingToast) {
-        existingToast.remove();
-    }
-
-    // Create toast
-    const toast = document.createElement('div');
-    toast.id = 'toast';
-    toast.className = 'toast show';
-    toast.textContent = message;
-    document.body.appendChild(toast);
-
-    // Remove after 3 seconds
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
-}
-
-// Open bag modal
-function openBagModal() {
-    const bagItems = itemsData.filter(item => savedItems.has(item.id));
-
-    // Count by status
-    const allowed = bagItems.filter(item => item.carryOn === 'allowed' && item.checked === 'allowed').length;
-    const restricted = bagItems.filter(item => item.carryOn === 'restricted' || item.checked === 'restricted').length;
-    const prohibited = bagItems.filter(item => item.carryOn === 'prohibited' && item.checked === 'prohibited').length;
-
-    let itemsHTML = '';
-    if (bagItems.length === 0) {
-        itemsHTML = '<div class="empty-bag">🎒 Your bag is empty. Start adding items!</div>';
-    } else {
-        bagItems.forEach(item => {
-            const statusIcon = (item.carryOn === 'allowed' && item.checked === 'allowed') ? '✅' :
-                             (item.carryOn === 'prohibited' && item.checked === 'prohibited') ? '❌' : '⚠️';
-            itemsHTML += `
-                <div class="bag-item">
-                    <span class="bag-item-status">${statusIcon}</span>
-                    <span class="bag-item-name">${item.name}</span>
-                    <button class="bag-item-remove" onclick="removeFromBagAndUpdate(${item.id})">Remove</button>
-                </div>
-            `;
-        });
-    }
-
-    const summaryHTML = bagItems.length > 0 ? `
-        <div class="bag-summary">
-            <strong>Summary:</strong>
-            ${allowed > 0 ? `<span class="summary-allowed">${allowed} Allowed</span>` : ''}
-            ${restricted > 0 ? `<span class="summary-restricted">${restricted} Restricted</span>` : ''}
-            ${prohibited > 0 ? `<span class="summary-prohibited">${prohibited} Prohibited</span>` : ''}
-        </div>
-    ` : '';
-
-    // Create modal
-    const modal = document.createElement('div');
-    modal.id = 'bagModal';
-    modal.className = 'modal';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>🎒 My Carry-On Bag</h2>
-                <button class="modal-close" id="closeBagModal">&times;</button>
-            </div>
-            ${summaryHTML}
-            <div class="bag-items-list">
-                ${itemsHTML}
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-
-    // Add event listener to close button
-    document.getElementById('closeBagModal').addEventListener('click', () => {
-        modal.remove();
-    });
-
-    // Close on backdrop click
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.remove();
-        }
-    });
-}
-
-// Remove from bag and update UI
-function removeFromBagAndUpdate(itemId) {
-    savedItems.delete(itemId);
-    saveSavedItems();
-    updateBagFAB();
-
-    // Close and reopen modal to update
-    const modal = document.getElementById('bagModal');
-    if (modal) {
-        modal.remove();
-        openBagModal();
-    }
-}
-
-// Make globally accessible
-window.removeFromBagAndUpdate = removeFromBagAndUpdate;
-
-// Ad Provider - manages ad refreshes and prevents too frequent refreshes
+// ---------------------------------------------------------
+// AD PROVIDER CLASS (Real AdSense Integration)
+// ---------------------------------------------------------
 class AdProvider {
     constructor() {
         this.inlineAdCounter = 0;
@@ -269,75 +95,9 @@ class AdProvider {
 // Initialize ad provider
 const adProvider = new AdProvider();
 
-// SEO Manager - handles dynamic meta tags for search engine optimization
-class SEOManager {
-    // Create URL-friendly slug from item name
-    createSlug(itemName) {
-        return itemName
-            .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '') // Remove special chars except spaces and hyphens
-            .replace(/\s+/g, '-') // Replace spaces with hyphens
-            .replace(/-+/g, '-') // Replace multiple hyphens with single
-            .trim();
-    }
-
-    // Update page title and meta description for SEO
-    updateMetaTags(item) {
-        // Update page title
-        const title = `Can I bring ${item.name} on a plane? | Airport Carry-On Rules`;
-        document.title = title;
-
-        // Update meta description
-        const status = item.carryOn === 'allowed' ? 'allowed' :
-                      item.carryOn === 'restricted' ? 'restricted' : 'not allowed';
-        const description = `Find out if ${item.name} is ${status} in carry-on luggage. Get instant TSA and international airport security rules for ${item.name}.`;
-
-        // Find or create meta description tag
-        let metaDesc = document.querySelector('meta[name="description"]');
-        if (!metaDesc) {
-            metaDesc = document.createElement('meta');
-            metaDesc.name = 'description';
-            document.head.appendChild(metaDesc);
-        }
-        metaDesc.content = description;
-
-        // Update Open Graph tags for social sharing (optional but helps SEO)
-        this.updateOpenGraphTags(item, title, description);
-    }
-
-    // Update Open Graph meta tags for better social media sharing
-    updateOpenGraphTags(item, title, description) {
-        const ogTags = {
-            'og:title': title,
-            'og:description': description,
-            'og:type': 'website',
-            'og:url': window.location.href
-        };
-
-        Object.entries(ogTags).forEach(([property, content]) => {
-            let tag = document.querySelector(`meta[property="${property}"]`);
-            if (!tag) {
-                tag = document.createElement('meta');
-                tag.setAttribute('property', property);
-                document.head.appendChild(tag);
-            }
-            tag.content = content;
-        });
-    }
-
-    // Reset to default meta tags
-    resetMetaTags() {
-        document.title = 'Can I Bring This On A Plane? | Airport Carry-On Checker';
-        const metaDesc = document.querySelector('meta[name="description"]');
-        if (metaDesc) {
-            metaDesc.content = 'Can I bring this on a plane? Instantly check if items are allowed in carry-on or checked luggage. Fast, simple airport security rules for travelers.';
-        }
-    }
-}
-
-const seoManager = new SEOManager();
-
-// Navigation state manager for History API and deep linking
+// ---------------------------------------------------------
+// NAVIGATION MANAGER (History & Back Button)
+// ---------------------------------------------------------
 class NavigationManager {
     constructor() {
         this.scrollPositions = new Map();
@@ -355,16 +115,10 @@ class NavigationManager {
         }
     }
 
-    // Update URL without page reload (using slug for better SEO)
     pushState(itemId, itemName) {
         const url = new URL(window.location);
-        const slug = seoManager.createSlug(itemName);
-        url.searchParams.set('item', slug);
-        window.history.pushState(
-            { itemId, itemName, slug, timestamp: Date.now() },
-            '',
-            url
-        );
+        url.searchParams.set('item', itemId);
+        window.history.pushState({ itemId, itemName }, '', url);
     }
 
     pushCategoryState(category) {
@@ -376,25 +130,12 @@ class NavigationManager {
 
     loadFromURL() {
         const url = new URL(window.location);
-        const itemParam = url.searchParams.get('item');
+        const itemId = url.searchParams.get('item');
         const category = url.searchParams.get('category');
 
-        if (itemParam) {
-            // Try to find by slug first (for SEO-friendly URLs)
-            let item = itemsData.find(i => seoManager.createSlug(i.name) === itemParam);
-
-            // Fallback to ID for backward compatibility
-            if (!item) {
-                const itemId = parseInt(itemParam);
-                if (!isNaN(itemId)) {
-                    item = itemsData.find(i => i.id === itemId);
-                }
-            }
-
-            if (item) {
-                displayItemResult(item, false);
-                return true;
-            }
+        if (itemId) {
+            const item = itemsData.find(i => i.id === parseInt(itemId));
+            if (item) { displayItemResult(item, false); return true; }
         } else if (category) {
             displayCategoryResults(category);
             return true;
@@ -518,22 +259,13 @@ window.addEventListener('popstate', (event) => {
             displayCategoryResults(event.state.category, true);
         } else if (event.state.home) {
             const rightPanel = document.getElementById('rightPanel');
-            const middlePanel = document.getElementById('middlePanel');
-
-            if (middlePanel) middlePanel.classList.add('hidden');
-
-            // Restore welcome message
+            document.getElementById('middlePanel').classList.add('hidden');
             rightPanel.innerHTML = `
                 <div class="welcome-message" id="welcomeMessage">
                     <div class="welcome-icon">🔍</div>
                     <h2>Search for any item</h2>
-                    <p>Type an item name in the search box or browse by category to see if it's allowed on your flight.</p>
-                    <p class="welcome-note">Results will appear here →</p>
-                </div>
-            `;
-
-            // Reset meta tags to default
-            seoManager.resetMetaTags();
+                    <p>Type an item name in the search box...</p>
+                </div>`;
         }
     } else {
         navManager.loadFromURL();
@@ -660,12 +392,9 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
 
     if (!skipHistoryPush) navManager.pushState(item.id, item.name);
 
-    // Update SEO meta tags for this item (CRITICAL for Google indexing)
-    seoManager.updateMetaTags(item);
-
-    // Hide welcome message and country rules if they exist
-    const welcomeMsg = document.getElementById('welcomeMessage');
-    if (welcomeMsg) welcomeMsg.classList.add('hidden');
+    document.getElementById('welcomeMessage')?.classList.add('hidden');
+    document.getElementById('countryRulesSection')?.classList.add('hidden');
+    if (!keepMiddlePanel) document.getElementById('middlePanel').classList.add('hidden');
 
     const variants = findItemVariants(item);
     const rightPanel = document.getElementById('rightPanel');

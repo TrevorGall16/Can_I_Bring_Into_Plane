@@ -17,6 +17,11 @@ if (localStorage.getItem('myBag')) {
     }
 }
 
+<<<<<<< HEAD
+// ---------------------------------------------------------
+// AD PROVIDER CLASS (Real AdSense Integration)
+// ---------------------------------------------------------
+=======
 // Save items to localStorage
 function saveSavedItems() {
     localStorage.setItem('myCarryOnBag', JSON.stringify([...savedItems]));
@@ -194,6 +199,7 @@ function removeFromBagAndUpdate(itemId) {
 window.removeFromBagAndUpdate = removeFromBagAndUpdate;
 
 // Ad Provider - manages ad refreshes and prevents too frequent refreshes
+>>>>>>> a9a616004d6dfffbd551b9f3d7b27552fb2ea1cf
 class AdProvider {
     constructor() {
         this.inlineAdCounter = 0;
@@ -269,6 +275,11 @@ class AdProvider {
 // Initialize ad provider
 const adProvider = new AdProvider();
 
+<<<<<<< HEAD
+// ---------------------------------------------------------
+// NAVIGATION MANAGER (History & Back Button)
+// ---------------------------------------------------------
+=======
 // SEO Manager - handles dynamic meta tags for search engine optimization
 class SEOManager {
     // Create URL-friendly slug from item name
@@ -338,6 +349,7 @@ class SEOManager {
 const seoManager = new SEOManager();
 
 // Navigation state manager for History API and deep linking
+>>>>>>> a9a616004d6dfffbd551b9f3d7b27552fb2ea1cf
 class NavigationManager {
     constructor() {
         this.scrollPositions = new Map();
@@ -355,6 +367,12 @@ class NavigationManager {
         }
     }
 
+<<<<<<< HEAD
+    pushState(itemId, itemName) {
+        const url = new URL(window.location);
+        url.searchParams.set('item', itemId);
+        window.history.pushState({ itemId, itemName }, '', url);
+=======
     // Update URL without page reload (using slug for better SEO)
     pushState(itemId, itemName) {
         const url = new URL(window.location);
@@ -365,6 +383,7 @@ class NavigationManager {
             '',
             url
         );
+>>>>>>> a9a616004d6dfffbd551b9f3d7b27552fb2ea1cf
     }
 
     pushCategoryState(category) {
@@ -379,6 +398,11 @@ class NavigationManager {
         const itemParam = url.searchParams.get('item');
         const category = url.searchParams.get('category');
 
+<<<<<<< HEAD
+        if (itemId) {
+            const item = itemsData.find(i => i.id === parseInt(itemId));
+            if (item) { displayItemResult(item, false); return true; }
+=======
         if (itemParam) {
             // Try to find by slug first (for SEO-friendly URLs)
             let item = itemsData.find(i => seoManager.createSlug(i.name) === itemParam);
@@ -395,6 +419,7 @@ class NavigationManager {
                 displayItemResult(item, false);
                 return true;
             }
+>>>>>>> a9a616004d6dfffbd551b9f3d7b27552fb2ea1cf
         } else if (category) {
             displayCategoryResults(category);
             return true;
@@ -518,15 +543,23 @@ window.addEventListener('popstate', (event) => {
             displayCategoryResults(event.state.category, true);
         } else if (event.state.home) {
             const rightPanel = document.getElementById('rightPanel');
+<<<<<<< HEAD
+            document.getElementById('middlePanel').classList.add('hidden');
+=======
             const middlePanel = document.getElementById('middlePanel');
 
             if (middlePanel) middlePanel.classList.add('hidden');
 
             // Restore welcome message
+>>>>>>> a9a616004d6dfffbd551b9f3d7b27552fb2ea1cf
             rightPanel.innerHTML = `
                 <div class="welcome-message" id="welcomeMessage">
                     <div class="welcome-icon">🔍</div>
                     <h2>Search for any item</h2>
+<<<<<<< HEAD
+                    <p>Type an item name in the search box...</p>
+                </div>`;
+=======
                     <p>Type an item name in the search box or browse by category to see if it's allowed on your flight.</p>
                     <p class="welcome-note">Results will appear here →</p>
                 </div>
@@ -534,6 +567,7 @@ window.addEventListener('popstate', (event) => {
 
             // Reset meta tags to default
             seoManager.resetMetaTags();
+>>>>>>> a9a616004d6dfffbd551b9f3d7b27552fb2ea1cf
         }
     } else {
         navManager.loadFromURL();
@@ -660,12 +694,18 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
 
     if (!skipHistoryPush) navManager.pushState(item.id, item.name);
 
+<<<<<<< HEAD
+    document.getElementById('welcomeMessage')?.classList.add('hidden');
+    document.getElementById('countryRulesSection')?.classList.add('hidden');
+    if (!keepMiddlePanel) document.getElementById('middlePanel').classList.add('hidden');
+=======
     // Update SEO meta tags for this item (CRITICAL for Google indexing)
     seoManager.updateMetaTags(item);
 
     // Hide welcome message and country rules if they exist
     const welcomeMsg = document.getElementById('welcomeMessage');
     if (welcomeMsg) welcomeMsg.classList.add('hidden');
+>>>>>>> a9a616004d6dfffbd551b9f3d7b27552fb2ea1cf
 
     const variants = findItemVariants(item);
     const rightPanel = document.getElementById('rightPanel');
