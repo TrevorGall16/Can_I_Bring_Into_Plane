@@ -1,4 +1,16 @@
+<<<<<<< HEAD
 User-agent: *
 Allow: /
 
+=======
+<<<<<<< HEAD
+User-agent: *
+Allow: /
+
+=======
+User-agent: *
+Allow: /
+
+>>>>>>> a9a616004d6dfffbd551b9f3d7b27552fb2ea1cf
+>>>>>>> 6a7cce18b6f2dde6919b10e97824b9db6b9ee889
 Sitemap: https://www.canibringonplane.com/sitemap.xml

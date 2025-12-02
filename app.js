@@ -199,7 +199,7 @@ function removeFromBagAndUpdate(itemId) {
 window.removeFromBagAndUpdate = removeFromBagAndUpdate;
 
 // Ad Provider - manages ad refreshes and prevents too frequent refreshes
->>>>>>> 6a7cce18b6f2dde6919b10e97824b9db6b9ee889
+>>>>>>> a9a616004d6dfffbd551b9f3d7b27552fb2ea1cf
 class AdProvider {
     constructor() {
         this.inlineAdCounter = 0;
@@ -349,7 +349,7 @@ class SEOManager {
 const seoManager = new SEOManager();
 
 // Navigation state manager for History API and deep linking
->>>>>>> 6a7cce18b6f2dde6919b10e97824b9db6b9ee889
+>>>>>>> a9a616004d6dfffbd551b9f3d7b27552fb2ea1cf
 class NavigationManager {
     constructor() {
         this.scrollPositions = new Map();
@@ -383,7 +383,7 @@ class NavigationManager {
             '',
             url
         );
->>>>>>> 6a7cce18b6f2dde6919b10e97824b9db6b9ee889
+>>>>>>> a9a616004d6dfffbd551b9f3d7b27552fb2ea1cf
     }
 
     pushCategoryState(category) {
@@ -419,7 +419,7 @@ class NavigationManager {
                 displayItemResult(item, false);
                 return true;
             }
->>>>>>> 6a7cce18b6f2dde6919b10e97824b9db6b9ee889
+>>>>>>> a9a616004d6dfffbd551b9f3d7b27552fb2ea1cf
         } else if (category) {
             displayCategoryResults(category);
             return true;
@@ -551,7 +551,7 @@ window.addEventListener('popstate', (event) => {
             if (middlePanel) middlePanel.classList.add('hidden');
 
             // Restore welcome message
->>>>>>> 6a7cce18b6f2dde6919b10e97824b9db6b9ee889
+>>>>>>> a9a616004d6dfffbd551b9f3d7b27552fb2ea1cf
             rightPanel.innerHTML = `
                 <div class="welcome-message" id="welcomeMessage">
                     <div class="welcome-icon">🔍</div>
@@ -567,7 +567,7 @@ window.addEventListener('popstate', (event) => {
 
             // Reset meta tags to default
             seoManager.resetMetaTags();
->>>>>>> 6a7cce18b6f2dde6919b10e97824b9db6b9ee889
+>>>>>>> a9a616004d6dfffbd551b9f3d7b27552fb2ea1cf
         }
     } else {
         navManager.loadFromURL();
@@ -705,7 +705,7 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     // Hide welcome message and country rules if they exist
     const welcomeMsg = document.getElementById('welcomeMessage');
     if (welcomeMsg) welcomeMsg.classList.add('hidden');
->>>>>>> 6a7cce18b6f2dde6919b10e97824b9db6b9ee889
+>>>>>>> a9a616004d6dfffbd551b9f3d7b27552fb2ea1cf
 
     const variants = findItemVariants(item);
     const rightPanel = document.getElementById('rightPanel');

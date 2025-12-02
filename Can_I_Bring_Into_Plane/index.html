@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Can I bring this on a plane? Instantly check if items are allowed in carry-on or checked luggage. Fast, simple airport security rules for travelers.">
+    <title>Can I Bring This On A Plane? | Airport Carry-On Checker</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Google AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8732422930809097"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Ad Banner Top -->
+    <div class="ad-banner-top">
+        <div class="ad-container">
+            <!-- Container for the Top Ad -->
+            <div id="ad-top-slot" class="ad-slot"></div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <h1>✈️ Airport Carry-On Checker</h1>
+        <p class="tagline">Know what you can bring on a plane</p>
+    </header>
+
+    <!-- Persistent Disclaimer Banner -->
+    <div class="disclaimer-banner">
+        ⚠️ <strong>Disclaimer:</strong> Information for guidance only. NOT responsible for misinformation or outdated data. <strong>ALWAYS verify with your airline before travel.</strong>
+    </div>
+
+    <!-- Main Three-Column Layout -->
+    <div class="three-column-container">
+        <!-- LEFT PANEL - Search & Categories -->
+        <div class="left-panel">
+            <!-- Country Selector -->
+            <section class="country-section">
+                <label for="countrySelector">
+                    <span class="country-icon">🌍</span> Where are you traveling?
+                </label>
+                <select id="countrySelector" class="country-selector">
+                    <option value="USA">🇺🇸 United States (TSA)</option>
+                    <option value="China">🇨🇳 China (CAAC)</option>
+                    <option value="EU">🇪🇺 European Union (EASA)</option>
+                    <option value="UK">🇬🇧 United Kingdom</option>
+                    <option value="Canada">🇨🇦 Canada</option>
+                    <option value="Australia">🇦🇺 Australia</option>
+                    <option value="Japan">🇯🇵 Japan</option>
+                    <option value="International">🌐 General International Rules</option>
+                </select>
+            </section>
+
+            <!-- Search Section -->
+            <section class="search-section">
+                <h2>Search Any Item</h2>
+                <div class="search-container">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        class="search-input"
+                        placeholder="Type an item (e.g., water bottle)..."
+                        autocomplete="off"
+                    >
+                    <div id="autocompleteResults" class="autocomplete-results hidden"></div>
+                </div>
+            </section>
+
+            <!-- Categories Section -->
+            <section class="categories-section">
+                <h3>Browse by Category</h3>
+                <div class="categories-grid">
+                    <button class="category-btn" data-category="liquids">💧 Liquids</button>
+                    <button class="category-btn" data-category="electronics">📱 Electronics</button>
+                    <button class="category-btn" data-category="food">🍎 Food</button>
+                    <button class="category-btn" data-category="toiletries">🧴 Toiletries</button>
+                    <button class="category-btn" data-category="medication">💊 Medication</button>
+                    <button class="category-btn" data-category="tools">🔧 Tools</button>
+                    <button class="category-btn" data-category="sports">⚽ Sports</button>
+                    <button class="category-btn" data-category="baby">👶 Baby</button>
+                    <button class="category-btn" data-category="customs">🚨 Customs & Biosecurity</button>
+                </div>
+            </section>
+
+            <!-- Popular Searches -->
+            <section class="popular-section">
+                <h3>Popular Searches</h3>
+                <div class="popular-tags">
+                    <button class="popular-tag" data-item="laptop">Laptop</button>
+                    <button class="popular-tag" data-item="water bottle">Water Bottle</button>
+                    <button class="popular-tag" data-item="power bank">Power Bank</button>
+                    <button class="popular-tag" data-item="scissors">Scissors</button>
+                    <button class="popular-tag" data-item="shampoo">Shampoo</button>
+                    <button class="popular-tag" data-item="lighter">Lighter</button>
+                </div>
+            </section>
+        </div>
+
+        <!-- MIDDLE PANEL - Category Items List -->
+        <div class="middle-panel hidden" id="middlePanel">
+            <div class="panel-header">
+                <h3 id="categoryTitle"></h3>
+                <span class="item-count" id="categoryCount"></span>
+            </div>
+            <div id="categoryItemsList" class="category-items-list"></div>
+        </div>
+
+        <!-- RIGHT PANEL - Item Details -->
+        <div class="right-panel" id="rightPanel">
+            <!-- Welcome Message (shown by default) -->
+            <div id="welcomeMessage" class="welcome-message">
+                <div class="welcome-icon">🔍</div>
+                <h2>Search for any item</h2>
+                <p>Type an item name in the search box or browse by category to see if it's allowed on your flight.</p>
+                <p class="welcome-note">Results will appear here →</p>
+            </div>
+
+            <!-- Item Result Card -->
+            <div id="resultCard" class="result-card hidden">
+                <!-- Content injected by JS -->
+            </div>
+
+            <!-- Category Results List -->
+            <div id="categoryResults" class="category-results hidden">
+                <!-- Content injected by JS -->
+            </div>
+
+            <!-- Country-Specific Rules (hidden by default) -->
+            <div id="countryRulesSection" class="country-rules-section hidden">
+                <!-- Content injected by JS -->
+            </div>
+
+            <!-- Ad Below Result - Inline Ad Slot -->
+            <div id="resultAd" class="ad-inline hidden">
+                <div class="ad-container">
+                    <div id="ad-inline-slot" class="ad-slot"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button for My Bag -->
+    <button class="bag-fab" id="bagFAB" title="My Carry-On Bag">
+        <span class="fab-icon">🎒</span>
+        <span class="fab-text">My Bag</span>
+        <span class="bag-counter" id="bagCounter">0</span>
+    </button>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Airport Carry-On Checker | <a href="privacy.html">Privacy</a> | <a href="terms.html">Terms</a> | <a href="contact.html">Contact</a></p>
+        <p class="footer-note">Check with your airline for specific policies. Rules may vary.</p>
+    </footer>
+
+    <!-- Load embedded data first, then main app -->
+    <script src="js/data-embedded.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
