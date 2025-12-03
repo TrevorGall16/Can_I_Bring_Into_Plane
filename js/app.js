@@ -44,7 +44,7 @@ class AdProvider {
             `;
             // Push the ad to Google
             try {
-                (adsbygoogle = window.adsbygoogle || []).push({});
+                (window.adsbygoogle = window.adsbygoogle || []).push({});
             } catch (e) {
                 console.error("AdSense error (Top):", e);
             }
@@ -84,7 +84,7 @@ class AdProvider {
 
             // 5. Trigger Google's script to fill the slot
             try {
-                (adsbygoogle = window.adsbygoogle || []).push({});
+                (window.adsbygoogle = window.adsbygoogle || []).push({});
             } catch (e) {
                 console.error("AdSense refresh error (Inline):", e);
             }
