@@ -691,4 +691,4 @@ window.toggleBagItem = toggleBagItem;
 window.shareItemLink = shareItemLink;
 window.showMyBagModal = showMyBagModal;
 
-console.log('✅ App initialized with Ads & Features!');
+console.log('✅ App initialized with Ads & Features!');  
