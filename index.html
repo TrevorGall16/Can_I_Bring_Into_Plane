@@ -18,6 +18,8 @@
     <meta property="og:image" content="https://www.canibringonplane.com/favicon.ico">
 
     <!-- Styles & Icons -->
+     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 
@@ -36,7 +38,7 @@
 
     <!-- Header -->
     <header>
-        <h1>✈️ Airport Carry-On Checker</h1>
+        <h1><i class="fa-solid fa-plane-departure"></i> Airport Carry-On Checker</h1>
         <p class="tagline">Know what you can bring on a plane</p>
     </header>
 
@@ -49,10 +51,11 @@
     <div class="three-column-container">
         <!-- LEFT PANEL - Search & Categories -->
         <div class="left-panel">
+            
             <!-- Country Selector -->
             <section class="country-section">
                 <label for="countrySelector">
-                    <span class="country-icon">🌍</span> Where are you traveling?
+                    <i class="fa-solid fa-earth-americas" style="margin-right: 8px;"></i> Where are you traveling?
                 </label>
                 <select id="countrySelector" class="country-selector">
                     <option value="USA">🇺🇸 United States (TSA)</option>
@@ -82,36 +85,57 @@
             </section>
 
             <!-- Categories Section -->
-            <section class="categories-section">
+<section class="categories-section">
                 <h3>Browse by Category</h3>
                 <div class="categories-grid">
-                    <button class="category-btn" data-category="liquids">💧 Liquids</button>
-                    <button class="category-btn" data-category="electronics">📱 Electronics</button>
-                    <button class="category-btn" data-category="food">🍎 Food</button>
-                    <button class="category-btn" data-category="toiletries">🧴 Toiletries</button>
-                    <button class="category-btn" data-category="medication">💊 Medication</button>
-                    <button class="category-btn" data-category="tools">🔧 Tools</button>
-                    <button class="category-btn" data-category="sports">⚽ Sports</button>
-                    <button class="category-btn" data-category="baby">👶 Baby</button>
-                    <button class="category-btn" data-category="customs">🚨 Customs & Biosecurity</button>
+                    <button class="category-btn" data-category="liquids">
+                        <i class="fa-solid fa-bottle-water" style="width: 20px; margin-right: 5px;"></i> Liquids
+                    </button>
+                    <button class="category-btn" data-category="electronics">
+                        <i class="fa-solid fa-mobile-screen" style="width: 20px; margin-right: 5px;"></i> Electronics
+                    </button>
+                    <button class="category-btn" data-category="food">
+                        <i class="fa-solid fa-apple-whole" style="width: 20px; margin-right: 5px;"></i> Food
+                    </button>
+                    <button class="category-btn" data-category="toiletries">
+                        <i class="fa-solid fa-pump-soap" style="width: 20px; margin-right: 5px;"></i> Toiletries
+                    </button>
+                    <button class="category-btn" data-category="medication">
+                        <i class="fa-solid fa-pills" style="width: 20px; margin-right: 5px;"></i> Medication
+                    </button>
+                    <button class="category-btn" data-category="tools">
+                        <i class="fa-solid fa-screwdriver-wrench" style="width: 20px; margin-right: 5px;"></i> Tools
+                    </button>
+                    <button class="category-btn" data-category="sports">
+                        <i class="fa-solid fa-futbol" style="width: 20px; margin-right: 5px;"></i> Sports
+                    </button>
+                    <button class="category-btn" data-category="baby">
+                        <i class="fa-solid fa-baby" style="width: 20px; margin-right: 5px;"></i> Baby
+                    </button>
+                    <button class="category-btn" data-category="customs">
+                        <i class="fa-solid fa-passport" style="width: 20px; margin-right: 5px;"></i> Customs & Biosecurity
+                    </button>
                 </div>
             </section>
-<section class="categories-section" style="margin-top: 20px; border: 2px solid #667eea; background: #f8f9ff;">
-                <h3 style="color: #667eea; margin-bottom: 10px;">🎒 Travel Must-Haves</h3>
+
+            <section class="categories-section" style="margin-top: 20px; border: 2px solid #667eea; background: #f8f9ff;">
+                <h3 style="color: #667eea; margin-bottom: 10px;">
+                    <i class="fa-solid fa-suitcase-rolling" style="margin-right: 5px;"></i> Travel Must-Haves
+                </h3>
                 <div style="display: flex; flex-direction: column; gap: 10px;">
                     <a href="https://www.amazon.com/s?k=tsa+approved+toiletry+bag&tag=canibringonpl-20" target="_blank" style="text-decoration: none; padding: 10px; background: white; border-radius: 6px; border: 1px solid #ddd; color: #333; font-weight: 600; display: block; text-align: center; transition: all 0.2s;">
-                        💧 TSA Liquid Bags
+                        <i class="fa-solid fa-bottle-droplet" style="color: #667eea; margin-right: 5px;"></i> Travel Liquid Bags
                     </a>
                     <a href="https://www.amazon.com/s?k=universal+travel+power+adapter&tag=canibringonpl-20" target="_blank" style="text-decoration: none; padding: 10px; background: white; border-radius: 6px; border: 1px solid #ddd; color: #333; font-weight: 600; display: block; text-align: center; transition: all 0.2s;">
-                        🔌 Universal Adapters
+                        <i class="fa-solid fa-plug" style="color: #667eea; margin-right: 5px;"></i> Universal Adapters
                     </a>
                     <a href="https://www.amazon.com/s?k=luggage+scale+portable&tag=canibringonpl-20" target="_blank" style="text-decoration: none; padding: 10px; background: white; border-radius: 6px; border: 1px solid #ddd; color: #333; font-weight: 600; display: block; text-align: center; transition: all 0.2s;">
-                        ⚖️ Digital Luggage Scale
+                        <i class="fa-solid fa-weight-hanging" style="color: #667eea; margin-right: 5px;"></i> Digital Luggage Scale
                     </a>
                 </div>
             </section>
             <!-- Popular Searches -->
-            <section class="popular-section">
+<section class="popular-section">
                 <h3>Popular Searches</h3>
                 <div class="popular-tags">
                     <button class="popular-tag" data-item="laptop">Laptop</button>
@@ -122,6 +146,20 @@
                     <button class="popular-tag" data-item="lighter">Lighter</button>
                 </div>
             </section>
+
+            <div class="ad-container" style="margin-top: 25px; text-align: center; min-height: 250px; background: #f8f9fa; border-radius: 8px; border: 1px dashed #e2e8f0; padding: 10px;">
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8732422930809097" crossorigin="anonymous"></script>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-8732422930809097"
+                     data-ad-slot="1429129130"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+            
         </div>
 
         <!-- MIDDLE PANEL - Category Items List -->
@@ -140,7 +178,7 @@
         <div class="right-panel" id="rightPanel">
             <!-- Welcome Message (shown by default) -->
             <div id="welcomeMessage" class="welcome-message">
-                <div class="welcome-icon">🔍</div>
+                <div class="welcome-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
                 <h2>Search for any item</h2>
                 <p>Type an item name in the search box or browse by category to see if it's allowed on your flight.</p>
                 <p class="welcome-note">Results will appear here →</p>
@@ -171,11 +209,11 @@
     </div>
 
     <!-- Floating Action Button for My Bag -->
-    <button class="bag-fab" id="bagFAB" title="My Carry-On Bag">
-        <span class="fab-icon">🎒</span>
-        <span class="fab-text">My Bag</span>
-        <span class="bag-counter" id="bagCounter">0</span>
-    </button>
+<button class="bag-fab" id="bagFAB" title="My Carry-On Bag">
+    <i class="fa-solid fa-suitcase-rolling fab-icon"></i>
+    <span class="fab-text">My Bag</span>
+    <span class="bag-counter" id="bagCounter">0</span>
+</button>
 
     <!-- Footer -->
     <footer>

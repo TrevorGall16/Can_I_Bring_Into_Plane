@@ -10,7 +10,7 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     line-height: 1.6;
     color: #333;
     background-color: #f5f5f5;
@@ -20,6 +20,7 @@ body {
     display: flex;
     flex-direction: column;
     font-size: 16px; /* CRITICAL: Prevents iOS zoom on input focus */
+    letter-spacing: -0.01em; /* Tighter, more modern look */
 }
 
 .hidden {
@@ -117,48 +118,72 @@ body {
 
 /* ===== HEADER ===== */
 header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 20px 15px;
+    background-color: #ffffff; /* Pure White */
+    color: #1a202c; /* Dark Grey text (softer than black) */
+    
+    padding: 20px; 
     text-align: center;
+    
+    /* Very subtle border bottom instead of the heavy yellow one */
+    border-bottom: 1px solid #e2e8f0;
+    
+    /* Soft shadow to separate it from the content */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02); 
 }
 
 header h1 {
-    font-size: 1.5rem;
-    margin-bottom: 6px;
+    font-size: 1.6rem;
+    font-weight: 800; /* Extra bold looks premium */
+    margin-bottom: 4px;
+    color: #2d3748;
+    letter-spacing: -0.5px;
+}
+
+/* Make the icon match your brand blue */
+header h1 i {
+    color: #667eea; 
 }
 
 .tagline {
     font-size: 0.9rem;
-    opacity: 0.95;
+    color: #718096; /* Light grey for subtitle */
+    font-weight: 500;
 }
 
-/* ===== DISCLAIMER BANNER (MOBILE) ===== */
+/* ========================================
+   FINAL DISCLAIMER POSITION FIX
+   ======================================== */
 .disclaimer-banner {
-    position: fixed;
-    bottom: 70px;
-    right: 10px;
-    left: 10px;
-    background: rgba(255, 243, 205, 0.95);
-    border: 1px solid rgba(255, 193, 7, 0.6);
-    border-radius: 6px;
-    padding: 8px 10px;
-    font-size: 0.6rem;
-    color: #856404;
-    line-height: 1.3;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    z-index: 50;
-    opacity: 0.9;
-    transition: opacity 0.3s;
+    position: fixed !important;
+    
+    /* Force it to the Bottom Left */
+    top: auto !important;      /* Stop it from going to the top */
+    bottom: 10px !important;   /* 20px from bottom */
+    left: 20px !important;     /* 20px from left */
+    right: auto !important;    /* Stop it from going to the right */
+    
+    /* Sizing */
+    width: auto !important;
+    max-width: 880px !important;
+    
+    /* Visuals */
+    z-index: 9999 !important; /* Ensure it sits on top of everything */
+    background: rgba(39, 39, 39, 0.95);
+    border-left: 5px solid #ffffff;
+    border-radius: 4px;
+    padding: 10px 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    color: #ffffff !important; /* Dark Grey (Standard readable text) */
 }
 
 .disclaimer-banner:hover {
     opacity: 1;
+    transform: translateY(-2px);
 }
 
 .disclaimer-banner strong {
     font-weight: 700;
-    color: #721c24;
+    color: #ff3c4f;
 }
 
 /* ===== THREE-COLUMN LAYOUT - MOBILE FIRST ===== */
@@ -452,12 +477,18 @@ header h1 {
 .category-btn {
     background: white;
     border: 2px solid #e0e0e0;
-    padding: 14px 12px;
+    padding: 12px 15px; /* Slightly more compact */
     border-radius: 8px;
     font-size: 0.95rem;
     cursor: pointer;
     transition: all 0.2s;
-    text-align: left;
+    
+    /* NEW FLEXBOX ALIGNMENT */
+    display: flex;           /* Forces Icon and Text into a row */
+    align-items: center;     /* Centers them vertically */
+    justify-content: flex-start; /* Aligns them to the left */
+    gap: 10px;               /* Clean space between icon and text */
+    text-align: left;        /* Failsafe for older browsers */
 }
 
 .category-btn:active {
@@ -967,7 +998,8 @@ header h1 {
 }
 
 .bag-fab .fab-icon {
-    font-size: 1.5rem;
+    font-size: 1.2rem; /* Adjusted for FontAwesome */
+    margin-right: 5px;
 }
 
 .bag-fab .fab-text {
@@ -1175,16 +1207,16 @@ header h1 {
 
 /* ===== FOOTER ===== */
 footer {
-    background: #333;
+    background: #414141;
     color: white;
-    padding: 20px 15px;
+    padding: 7px 15px;
     text-align: center;
     margin-top: auto;
-    font-size: 0.85rem;
+    font-size: 0.65rem;
 }
 
 footer a {
-    color: #667eea;
+    color: #cdd6ff;
     text-decoration: none;
 }
 
@@ -1193,7 +1225,7 @@ footer a:active {
 }
 
 .footer-note {
-    margin-top: 6px;
+    margin-top: 3px;
     font-size: 0.8rem;
     opacity: 0.8;
 }
@@ -1219,8 +1251,9 @@ footer a:active {
         font-size: 1.7rem;
     }
 
+/* FIX: Force categories into 1 neat list on Desktop Sidebar */
     .categories-grid {
-        grid-template-columns: 1fr 1fr; /* 2 columns on tablet */
+        grid-template-columns: 1fr; /* Stack vertically */
     }
 
     .status-grid {
@@ -1447,4 +1480,40 @@ footer a:active {
         height: 100%; /* Fill the flex parent */
         overflow: hidden; /* Stop the container itself from scrolling */
     }
+}
+/* ========================================
+   ENGAGEMENT BOOSTERS (Chips & Tags)
+   ======================================== */
+
+/* Make Related Items irresistible to click */
+.related-tag, .popular-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 8px 16px;
+    border-radius: 20px; /* Pill shape */
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #2d3748;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin: 4px;
+}
+
+.related-tag:hover, .popular-tag:hover {
+    background: #ebf8ff; /* Light blue tint */
+    border-color: #4299e1;
+    color: #2b6cb0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(66, 153, 225, 0.2);
+}
+
+/* Add a pseudo-icon via CSS to make them pop without adding HTML */
+.related-tag::before {
+    content: "🔎"; 
+    font-size: 0.8rem;
+    opacity: 0.7;
 }

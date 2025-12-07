@@ -406,16 +406,34 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     // NOTE: On Mobile, middle panel stays in DOM but might need hiding if it overlaps
     if (!keepMiddlePanel) document.getElementById('middlePanel').classList.add('hidden');
 
-    const variants = findItemVariants(item);
+// 1. GET VARIANTS & CLEAN UP
+    let variants = findItemVariants(item);
+
+    // Filter out exact name duplicates
+    variants = variants.filter((v, index, self) =>
+        index === self.findIndex((t) => t.name.trim() === v.name.trim())
+    );
+
+    // CRITICAL FIX: If all variants have the exact same rules, HIDE the dropdown.
+    // This stops "Nail Clippers" vs "Nail Clippers" from appearing.
+    const allSameRules = variants.every(v => 
+        v.carryOn === variants[0].carryOn && 
+        v.checked === variants[0].checked && 
+        v.note === variants[0].note
+    );
+
+    if (allSameRules) {
+        // If they are all the same, just pretend there is only one item
+        variants = [item];
+    }
+
     const rightPanel = document.getElementById('rightPanel');
 
-    // === NEW FIX START ===
-    // Force the panel to show on mobile
+    // ... [Your existing Mobile Fix code is here] ...
     rightPanel.classList.remove('hidden'); 
     rightPanel.classList.add('mobile-active'); 
-    // === NEW FIX END ===
 
-    // Build Variant Dropdown
+    // Build Variant Dropdown (Now smarter)
     let variantSelectorHTML = '';
     if (variants.length > 1) {
         variantSelectorHTML = `
@@ -423,7 +441,13 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
                 <label>Select option:</label>
                 <select id="variantSelect" class="variant-select">
                     ${variants.map(v => {
-                        const name = v.name.match(/\(([^)]+)\)/) ? v.name.match(/\(([^)]+)\)/)[1] : v.name;
+                        // Extract text inside parentheses if it exists, otherwise use full name
+                        const match = v.name.match(/\(([^)]+)\)/);
+                        let name = match ? match[1] : v.name;
+                        
+                        // Fallback: If the extracted name is too short/empty, use the full name
+                        if (!name || name.trim().length < 2) name = v.name;
+
                         return `<option value="${v.id}" ${v.id === item.id ? 'selected' : ''}>${name}</option>`;
                     }).join('')}
                 </select>
