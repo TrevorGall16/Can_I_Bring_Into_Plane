@@ -778,3 +778,11 @@ function updateSocialMeta(item) {
     setMeta('og:title', `Can I bring ${item.name} on a plane?`);
     setMeta('description', `Check TSA rules for ${item.name}. Carry-on: ${item.carryOn.toUpperCase()}. ${item.note.substring(0, 100)}...`);
 }
+// Quick Privacy Policy Handler
+const privacyLink = document.querySelector('a[href="#privacy"]');
+if (privacyLink) {
+    privacyLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert("Privacy Policy:\n\nWe do not store your personal data on any server. 'My Bag' information is saved only on your specific device (Local Storage).");
+    });
+}
