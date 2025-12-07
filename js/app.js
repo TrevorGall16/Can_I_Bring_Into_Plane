@@ -31,20 +31,20 @@ class AdProvider {
         this.initTopBanner();
     }
 
-    initTopBanner() {
+initTopBanner() {
         const adSlot = document.getElementById('ad-top-slot');
         if (adSlot) {
             adSlot.innerHTML = `
                 <ins class="adsbygoogle"
                      style="display:block"
                      data-ad-client="${this.clientId}"
-                     data-ad-slot="1234567890" 
+                     data-ad-slot="3472136875" 
                      data-ad-format="auto"
                      data-full-width-responsive="true"></ins>
             `;
-            // Push the ad to Google
+            // Push the ad to Google (Using the Safe 'window.' fix)
             try {
-                (adsbygoogle = window.adsbygoogle || []).push({});
+                (window.adsbygoogle = window.adsbygoogle || []).push({});
             } catch (e) {
                 console.error("AdSense error (Top):", e);
             }
@@ -77,14 +77,14 @@ class AdProvider {
                 <ins class="adsbygoogle"
                      style="display:block"
                      data-ad-client="${this.clientId}"
-                     data-ad-slot="0987654321" 
+                     data-ad-slot="7464897364"
                      data-ad-format="rectangle"
                      data-full-width-responsive="true"></ins>
             `;
 
             // 5. Trigger Google's script to fill the slot
             try {
-                (adsbygoogle = window.adsbygoogle || []).push({});
+                (window.adsbygoogle = window.adsbygoogle || []).push({});
             } catch (e) {
                 console.error("AdSense refresh error (Inline):", e);
             }
@@ -96,7 +96,7 @@ class AdProvider {
 const adProvider = new AdProvider();
 
 // ---------------------------------------------------------
-// NAVIGATION MANAGER (History & Back Button)
+// NAVIGATION MANAGER (History & Back Button) - SAFE MODE
 // ---------------------------------------------------------
 class NavigationManager {
     constructor() {
@@ -115,30 +115,44 @@ class NavigationManager {
         }
     }
 
+    // SAFE PUSH STATE (Won't crash on local files)
     pushState(itemId, itemName) {
-        const url = new URL(window.location);
-        url.searchParams.set('item', itemId);
-        window.history.pushState({ itemId, itemName }, '', url);
+        try {
+            const url = new URL(window.location);
+            url.searchParams.set('item', itemId);
+            window.history.pushState({ itemId, itemName }, '', url);
+        } catch (e) {
+            console.warn("⚠️ URL update skipped (Local testing mode)");
+        }
     }
 
+    // SAFE CATEGORY STATE (Won't crash on local files)
     pushCategoryState(category) {
-        const url = new URL(window.location);
-        url.searchParams.set('category', category);
-        url.searchParams.delete('item');
-        window.history.pushState({ category }, '', url);
+        try {
+            const url = new URL(window.location);
+            url.searchParams.set('category', category);
+            url.searchParams.delete('item');
+            window.history.pushState({ category }, '', url);
+        } catch (e) {
+            console.warn("⚠️ URL update skipped (Local testing mode)");
+        }
     }
 
     loadFromURL() {
-        const url = new URL(window.location);
-        const itemId = url.searchParams.get('item');
-        const category = url.searchParams.get('category');
+        try {
+            const url = new URL(window.location);
+            const itemId = url.searchParams.get('item');
+            const category = url.searchParams.get('category');
 
-        if (itemId) {
-            const item = itemsData.find(i => i.id === parseInt(itemId));
-            if (item) { displayItemResult(item, false); return true; }
-        } else if (category) {
-            displayCategoryResults(category);
-            return true;
+            if (itemId) {
+                const item = itemsData.find(i => i.id === parseInt(itemId));
+                if (item) { displayItemResult(item, false); return true; }
+            } else if (category) {
+                displayCategoryResults(category);
+                return true;
+            }
+        } catch (e) {
+            console.log("⚠️ Could not load from URL (Local testing mode)");
         }
         return false;
     }
@@ -489,6 +503,9 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
 
     displayRelatedItems(item);
     adProvider.refreshInlineAd(); // Trigger Ad
+    // SEO Updates
+    injectSchema(item);
+    updateSocialMeta(item);
     navManager.restoreScrollPosition(scrollKey);
 }
 
@@ -561,15 +578,25 @@ function displayCategoryResults(category, skipHistoryPush = false) {
 
     const list = document.getElementById('categoryItemsList');
     list.innerHTML = '';
-    items.forEach(item => {
+items.forEach(item => {
         const div = document.createElement('div');
         div.className = 'category-item-card';
         div.innerHTML = `
             <div class="category-item-name">${item.name}</div>
             <div class="category-item-status">
-                <span class="${item.carryOn === 'allowed' ? 'status-allowed' : 'status-restricted'}">🎒 ${formatStatus(item.carryOn)}</span>
+                <span class="${item.carryOn === 'allowed' ? 'status-allowed' : 'status-restricted'}">
+                    🎒 ${formatStatus(item.carryOn)}
+                </span>
             </div>`;
-        div.onclick = () => displayItemResult(item, true);
+
+        // CORRECT LOGIC: Check screen size WHEN clicked
+        div.onclick = () => {
+            // Match CSS breakpoint (min-width: 1024px)
+            // Use >= so 1024px exactly is included as Desktop
+            const isDesktop = window.innerWidth >= 1024; 
+            displayItemResult(item, isDesktop);
+        };
+
         list.appendChild(div);
     });
     
@@ -700,3 +727,45 @@ window.shareItemLink = shareItemLink;
 window.showMyBagModal = showMyBagModal;
 
 console.log('✅ App initialized with Ads & Features!');
+/* =================== SEO & META FUNCTIONS =================== */
+function injectSchema(item) {
+    // Remove old schema if exists
+    const existing = document.getElementById('dynamic-schema');
+    if (existing) existing.remove();
+
+    const schemaData = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [{
+            "@type": "Question",
+            "name": `Can I bring ${item.name} on a plane?`,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": `Carry-on: ${item.carryOn === 'allowed' ? 'Yes, Allowed' : 'Restricted/Prohibited'}. Checked Bags: ${item.checked === 'allowed' ? 'Yes, Allowed' : 'Restricted/Prohibited'}. ${item.note}`
+            }
+        }]
+    };
+
+    const script = document.createElement('script');
+    script.id = 'dynamic-schema';
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(schemaData);
+    document.head.appendChild(script);
+}
+
+function updateSocialMeta(item) {
+    document.title = `Can I bring ${item.name} on a plane? | Carry-On Checker`;
+    // Helper to update or create meta tag
+    const setMeta = (prop, content) => {
+        let el = document.querySelector(`meta[property="${prop}"]`) || document.querySelector(`meta[name="${prop}"]`);
+        if (!el) {
+            el = document.createElement('meta');
+            el.setAttribute(prop.startsWith('og:') ? 'property' : 'name', prop);
+            document.head.appendChild(el);
+        }
+        el.setAttribute('content', content);
+    };
+    
+    setMeta('og:title', `Can I bring ${item.name} on a plane?`);
+    setMeta('description', `Check TSA rules for ${item.name}. Carry-on: ${item.carryOn.toUpperCase()}. ${item.note.substring(0, 100)}...`);
+}

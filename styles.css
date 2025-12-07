@@ -611,37 +611,66 @@ header h1 {
     box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.2);
 }
 
-/* ===== STATUS GRID ===== */
+/* ===== HIGH IMPACT STATUS GRID ===== */
 .status-grid {
     display: grid;
-    grid-template-columns: 1fr; /* Mobile: Stack vertically */
+    grid-template-columns: 1fr 1fr;
     gap: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .status-box {
-    background: #f9f9f9;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 20px 15px;
+    border-radius: 12px;
     text-align: center;
-    border: 2px solid #e0e0e0;
-    transition: all 0.2s;
+    border: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-/* Color-coded status box backgrounds */
+/* Dynamic Status Colors */
 .status-box:has(.status-value.allowed) {
-    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 100%);
-    border-color: #4caf50;
+    background-color: #e3f9e5; /* Soft Green */
+    border: 2px solid #28a745;
+    color: #155724;
 }
 
 .status-box:has(.status-value.prohibited) {
-    background: linear-gradient(135deg, #ffebee 0%, #fef5f6 100%);
-    border-color: #f44336;
+    background-color: #ffeef0; /* Soft Red */
+    border: 2px solid #dc3545;
+    color: #721c24;
 }
 
 .status-box:has(.status-value.restricted) {
-    background: linear-gradient(135deg, #fff8e1 0%, #fffbf0 100%);
-    border-color: #ff9800;
+    background-color: #fff8d6; /* Soft Yellow */
+    border: 2px solid #ffc107;
+    color: #856404;
+}
+
+.status-icon {
+    font-size: 2.2rem;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.status-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.status-value {
+    font-size: 1.1rem;
+    font-weight: 800;
+    padding: 0;
+    background: none;
+    color: inherit;
 }
 
 .status-icon {
@@ -740,7 +769,7 @@ header h1 {
     color: #333;
 }
 
-/* ===== AMAZON BUTTON ===== */
+/* ===== AMAZON BUTTON (OFFICIAL STYLE) ===== */
 .amazon-button-container {
     margin: 15px 0;
     text-align: center;
@@ -748,23 +777,28 @@ header h1 {
 
 .amazon-button {
     display: inline-block;
-    background: linear-gradient(135deg, #ff9900 0%, #ffb84d 100%);
-    color: #111;
-    padding: 14px 24px;
-    border-radius: 8px;
+    /* This is the specific Amazon 'Buy Now' yellow */
+    background-color: #FFD814; 
+    color: #0F1111;
+    padding: 12px 28px;
+    border-radius: 20px; /* Pill shape is more modern */
     text-decoration: none;
-    font-weight: 700;
+    font-weight: 500; /* Slightly lighter weight looks cleaner */
     font-size: 0.95rem;
-    border: 2px solid #e88a00;
-    box-shadow: 0 4px 8px rgba(255, 153, 0, 0.3);
-    transition: all 0.2s;
+    border: none; /* Removed the heavy border */
+    box-shadow: 0 2px 5px rgba(213, 217, 217, 0.5);
+    transition: all 0.2s ease-in-out;
+}
+
+.amazon-button:hover {
+    background-color: #F7CA00; /* Amazon hover state */
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(213, 217, 217, 0.8);
 }
 
 .amazon-button:active {
     transform: scale(0.98);
-    box-shadow: 0 2px 4px rgba(255, 153, 0, 0.3);
 }
-
 /* ===== BAG ACTIONS ===== */
 .bag-actions {
     margin: 15px 0;
