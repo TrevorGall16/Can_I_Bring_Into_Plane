@@ -611,37 +611,66 @@ header h1 {
     box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.2);
 }
 
-/* ===== STATUS GRID ===== */
+/* ===== HIGH IMPACT STATUS GRID ===== */
 .status-grid {
     display: grid;
-    grid-template-columns: 1fr; /* Mobile: Stack vertically */
+    grid-template-columns: 1fr 1fr;
     gap: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .status-box {
-    background: #f9f9f9;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 20px 15px;
+    border-radius: 12px;
     text-align: center;
-    border: 2px solid #e0e0e0;
-    transition: all 0.2s;
+    border: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-/* Color-coded status box backgrounds */
+/* Dynamic Status Colors */
 .status-box:has(.status-value.allowed) {
-    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 100%);
-    border-color: #4caf50;
+    background-color: #e3f9e5; /* Soft Green */
+    border: 2px solid #28a745;
+    color: #155724;
 }
 
 .status-box:has(.status-value.prohibited) {
-    background: linear-gradient(135deg, #ffebee 0%, #fef5f6 100%);
-    border-color: #f44336;
+    background-color: #ffeef0; /* Soft Red */
+    border: 2px solid #dc3545;
+    color: #721c24;
 }
 
 .status-box:has(.status-value.restricted) {
-    background: linear-gradient(135deg, #fff8e1 0%, #fffbf0 100%);
-    border-color: #ff9800;
+    background-color: #fff8d6; /* Soft Yellow */
+    border: 2px solid #ffc107;
+    color: #856404;
+}
+
+.status-icon {
+    font-size: 2.2rem;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.status-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.status-value {
+    font-size: 1.1rem;
+    font-weight: 800;
+    padding: 0;
+    background: none;
+    color: inherit;
 }
 
 .status-icon {
@@ -1387,5 +1416,20 @@ footer a:active {
     .left-panel,
     .right-panel {
         padding: 30px;
+    }
+}
+/* FORCE PANEL VISIBILITY (Fixes "Nothing shows up" bug) */
+@media (max-width: 1023px) {
+    .right-panel.mobile-active {
+        display: block !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 200;
+        background: white;
+        overflow-y: auto;
+        padding-top: 60px; /* Space for close button */
     }
 }

@@ -409,6 +409,12 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     const variants = findItemVariants(item);
     const rightPanel = document.getElementById('rightPanel');
 
+    // === NEW FIX START ===
+    // Force the panel to show on mobile
+    rightPanel.classList.remove('hidden'); 
+    rightPanel.classList.add('mobile-active'); 
+    // === NEW FIX END ===
+
     // Build Variant Dropdown
     let variantSelectorHTML = '';
     if (variants.length > 1) {
@@ -549,6 +555,9 @@ function displayCategoryResults(category, skipHistoryPush = false) {
     if (!skipHistoryPush) navManager.pushCategoryState(category);
     
     document.getElementById('middlePanel').classList.remove('hidden');
+    // === ADD THIS MISSING LINE ===
+    document.getElementById('rightPanel').classList.remove('mobile-active');
+    // =============================
     document.getElementById('welcomeMessage')?.classList.add('hidden');
     document.getElementById('countryRulesSection')?.classList.add('hidden');
 
