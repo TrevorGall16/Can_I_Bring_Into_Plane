@@ -2,7 +2,12 @@
 let itemsData = (typeof ITEMS_DATA !== 'undefined') ? ITEMS_DATA : [];
 let autocompleteTimeout = null;
 let currentCountry = 'USA';
-
+// --- HELPER: Mobile Scroll Locking ---
+function toggleMobileBodyLock(isLocked) {
+    if (window.innerWidth < 1024) {
+        document.body.style.overflow = isLocked ? 'hidden' : '';
+    }
+}
 // Setup Set for Saved Items (My Bag)
 let savedItems = new Set(); 
 
@@ -185,8 +190,7 @@ function initializeEventListeners() {
     const countrySelector = document.getElementById('countrySelector');
     const bagFAB = document.getElementById('bagFAB');
 
-    // --- FIX: MOBILE BACK BUTTON LOGIC ---
-    // The ID in your HTML is 'panelBackBtn', not 'middleBackBtn'
+// --- FIX: MOBILE BACK BUTTON LOGIC ---
     const panelBackBtn = document.getElementById('panelBackBtn');
     if (panelBackBtn) {
         panelBackBtn.addEventListener('click', () => {
@@ -194,11 +198,14 @@ function initializeEventListeners() {
             const midPanel = document.getElementById('middlePanel');
             midPanel.classList.add('hidden');
             
-            // Also hide right panel if open, just in case
+            // Also hide right panel if open
             document.getElementById('rightPanel').classList.add('hidden');
             
             // Remove active state
             document.querySelectorAll('.category-item-card').forEach(c => c.classList.remove('active'));
+
+            // ADD THIS: Unlock body scroll so main page works again
+            toggleMobileBodyLock(false);
         });
     }
 
@@ -330,7 +337,8 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     if (!keepMiddlePanel && window.innerWidth < 1024) {
         document.getElementById('middlePanel').classList.add('hidden');
     }
-
+// ADD THIS: Lock body scroll if on mobile
+    toggleMobileBodyLock(true);
     // 3. Get Variants
     let variants = findItemVariants(item);
     variants = variants.filter((v, index, self) =>
@@ -443,12 +451,24 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
                 </a>
             </div>
 
-            <div class="related-items" id="relatedItems"></div>
+  <div class="related-items" id="relatedItems"></div>
         </div>
 
         <div class="ad-inline" id="resultAd">
             <div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div>
         </div>
+
+        <div style="margin-top: 30px; min-height: 600px; background: #f8f9fa; border: 1px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+             <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-8732422930809097"
+                 data-ad-slot="3936050583"
+                 data-ad-format="vertical"
+                 data-full-width-responsive="true"></ins>
+        </div>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
     `;
 
     // Re-attach listeners
@@ -459,18 +479,21 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
         };
     }
 
-    // CLOSE BUTTON LOGIC
+// CLOSE BUTTON LOGIC
     document.getElementById('closeResult')?.addEventListener('click', () => {
-        // Just hide the panel on mobile
         rightPanel.classList.add('hidden');
-        
-        // Clear search
         document.getElementById('searchInput').value = '';
         
-        // Show middle panel again if we were browsing categories on mobile
+        // Show middle panel again if we were browsing categories
         const midPanel = document.getElementById('middlePanel');
+        // Check if middle panel has items populated
         if (midPanel && midPanel.querySelector('.category-item-card')) {
             midPanel.classList.remove('hidden');
+            // We are still in an overlay, so keep Scroll Locked (true)
+            toggleMobileBodyLock(true);
+        } else {
+            // We are going back to Home, so Unlock Scroll
+            toggleMobileBodyLock(false);
         }
     });
 
@@ -521,6 +544,8 @@ function displayCategoryResults(category, skipHistoryPush = false) {
     const midPanel = document.getElementById('middlePanel');
     midPanel.classList.remove('hidden');
     midPanel.scrollTop = 0; // Fix scroll on mobile
+    // ADD THIS: Lock body scroll on mobile
+    toggleMobileBodyLock(true);
 
     document.getElementById('welcomeMessage')?.classList.add('hidden');
     document.getElementById('countryRulesSection')?.classList.add('hidden');
@@ -602,8 +627,12 @@ function showCountryRules(country) {
         <div class="ad-inline"><div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div></div>
     `;
 
+// Add inside showCountryRules
+    toggleMobileBodyLock(true); // Lock when opening rules
+
     document.getElementById('closeResult')?.addEventListener('click', () => {
         rightPanel.classList.add('hidden');
+        toggleMobileBodyLock(false); // Unlock when closing rules
     });
 
     adProvider.refreshInlineAd();
