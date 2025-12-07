@@ -772,68 +772,79 @@ header h1 {
     color: #333;
 }
 
-/* ===== AMAZON BUTTON (OFFICIAL STYLE) ===== */
-.amazon-button-container {
-    margin: 15px 0;
-    text-align: center;
+/* ========================================
+   MODERN ACTION BUTTONS (New & Sleek)
+   ======================================== */
+
+/* Container to hold the buttons */
+.action-buttons-row {
+    display: flex;
+    gap: 15px;
+    margin: 20px 0;
+    flex-wrap: wrap; /* Allows stacking on very small screens */
 }
 
-.amazon-button {
-    display: inline-block;
-    /* This is the specific Amazon 'Buy Now' yellow */
-    background-color: #FFD814; 
-    color: #0F1111;
-    padding: 12px 28px;
-    border-radius: 20px; /* Pill shape is more modern */
-    text-decoration: none;
-    font-weight: 500; /* Slightly lighter weight looks cleaner */
-    font-size: 0.95rem;
-    border: none; /* Removed the heavy border */
-    box-shadow: 0 2px 5px rgba(213, 217, 217, 0.5);
-    transition: all 0.2s ease-in-out;
-}
-
-.amazon-button:hover {
-    background-color: #F7CA00; /* Amazon hover state */
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(213, 217, 217, 0.8);
-}
-
-.amazon-button:active {
-    transform: scale(0.98);
-}
-/* ===== BAG ACTIONS ===== */
-.bag-actions {
-    margin: 15px 0;
-    text-align: center;
-}
-
-.add-to-bag-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #667eea;
-    color: white;
+/* Base Button Style */
+.action-btn {
+    flex: 1; /* Both buttons take equal width */
+    min-width: 200px; /* Prevent getting too squished */
+    padding: 14px 20px;
     border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 600;
+    border-radius: 12px; /* Modern rounded corners */
+    font-size: 1rem;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 3px 6px rgba(102, 126, 234, 0.3);
+    text-decoration: none; /* Removes underline from links */
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Subtle depth */
+    font-family: inherit; /* Ensure font matches app */
 }
 
-.add-to-bag-btn:active {
-    transform: scale(0.98);
+/* Hover Effect for both */
+.action-btn:active {
+    transform: scale(0.98); /* Click press effect */
 }
 
-.add-to-bag-btn.in-bag {
-    background: #e74c3c;
+/* 1. AMAZON BUTTON (The "Golden" Button) */
+.amazon-btn {
+    background: #ffb514; /* Official Amazon Yellow */
+    color: #0F1111; /* Amazon Black */
+}
+.amazon-btn:hover {
+    background: #f76f00; /* Darker yellow on hover */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
-.add-to-bag-btn .btn-icon {
-    font-size: 1.1rem;
+/* 2. BAG BUTTON (The "Action" Button) */
+.action-btn:not(.amazon-btn) {
+    background: #2d3748; /* Professional Slate/Navy */
+    color: white;
+}
+
+.action-btn:not(.amazon-btn):hover {
+    background: #1a202c; /* Darker Navy */
+    box-shadow: 0 6px 12px rgba(45, 55, 72, 0.3);
+}
+
+/* Saved State (Green) */
+.action-btn.saved {
+    background: #48bb78 !important; /* Success Green */
+    color: white !important;
+}
+
+/* Mobile Tweak: Make them stack nicely if needed */
+@media (max-width: 480px) {
+    .action-buttons-row {
+        flex-direction: column;
+    }
+    .action-btn {
+        width: 100%;
+    }
 }
 
 /* ===== RELATED ITEMS ===== */
