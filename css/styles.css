@@ -125,7 +125,7 @@ header {
     text-align: center;
     
     /* Very subtle border bottom instead of the heavy yellow one */
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid #636363;
     
     /* Soft shadow to separate it from the content */
     box-shadow: 0 2px 4px rgba(0,0,0,0.02); 

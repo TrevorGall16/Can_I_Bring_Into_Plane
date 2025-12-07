@@ -392,88 +392,117 @@ function hideAutocomplete() {
 }
 
 // ---------------------------------------------------------
-// DISPLAY ITEM (The Core Function)
+// DISPLAY ITEM (With Sources & Smart Overrides)
 // ---------------------------------------------------------
 function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = false) {
+    // 1. DEFINE SOURCES
+    const countrySources = {
+        'USA': { name: 'TSA.gov', url: 'https://www.tsa.gov/travel/security-screening/whatcanibring/all' },
+        'China': { name: 'CAAC / Customs', url: 'http://www.caac.gov.cn/en/SY/' },
+        'EU': { name: 'EASA / Europa.eu', url: 'https://europa.eu/youreurope/citizens/travel/carry/luggage-restrictions/index_en.htm' },
+        'UK': { name: 'GOV.UK', url: 'https://www.gov.uk/hand-luggage-restrictions' },
+        'Canada': { name: 'CATSA', url: 'https://www.catsa-acsta.gc.ca/en/search/site' },
+        'Australia': { name: 'Home Affairs', url: 'https://www.abf.gov.au/entering-and-leaving-australia/can-you-bring-it-in' },
+        'Japan': { name: 'Narita/Gov', url: 'https://www.narita-airport.jp/en/security/restricted/' },
+        'International': { name: 'ICAO', url: 'https://www.icao.int/Security/SFP/Pages/Passenger-Bag-Security.aspx' },
+        'Thailand': { name: 'Thai Customs', url: 'https://www.customs.go.th/list_strc_simple_neted.php?ini_content=individual_160526_01&lang=en' },
+        'Singapore': { name: 'ICA Singapore', url: 'https://www.ica.gov.sg/enter-transit-depart/entering-singapore/what-you-can-bring' },
+        'Mexico': { name: 'Government of Mexico', url: 'https://www.gob.mx/aduanas' },
+        'UAE': { name: 'UAE Government', url: 'https://u.ae/en/information-and-services/health-and-fitness/drugs-and-controlled-medicines' },
+    };
+
     const scrollKey = `item-${item.id}`;
     navManager.saveScrollPosition(scrollKey);
-
     if (!skipHistoryPush) navManager.pushState(item.id, item.name);
 
     document.getElementById('welcomeMessage')?.classList.add('hidden');
     document.getElementById('countryRulesSection')?.classList.add('hidden');
-    
-    // NOTE: On Mobile, middle panel stays in DOM but might need hiding if it overlaps
     if (!keepMiddlePanel) document.getElementById('middlePanel').classList.add('hidden');
 
-// 1. GET VARIANTS & CLEAN UP
+    // 2. GET VARIANTS & CLEAN UP
     let variants = findItemVariants(item);
-
-    // Filter out exact name duplicates
     variants = variants.filter((v, index, self) =>
-        index === self.findIndex((t) => t.name.trim() === v.name.trim())
+        index === self.findIndex((t) => t.name.trim().toLowerCase() === v.name.trim().toLowerCase())
     );
 
-    // CRITICAL FIX: If all variants have the exact same rules, HIDE the dropdown.
-    // This stops "Nail Clippers" vs "Nail Clippers" from appearing.
-    const allSameRules = variants.every(v => 
-        v.carryOn === variants[0].carryOn && 
-        v.checked === variants[0].checked && 
-        v.note === variants[0].note
-    );
+    // 3. CHECK CUSTOMS (The Override Logic)
+    const getDisplayStatus = (itemToCheck) => {
+        // SAFETY CHECK: Does the item even have a restriction list?
+        const restrictedCountries = itemToCheck.customs_restricted || []; 
+        const isCustomsBanned = restrictedCountries.includes(currentCountry);
+        
+        return {
+            carryOn: isCustomsBanned ? 'prohibited' : itemToCheck.carryOn,
+            checked: isCustomsBanned ? 'prohibited' : itemToCheck.checked,
+            isCustomsBanned: isCustomsBanned
+        };
+    };
 
-    if (allSameRules) {
-        // If they are all the same, just pretend there is only one item
-        variants = [item];
-    }
+    const currentStatus = getDisplayStatus(item);
+
+    // Deduplicate dropdown based on "Effective Rules"
+    const allSameEffectiveRules = variants.every(v => {
+        const s = getDisplayStatus(v);
+        return s.carryOn === currentStatus.carryOn && 
+               s.checked === currentStatus.checked && 
+               v.note === item.note;
+    });
+
+    if (allSameEffectiveRules) variants = [item];
 
     const rightPanel = document.getElementById('rightPanel');
-
-    // ... [Your existing Mobile Fix code is here] ...
     rightPanel.classList.remove('hidden'); 
     rightPanel.classList.add('mobile-active'); 
 
-    // Build Variant Dropdown (Now smarter)
+    // 4. BUILD DROPDOWN
     let variantSelectorHTML = '';
     if (variants.length > 1) {
-        variantSelectorHTML = `
-            <div class="variant-selector">
-                <label>Select option:</label>
-                <select id="variantSelect" class="variant-select">
-                    ${variants.map(v => {
-                        // Extract text inside parentheses if it exists, otherwise use full name
-                        const match = v.name.match(/\(([^)]+)\)/);
-                        let name = match ? match[1] : v.name;
-                        
-                        // Fallback: If the extracted name is too short/empty, use the full name
-                        if (!name || name.trim().length < 2) name = v.name;
+        const usedLabels = new Set();
+        const optionsHTML = variants.map(v => {
+            const match = v.name.match(/\(([^)]+)\)/);
+            let name = match ? match[1] : v.name;
+            if (!name || name.trim().length < 2) name = v.name;
+            
+            if (usedLabels.has(name.toLowerCase())) return '';
+            usedLabels.add(name.toLowerCase());
 
-                        return `<option value="${v.id}" ${v.id === item.id ? 'selected' : ''}>${name}</option>`;
-                    }).join('')}
-                </select>
-            </div>`;
+            const vStatus = getDisplayStatus(v);
+            const icon = vStatus.carryOn === 'allowed' ? '✅' : (vStatus.carryOn === 'prohibited' ? '❌' : '⚠️');
+            return `<option value="${v.id}" ${v.id === item.id ? 'selected' : ''}>${name} ${icon}</option>`;
+        }).join('');
+
+        if (usedLabels.size > 1) {
+            variantSelectorHTML = `<div class="variant-selector"><label>Select option:</label><select id="variantSelect" class="variant-select">${optionsHTML}</select></div>`;
+        }
     }
 
-    // Customs Warning
+    // 5. PREPARE TEXT
+    const finalCarryOnStatus = currentStatus.isCustomsBanned ? 'prohibited' : item.carryOn;
+    const finalCheckedStatus = currentStatus.isCustomsBanned ? 'prohibited' : item.checked;
+    
+    // Explicitly override text if banned by customs
+    const finalCarryOnText = currentStatus.isCustomsBanned ? '❌ Customs Ban' : formatStatus(item.carryOn);
+    const finalCheckedText = currentStatus.isCustomsBanned ? '❌ Customs Ban' : formatStatus(item.checked);
+
     let customsWarningHTML = '';
-    if (item.customs_restricted && item.customs_restricted.includes(currentCountry)) {
+    if (currentStatus.isCustomsBanned) {
         customsWarningHTML = `
             <div class="customs-warning-banner">
-                <div class="customs-warning-icon">🚨</div>
+                <div class="customs-warning-icon">🛂</div>
                 <div class="customs-warning-content">
-                    <strong>CUSTOMS WARNING:</strong> BANNED entering ${currentCountry}. Discard before Customs.
+                    <strong>BORDER CONTROL WARNING:</strong> ${item.name} is strictly <strong>PROHIBITED</strong> from entering ${currentCountry}.
+                    <br><span style="font-size:0.85em">Even if security lets you fly, you must discard it before Customs at your arrival.</span>
                 </div>
             </div>`;
     }
 
-    // Amazon & Bag Buttons
-    const amazonLink = `https://www.amazon.com/s?k=travel+${encodeURIComponent(item.name)}&tag=canibring-20`;
+    const amazonLink = `https://www.amazon.com/s?k=travel+${encodeURIComponent(item.name)}&tag=canibringonpl-20`;
     const isSaved = savedItems.has(item.id);
-    const bagBtnText = isSaved ? '✅ Saved to Bag' : '➕ Add to Bag';
+    const bagBtnText = isSaved ? '✅ Saved' : '➕ Add to Bag';
     const bagBtnClass = isSaved ? 'action-btn saved' : 'action-btn';
+    const sourceData = countrySources[currentCountry] || countrySources['International'];
 
-    // RENDER HTML
-    // IMPORTANT: Include ad-inline-slot container
+    // 6. RENDER HTML
     rightPanel.innerHTML = `
         <div class="result-card" id="resultCard">
             ${keepMiddlePanel ? '' : '<button class="close-btn" id="closeResult">&times;</button>'}
@@ -488,36 +517,45 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
                 <div class="status-box carry-on">
                     <div class="status-icon">🎒</div>
                     <div class="status-label">Carry-On</div>
-                    <div class="status-value ${item.carryOn}">${formatStatus(item.carryOn)}</div>
+                    <div class="status-value ${finalCarryOnStatus}">${finalCarryOnText}</div>
                 </div>
                 <div class="status-box checked">
                     <div class="status-icon">🧳</div>
                     <div class="status-label">Checked Luggage</div>
-                    <div class="status-value ${item.checked}">${formatStatus(item.checked)}</div>
+                    <div class="status-value ${finalCheckedStatus}">${finalCheckedText}</div>
                 </div>
             </div>
 
             ${customsWarningHTML}
 
             <div class="action-buttons-row">
-                <a href="${amazonLink}" target="_blank" class="action-btn amazon-btn">🛒 Shop on Amazon</a>
+                <a href="${amazonLink}" target="_blank" class="action-btn amazon-btn"><i class="fa-brands fa-amazon"></i> Shop on Amazon</a>
                 <button class="${bagBtnClass}" onclick="toggleBagItem(${item.id})">${bagBtnText}</button>
             </div>
 
-            <div class="item-note">${formatNoteToBulletPoints(item.note)}</div>
+           <div class="item-note">
+    ${currentStatus.isCustomsBanned 
+        ? '<strong>⚠️ Do not pack this item. It is prohibited at your destination.</strong>' 
+        : formatNoteToBulletPoints(item.note)
+    }
+</div>
+            
+            <div style="margin-top: 15px; text-align: center; font-size: 0.8rem;">
+                <a href="${sourceData.url}" target="_blank" style="color: #667eea; text-decoration: underline;">
+                    ℹ️ Verify with official ${sourceData.name} website
+                </a>
+            </div>
+
             <div class="related-items" id="relatedItems"></div>
         </div>
 
-        <!-- Ad Slot Container (Must exist for AdProvider) -->
         <div class="ad-inline" id="resultAd">
-            <div class="ad-container">
-                <div id="ad-inline-slot" class="ad-slot"></div>
-            </div>
+            <div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div>
         </div>
     `;
 
     // Re-attach listeners
-    if (variants.length > 1) {
+    if (variants.length > 1 && document.getElementById('variantSelect')) {
         document.getElementById('variantSelect').onchange = (e) => {
             const newItem = itemsData.find(i => i.id === parseInt(e.target.value));
             if (newItem) displayItemResult(newItem, keepMiddlePanel);
@@ -526,14 +564,21 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
 
     if (!keepMiddlePanel) {
         document.getElementById('closeResult')?.addEventListener('click', () => {
-            rightPanel.innerHTML = `<div class="welcome-message"><div class="welcome-icon">🔍</div><h2>Search for any item</h2></div>`;
+            rightPanel.innerHTML = `
+                <div class="welcome-message">
+                    <div class="welcome-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <h2>Search for any item</h2>
+                    <p>Results will appear here...</p>
+                </div>
+                <div class="ad-inline"><div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div></div>
+            `;
             document.getElementById('searchInput').value = '';
+            document.getElementById('rightPanel').classList.remove('mobile-active');
         });
     }
 
     displayRelatedItems(item);
-    adProvider.refreshInlineAd(); // Trigger Ad
-    // SEO Updates
+    adProvider.refreshInlineAd();
     injectSchema(item);
     updateSocialMeta(item);
     navManager.restoreScrollPosition(scrollKey);
@@ -633,7 +678,19 @@ items.forEach(item => {
         list.appendChild(div);
     });
     
-    document.getElementById('rightPanel').innerHTML = `<div class="welcome-message"><h2>Select an item</h2></div>`;
+    // FIX: Include the Ad Slot so money keeps flowing!
+    document.getElementById('rightPanel').innerHTML = `
+        <div class="welcome-message">
+            <div class="welcome-icon"><i class="fa-solid fa-arrow-left"></i></div>
+            <h2>Select an item</h2>
+            <p>Choose an item from the list to see details.</p>
+        </div>
+        <div class="ad-inline">
+            <div class="ad-container">
+                <div id="ad-inline-slot" class="ad-slot"></div>
+            </div>
+        </div>
+    `;
     adProvider.refreshInlineAd();
 }
 
