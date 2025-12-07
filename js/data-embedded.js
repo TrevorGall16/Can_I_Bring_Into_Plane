@@ -266,13 +266,14 @@ const ITEMS_DATA = [
 
     // --- OTHER COMMON ITEMS ---
     {
-        "id": 18, 
+     "id": 18, 
         "name": "Lighter (Disposable)", 
         "carryOn": "allowed", 
         "checked": "prohibited", 
-        "note": "✅ One lighter allowed on your person. ❌ BANNED in checked bags. ❌ Torch/Blue flame lighters banned everywhere. (Source: FAA)", 
+        "note": "✅ USA/EU: One allowed on person. ❌ CHINA/JAPAN: All lighters/matches are STRICTLY BANNED in both carry-on and checked. (Source: CAAC)", 
         "category": ["fire", "smoking"], 
-        "keywords": ["lighter", "bic", "fire"]
+        "keywords": ["lighter", "bic", "fire"],
+        "customs_restricted": ["China", "Thailand"]
     },
     {
         "id": 91, 
@@ -320,5 +321,687 @@ const ITEMS_DATA = [
         "note": "✅ Allowed. Not considered a liquid. (Source: TSA)", 
         "category": ["toiletries", "baby"], 
         "keywords": ["wipes", "wet wipes", "baby"]
+    },
+    // --- RESTORED COMMON ITEMS (You were missing these!) ---
+    {
+        "id": 9, "name": "Shampoo / Conditioner", "carryOn": "restricted", "checked": "allowed", 
+        "note": "⚠️ Liquid rule applies: Max 100ml (3.4oz) per bottle. Unlimited in checked bags. (Source: TSA)", 
+        "category": ["toiletries", "liquids"], "keywords": ["shampoo", "soap", "hair", "conditioner"]
+    },
+    {
+        "id": 41, "name": "Sunscreen (Lotion/Spray)", "carryOn": "restricted", "checked": "allowed", 
+        "note": "⚠️ Liquid rule applies: Max 100ml (3.4oz). Full-size bottles must be checked. (Source: TSA)", 
+        "category": ["toiletries", "liquids"], "keywords": ["sunscreen", "sunblock", "spf"]
+    },
+    {
+        "id": 43, "name": "Makeup (Liquid/Cream)", "carryOn": "restricted", "checked": "allowed", 
+        "note": "⚠️ Mascara, liquid foundation, and creams must be under 100ml. Powder makeup is unrestricted. (Source: TSA)", 
+        "category": ["toiletries", "liquids"], "keywords": ["makeup", "mascara", "foundation", "lipstick"]
+    },
+    {
+        "id": 35, "name": "Headphones / Earbuds", "carryOn": "allowed", "checked": "allowed", 
+        "note": "✅ Allowed. (Source: TSA)", 
+        "category": ["electronics"], "keywords": ["headphones", "earbuds", "airpods", "beats"]
+    },
+    {
+        "id": 36, "name": "Tablet / iPad", "carryOn": "allowed", "checked": "allowed", 
+        "note": "✅ Allowed. Must be removed from bag at security in most airports. (Source: TSA)", 
+        "category": ["electronics"], "keywords": ["tablet", "ipad", "kindle"]
+    },
+    {
+        "id": 32, "name": "Camera (DSLR/Mirrorless)", "carryOn": "allowed", "checked": "allowed", 
+        "note": "✅ Allowed. Recommended in carry-on to prevent theft/damage. (Source: TSA)", 
+        "category": ["electronics"], "keywords": ["camera", "dslr", "lens", "photography"]
+    },
+    {
+        "id": 25, "name": "Baby Formula (Powder/Liquid)", "carryOn": "allowed", "checked": "allowed", 
+        "note": "✅ EXEMPT from liquid rule. You can bring more than 100ml. Tell the TSA officer. (Source: TSA)", 
+        "category": ["baby", "liquids", "food"], "keywords": ["formula", "baby", "milk", "similac"]
+    },
+    {
+        "id": 21, "name": "Snacks (Chips/Cookies)", "carryOn": "allowed", "checked": "allowed", 
+        "note": "✅ Solid foods are allowed. (Source: TSA)", 
+        "category": ["food"], "keywords": ["chips", "cookies", "snacks", "food"]
+    },
+    {
+        "id": 22, "name": "Sandwich / Burger", "carryOn": "allowed", "checked": "allowed", 
+        "note": "✅ Allowed. If it has a lot of sauce/mayo, it might get flagged. (Source: TSA)", 
+        "category": ["food"], "keywords": ["sandwich", "burger", "lunch", "meal"]
+    },
+    {
+        "id": 75, "name": "Electric Toothbrush", "carryOn": "allowed", "checked": "allowed", 
+        "note": "✅ Allowed. (Source: TSA)", 
+        "category": ["toiletries", "electronics"], "keywords": ["toothbrush", "electric"]
+    },
+    {
+        "id": 484, "name": "Knitting Needles", "carryOn": "allowed", "checked": "allowed", 
+        "note": "✅ Allowed. Circular needles recommended. (Source: TSA)", 
+        "category": ["art", "hobbies", "tools"], "keywords": ["knitting", "needles", "yarn"] 
+        // ^^^ ADDED "art" tag so it shows up in your new button
+    },
+    // --- SPORTS EQUIPMENT ---
+    {
+        "id": 300, 
+        "name": "Baseball / Cricket Bat", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ BANNED in cabin (potential weapon). Must be in checked luggage. (Source: TSA)", 
+        "category": ["sports", "weapons"], 
+        "keywords": ["bat", "baseball", "cricket", "softball", "club"]
+    },
+    {
+        "id": 301, 
+        "name": "Golf Clubs", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ BANNED in cabin. Must be checked. Clean clubs to avoid soil/customs issues internationally. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["golf", "clubs", "driver", "putter"]
+    },
+    {
+        "id": 302, 
+        "name": "Tennis / Badminton Racket", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed, but check airline size limits for overhead bins. If it doesn't fit, it must be checked. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["tennis", "racket", "racquet", "badminton", "squash"]
+    },
+    {
+        "id": 303, 
+        "name": "Ice Skates", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed by TSA in carry-on. ⚠️ Warning: Some international airlines (and UK/EU airports) may reject them as 'blades'. Check local rules. (Source: TSA)", 
+        "category": ["sports", "sharp objects"], 
+        "keywords": ["skates", "ice skates", "hockey", "blades"]
+    },
+    {
+        "id": 304, 
+        "name": "Roller Skates / Blades", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed in carry-on and checked bags. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["skates", "rollerblades", "roller"]
+    },
+    {
+        "id": 305, 
+        "name": "Skateboard", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed if it fits under the seat or in overhead bin. Some budget airlines forced check-in. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["skateboard", "skating", "penny board", "longboard"]
+    },
+    {
+        "id": 306, 
+        "name": "Fishing Rod / Pole", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed if it fits airline size limits. ⚠️ Hooks must be securely sheathed/covered. Large tackle must be checked. (Source: TSA)", 
+        "category": ["sports", "sharp objects"], 
+        "keywords": ["fishing", "rod", "pole", "fish"]
+    },
+    {
+        "id": 307, 
+        "name": "Bowling Ball", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed in carry-on. Be careful taking it out of overhead bins! (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["bowling", "ball"]
+    },
+    {
+        "id": 308, 
+        "name": "Yoga Mat", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Counts as your carry-on or personal item depending on airline. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["yoga", "mat", "pilates", "exercise"]
+    },
+    {
+        "id": 309, 
+        "name": "Ski / Hiking Poles", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ BANNED in cabin (sharp points). Must be checked. (Source: TSA)", 
+        "category": ["sports", "sharp objects"], 
+        "keywords": ["ski", "poles", "hiking", "trekking", "walking stick"]
+    },
+    {
+        "id": 310, 
+        "name": "Boxing Gloves", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["boxing", "gloves", "fighting", "mma"]
+    },
+    {
+        "id": 311, 
+        "name": "Helmet (Bike/Sports)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Often clipped to outside of backpack. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["helmet", "bike", "motorcycle", "protection"]
+    },
+    {
+        "id": 312, 
+        "name": "Inflatable Balls (Soccer/Basketball)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. ⚠️ TIP: Deflate partially (to 50%) to prevent bursting/warping due to cabin pressure changes. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["ball", "soccer", "basketball", "football", "volleyball"]
+    },
+    {
+        "id": 313, 
+        "name": "Tent Spikes / Poles", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ Spikes and poles are BANNED in carry-on. The tent fabric can go in carry-on, but metal parts must be checked. (Source: TSA)", 
+        "category": ["sports", "camping"], 
+        "keywords": ["tent", "camping", "stakes", "spikes", "poles"]
+    },
+    {
+        "id": 314, 
+        "name": "Parachute", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Must be packed separately from other luggage. Security may open to inspect. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["parachute", "skydive", "rig"]
+    },
+    {
+        "id": 315, 
+        "name": "Dumbbells / Weights", 
+        "carryOn": "restricted", 
+        "checked": "allowed", 
+        "note": "⚠️ Generally allowed, but security may reject heavy weights as 'blunt force weapons'. Best to check them. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["weights", "dumbbells", "gym", "workout"]
+    },
+    {
+        "id": 316, 
+        "name": "Billiards / Pool Cue", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ BANNED in cabin. Must be checked. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["pool", "cue", "billiards", "snooker"]
+    },
+    {
+        "id": 317, 
+        "name": "Surfboard", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ Too large for cabin. Must be checked (Oversize fees usually apply). Remove fins/wax. (Source: Airline Policies)", 
+        "category": ["sports"], 
+        "keywords": ["surf", "surfboard", "board"]
+    },
+    // --- TOOLS & HOME IMPROVEMENT ---
+    {
+        "id": 400, 
+        "name": "Power Drill", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ Power tools are BANNED in the cabin. Must be checked. Spare lithium batteries for the drill must go in CARRY-ON. (Source: TSA)", 
+        "category": ["tools", "electronics"], 
+        "keywords": ["drill", "power tool", "driver"]
+    },
+    {
+        "id": 401, 
+        "name": "Drill Bits", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed in carry-on (surprisingly!). But keeping them with the drill in checked bags is safer to avoid delays. (Source: TSA)", 
+        "category": ["tools"], 
+        "keywords": ["drill bits", "bit", "tool"]
+    },
+    {
+        "id": 402, 
+        "name": "Hammer", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ Bludgeoning tools are BANNED in cabin. Must be checked. (Source: TSA)", 
+        "category": ["tools"], 
+        "keywords": ["hammer", "mallet", "tool"]
+    },
+    {
+        "id": 403, 
+        "name": "Screwdriver (< 7 inches)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed if overall length is UNDER 7 inches (18cm). (Source: TSA)", 
+        "category": ["tools"], 
+        "keywords": ["screwdriver", "tool", "flathead", "phillips"]
+    },
+    {
+        "id": 404, 
+        "name": "Screwdriver (> 7 inches)", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ Tools longer than 7 inches (18cm) must be checked. (Source: TSA)", 
+        "category": ["tools"], 
+        "keywords": ["screwdriver", "tool", "large tool"]
+    },
+    {
+        "id": 405, 
+        "name": "Wrenches / Pliers", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed if UNDER 7 inches (18cm). Larger ones must be checked. (Source: TSA)", 
+        "category": ["tools"], 
+        "keywords": ["wrench", "pliers", "tool", "spanner"]
+    },
+    {
+        "id": 406, 
+        "name": "Saw / Saw Blades", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ All saws and blades are BANNED in cabin. Must be checked. (Source: TSA)", 
+        "category": ["tools", "sharp objects"], 
+        "keywords": ["saw", "blade", "hacksaw", "chain saw"]
+    },
+    {
+        "id": 407, 
+        "name": "Tape Measure", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. (Source: TSA)", 
+        "category": ["tools"], 
+        "keywords": ["tape measure", "measuring tape"]
+    },
+    {
+        "id": 408, 
+        "name": "Multitool (Leatherman)", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ If it has a blade (almost all do), it must be checked. TSA will confiscate these! (Source: TSA)", 
+        "category": ["tools", "sharp objects"], 
+        "keywords": ["multitool", "leatherman", "swiss army", "utility"]
+    },
+    {
+        "id": 409, 
+        "name": "Crowbar", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ BANNED in cabin. Must be checked. (Source: TSA)", 
+        "category": ["tools"], 
+        "keywords": ["crowbar", "pry bar"]
+    },
+
+    // --- CAMPING & OUTDOOR ---
+    {
+        "id": 420, 
+        "name": "Camping Stove (Used)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed ONLY if completely empty and cleaned of all fuel vapors. If it smells like gas, TSA will seize it. (Source: TSA)", 
+        "category": ["camping", "fire"], 
+        "keywords": ["stove", "camping", "burner", "jetboil"]
+    },
+    {
+        "id": 421, 
+        "name": "Fuel Canister (Gas)", 
+        "carryOn": "prohibited", 
+        "checked": "prohibited", 
+        "note": "❌ FLAMMABLE GAS BANNED everywhere. Do not bring. Buy fuel at destination. (Source: FAA/TSA)", 
+        "category": ["camping", "fire", "hazardous"], 
+        "keywords": ["fuel", "gas", "propane", "butane", "isopro"]
+    },
+    {
+        "id": 422, 
+        "name": "Tent Spikes / Poles", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ Metal spikes are considered potential weapons. Tent fabric can be carry-on, but poles/stakes must be checked. (Source: TSA)", 
+        "category": ["camping"], 
+        "keywords": ["tent", "spikes", "stakes", "poles"]
+    },
+    {
+        "id": 423, 
+        "name": "Bear Spray", 
+        "carryOn": "prohibited", 
+        "checked": "prohibited", 
+        "note": "❌ BANNED. It exceeds the 4oz limit for self-defense sprays and is considered a hazardous material. (Source: TSA/FAA)", 
+        "category": ["camping", "weapons", "hazardous"], 
+        "keywords": ["bear spray", "pepper spray", "mace"]
+    },
+    {
+        "id": 424, 
+        "name": "Cast Iron Skillet", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. It's just heavy! (Source: TSA)", 
+        "category": ["camping", "cooking"], 
+        "keywords": ["skillet", "pan", "cast iron", "cookware"]
+    },
+    {
+        "id": 425, 
+        "name": "Cooler (Empty)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. If bringing ice packs, they must be FROZEN SOLID at security. Slushy ice packs will be confiscated. (Source: TSA)", 
+        "category": ["camping", "food"], 
+        "keywords": ["cooler", "ice chest", "yeti"]
+    },
+
+    // --- FLAMMABLES & DANGEROUS GOODS ---
+    {
+        "id": 440, 
+        "name": "Matches (Safety)", 
+        "carryOn": "allowed", 
+        "checked": "prohibited", 
+        "note": "✅ ONE book of safety matches allowed on your person. ❌ Banned in checked bags. (Source: FAA)", 
+        "category": ["fire"], 
+        "keywords": ["matches", "safety matches"]
+    },
+    {
+        "id": 441, 
+        "name": "Matches (Strike-Anywhere)", 
+        "carryOn": "prohibited", 
+        "checked": "prohibited", 
+        "note": "❌ BANNED completely. They can ignite by friction. (Source: FAA)", 
+        "category": ["fire", "hazardous"], 
+        "keywords": ["matches", "strike anywhere"]
+    },
+    {
+        "id": 442, 
+        "name": "Fireworks / Sparklers", 
+        "carryOn": "prohibited", 
+        "checked": "prohibited", 
+        "note": "❌ EXPLOSIVES BANNED everywhere. Don't even try. (Source: TSA/FAA)", 
+        "category": ["hazardous", "fire"], 
+        "keywords": ["fireworks", "sparklers", "crackers", "explosive"]
+    },
+    {
+        "id": 443, 
+        "name": "Spray Paint", 
+        "carryOn": "prohibited", 
+        "checked": "prohibited", 
+        "note": "❌ BANNED. Aerosol paint is flammable and explosive. (Source: TSA)", 
+        "category": ["art", "hazardous"], 
+        "keywords": ["paint", "spray paint", "aerosol", "graffiti"]
+    },
+    {
+        "id": 444, 
+        "name": "Bleach / Chlorine", 
+        "carryOn": "prohibited", 
+        "checked": "prohibited", 
+        "note": "❌ BANNED. Hazardous chemical. (Source: TSA)", 
+        "category": ["cleaning", "hazardous"], 
+        "keywords": ["bleach", "chlorine", "pool chemicals"]
+    },
+
+    // --- SELF DEFENSE (TRICKY!) ---
+    {
+"id": 460, 
+        "name": "Pepper Spray / Mace", 
+        "carryOn": "prohibited", 
+        "checked": "restricted", 
+        "note": "⚠️ CHECKED ONLY (USA). One 4oz container allowed. 🚨 ILLEGAL in UK, China, Singapore, and many EU countries. (Source: TSA)", 
+        "category": ["weapons", "self-defense"], 
+        "keywords": ["pepper spray", "mace", "spray"],
+        "customs_restricted": ["UK", "China", "Singapore", "Japan", "Thailand", "EU"]
+    },
+    {
+        "id": 461, 
+        "name": "Brass Knuckles", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ BANNED in cabin. Allowed in checked bags, but verify local laws at destination (illegal in many states/countries). (Source: TSA)", 
+        "category": ["weapons"], 
+        "keywords": ["brass knuckles", "knuckles", "weapon"]
+    },
+    {
+        "id": 462, 
+        "name": "Taser / Stun Gun", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "⚠️ CHECKED ONLY. Battery must be removed or rendered inoperable. 🚨 Illegal in many countries. (Source: TSA)", 
+        "category": ["weapons", "electronics"], 
+        "keywords": ["taser", "stun gun", "shock"]
+    },
+    {
+        "id": 463, 
+        "name": "Pocket Knife", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ All knives are BANNED in cabin. Must be checked. (Source: TSA)", 
+        "category": ["weapons", "tools"], 
+        "keywords": ["knife", "blade", "pen knife"]
+    },
+
+    // --- MISCELLANEOUS / HOUSEHOLD ---
+    {
+        "id": 480, 
+        "name": "Cremated Remains (Ashes)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Must pass through X-ray. Container must be wood/plastic (not metal/lead) so X-ray can see inside. TSA will NOT open the container. (Source: TSA)", 
+        "category": ["other"], 
+        "keywords": ["ashes", "cremation", "remains", "urn"]
+    },
+    {
+        "id": 481, 
+        "name": "Snow Globe", 
+        "carryOn": "restricted", 
+        "checked": "allowed", 
+        "note": "⚠️ Liquid rule applies! Only allowed in carry-on if smaller than a tennis ball. Larger ones must be checked. (Source: TSA)", 
+        "category": ["liquids", "other"], 
+        "keywords": ["snow globe", "souvenir", "gift"]
+    },
+    {
+        "id": 482, 
+        "name": "Dry Ice", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Max 5.5 lbs (2.5 kg). Package must be vented (not airtight) to let gas escape. Airline approval usually required. (Source: FAA)", 
+        "category": ["other", "hazardous"], 
+        "keywords": ["dry ice", "ice", "frozen"]
+    },
+    {
+        "id": 483, 
+        "name": "Christmas Crackers", 
+        "carryOn": "prohibited", 
+        "checked": "prohibited", 
+        "note": "❌ BANNED by most airlines (Delta, American, United, etc.) because they contain tiny explosives. (Source: Airline Policies)", 
+        "category": ["other", "holiday"], 
+        "keywords": ["crackers", "christmas", "party poppers"]
+    },
+    {
+        "id": 484, 
+        "name": "Knitting Needles", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Circular needles recommended. Thread cutter blades must be covered. (Source: TSA)", 
+        "category": ["hobbies", "tools"], 
+        "keywords": ["knitting", "needles", "yarn", "crochet"]
+    },
+    {
+        "id": 485, 
+        "name": "Paint (Artist - Acrylic/Water)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Non-flammable paints allowed. Liquid rule (100ml) applies for carry-on. (Source: TSA)", 
+        "category": ["art", "liquids"], 
+        "keywords": ["paint", "acrylic", "watercolor", "art"]
+    },
+    {
+        "id": 486, 
+        "name": "Paint (Oil Based)", 
+        "carryOn": "prohibited", 
+        "checked": "prohibited", 
+        "note": "❌ Often BANNED if flammable (check label for 'Flammable' symbol). Solvents like Turpentine are 100% prohibited. (Source: TSA)", 
+        "category": ["art", "hazardous"], 
+        "keywords": ["oil paint", "solvent", "turpentine"]
+    },
+    // --- HOUSEHOLD & KITCHEN ---
+    {
+        "id": 500, 
+        "name": "Blender", 
+        "carryOn": "restricted", 
+        "checked": "allowed", 
+        "note": "⚠️ CARRY-ON: Allowed ONLY if the blade is removed. ❌ If the blade is attached, it must be checked. (Source: TSA)", 
+        "category": ["household", "electronics", "sharp objects"], 
+        "keywords": ["blender", "vitamix", "nutribullet", "smoothie"]
+    },
+    {
+        "id": 501, 
+        "name": "Coffee Maker / Espresso Machine", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Please wrap the glass pot carefully if checking it! (Source: TSA)", 
+        "category": ["household", "electronics"], 
+        "keywords": ["coffee maker", "espresso", "keurig", "nespresso"]
+    },
+    {
+        "id": 502, 
+        "name": "Pots and Pans", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed in both. Cast iron skillets are also allowed but may require additional screening due to density. (Source: TSA)", 
+        "category": ["household", "cooking"], 
+        "keywords": ["pot", "pan", "skillet", "wok", "cooking"]
+    },
+    {
+        "id": 503, 
+        "name": "Kitchen Knives", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ All knives (steak, chef, paring) are BANNED in the cabin. Must be securely sheathed in checked bags. (Source: TSA)", 
+        "category": ["household", "sharp objects", "weapons"], 
+        "keywords": ["knife", "chef knife", "steak knife", "cutlery"]
+    },
+    {
+        "id": 504, 
+        "name": "Forks and Spoons", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Metal and plastic forks/spoons are allowed. (Source: TSA)", 
+        "category": ["household", "cooking"], 
+        "keywords": ["fork", "spoon", "silverware", "cutlery"]
+    },
+    {
+        "id": 505, 
+        "name": "Corkscrew (No Blade)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed if it does NOT have a small foil-cutting blade attached. (Source: TSA)", 
+        "category": ["household", "tools"], 
+        "keywords": ["corkscrew", "wine opener"]
+    },
+    {
+        "id": 506, 
+        "name": "Corkscrew (With Blade)", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ If it has a small knife/blade for foil, it must be checked. (Source: TSA)", 
+        "category": ["household", "sharp objects"], 
+        "keywords": ["corkscrew", "wine opener", "waiter's friend"]
+    },
+    {
+        "id": 507, 
+        "name": "Clothes Iron / Steamer", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Empty all water before packing to avoid leaks and liquid rule issues. (Source: TSA)", 
+        "category": ["household", "electronics"], 
+        "keywords": ["iron", "steamer", "clothes"]
+    },
+    {
+        "id": 508, 
+        "name": "Microwave / Small Appliances", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed if it fits in the overhead bin (good luck!). Checked is recommended. (Source: TSA)", 
+        "category": ["household", "electronics"], 
+        "keywords": ["microwave", "toaster", "appliance"]
+    },
+    {
+        "id": 509, 
+        "name": "Light Bulbs", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed (LED, CFL, Incandescent). Pack carefully! (Source: TSA)", 
+        "category": ["household"], 
+        "keywords": ["light bulb", "lamp", "lights"]
+    },
+    {
+        "id": 510, 
+        "name": "Extension Cord / Power Strip", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. (Source: TSA)", 
+        "category": ["household", "electronics"], 
+        "keywords": ["extension cord", "power strip", "surge protector"]
+    },
+    {
+        "id": 511, 
+        "name": "Flashlight", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. If it's a large 'tactical' flashlight (over 7 inches), it might be considered a bludgeon (weapon) and require checking. (Source: TSA)", 
+        "category": ["household", "tools", "camping"], 
+        "keywords": ["flashlight", "torch", "light"]
+    },
+    {
+        "id": 512, 
+        "name": "Sewing Kit", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed if scissors are smaller than 4 inches. Needles are allowed. (Source: TSA)", 
+        "category": ["household", "tools"], 
+        "keywords": ["sewing", "needle", "thread"]
+    },
+    {
+        "id": 513, 
+        "name": "Glass Vase / Ceramics", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Carry-on is safer to prevent breakage. (Source: TSA)", 
+        "category": ["household"], 
+        "keywords": ["vase", "glass", "ceramic", "pottery"]
+    },
+    {
+        "id": 514, 
+        "name": "Christmas Lights", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. (Source: TSA)", 
+        "category": ["household", "holiday"], 
+        "keywords": ["lights", "christmas", "holiday", "decorations"]
+    },
+    {
+        "id": 515, 
+        "name": "Vacuum Robot (Roomba)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. ⚠️ Lithium battery rules apply! If checking the robot, you usually must REMOVE the battery and take it in the cabin. (Source: FAA)", 
+        "category": ["household", "electronics", "batteries"], 
+        "keywords": ["vacuum", "roomba", "cleaning"]
+    },
+    {
+        "id": 516, 
+        "name": "Detergent (Liquid)", 
+        "carryOn": "restricted", 
+        "checked": "allowed", 
+        "note": "⚠️ Liquid rule applies: Max 3.4oz (100ml) in carry-on. Unlimited in checked bags. (Source: TSA)", 
+        "category": ["household", "liquids", "cleaning"], 
+        "keywords": ["detergent", "soap", "washing liquid"]
+    },
+    {
+        "id": 517, 
+        "name": "Detergent (Pods/Powder)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Pods and Powder are allowed. Powders over 12oz (350ml) may require extra screening. (Source: TSA)", 
+        "category": ["household", "cleaning"], 
+        "keywords": ["detergent", "pods", "powder", "tide pods"]
     }
+    
 ];

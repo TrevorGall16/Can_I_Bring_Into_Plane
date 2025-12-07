@@ -110,9 +110,28 @@
                     <button class="category-btn" data-category="baby">
                         <i class="fa-solid fa-baby" style="width: 20px; margin-right: 5px;"></i> Baby
                     </button>
-                    <button class="category-btn" data-category="customs">
+<button class="category-btn" data-category="customs">
                         <i class="fa-solid fa-passport" style="width: 20px; margin-right: 5px;"></i> Customs & Biosecurity
                     </button>
+
+                    <button class="category-btn" data-category="camping">
+                        <i class="fa-solid fa-campground" style="width: 20px; margin-right: 5px;"></i> Camping
+                    </button>
+<button class="category-btn" data-category="household">
+    <i class="fa-solid fa-house-chimney" style="width: 20px; margin-right: 5px;"></i> Household
+</button>
+
+<button class="category-btn" data-category="art">
+    <i class="fa-solid fa-palette" style="width: 20px; margin-right: 5px;"></i> Art & Hobbies
+</button>
+
+<button class="category-btn" data-category="weapons">
+    <i class="fa-solid fa-shield-halved" style="width: 20px; margin-right: 5px;"></i> Self Defense
+</button>
+
+<button class="category-btn" data-category="hazardous">
+    <i class="fa-solid fa-triangle-exclamation" style="width: 20px; margin-right: 5px;"></i> Restricted
+</button>
                 </div>
             </section>
 
@@ -175,13 +194,18 @@
         <!-- RIGHT PANEL - Item Details -->
         <div class="right-panel" id="rightPanel">
             <!-- Welcome Message (shown by default) -->
-            <div id="welcomeMessage" class="welcome-message">
-                <div class="welcome-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
-                <h2>Search for any item</h2>
-                <p>Type an item name in the search box or browse by category to see if it's allowed on your flight.</p>
-                <p class="welcome-note">Results will appear here →</p>
+<div id="welcomeMessage" class="welcome-message">
+                <div class="welcome-icon"><i class="fa-solid fa-plane-circle-check"></i></div>
+                <h2>Airport Carry-On Checker</h2>
+                <p style="max-width: 400px; margin: 0 auto; line-height: 1.6;">
+                    Instantly check if an item is allowed in your carry-on or checked luggage. 
+                    <br><br>
+                    <strong>⚠️ Important:</strong> Security rules vary by country and airline and can change constantly. Always double-check with your specific airline before travel.
+                </p>
+                <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee;">
+                    <p style="font-weight: 600; color: #667eea;">Select an item from the list to see details>
+                </div>
             </div>
-
             <!-- Item Result Card -->
             <div id="resultCard" class="result-card hidden">
                 <!-- Content injected by JS -->

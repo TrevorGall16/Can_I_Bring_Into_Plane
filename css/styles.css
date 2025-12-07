@@ -14,66 +14,22 @@ body {
     line-height: 1.6;
     color: #333;
     background-color: #f5f5f5;
-  /* FIX: Lock the height to the screen size */
-    height: 100vh; 
-    overflow: hidden; /* Disable body scroll completely */
+    
+    /* CHANGED: Allow natural scrolling on mobile */
+    min-height: 100vh; 
+    overflow-x: hidden; /* Only hide horizontal wobble */
+    /* REMOVED: height: 100vh and overflow: hidden */
+    
     display: flex;
     flex-direction: column;
-    font-size: 16px; /* CRITICAL: Prevents iOS zoom on input focus */
-    letter-spacing: -0.01em; /* Tighter, more modern look */
+    font-size: 16px; 
+    letter-spacing: -0.01em;
 }
-
 .hidden {
     display: none !important;
 }
 
-/* ===== AD STYLES (MOBILE FIRST) ===== */
-.ad-container {
-    position: relative;
-}
 
-.ad-label {
-    display: block;
-    font-size: 11px;
-    color: #e74c3c;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    background: #ffe5e0;
-    padding: 4px 8px;
-    border-radius: 4px;
-    display: inline-block;
-}
-
-.ad-placeholder {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    text-align: center;
-    padding: 15px;
-    font-size: 12px;
-    border-radius: 8px;
-    border: 2px dashed rgba(255, 255, 255, 0.3);
-    font-weight: 600;
-}
-
-.ad-placeholder p {
-    margin: 3px 0;
-}
-
-.ad-subtext {
-    font-size: 10px;
-    opacity: 0.9;
-}
-
-.ad-cta {
-    font-size: 11px;
-    font-weight: bold;
-    margin-top: 6px;
-    background: rgba(255, 255, 255, 0.2);
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 12px;
-}
 
 /* Mobile: 320x50 banner (DEFAULT) */
 .ad-banner-top {
@@ -201,8 +157,12 @@ header h1 i {
 .left-panel {
     background: #f8f9fa;
     padding: 20px;
-    overflow-y: auto;
-    max-height: calc(100vh - 200px);
+    /* ADDED: Space at bottom for the button */
+    padding-bottom: 100px; 
+    /* CHANGED: Let it scroll naturally */
+    overflow-y: visible; 
+    height: auto;
+    max-height: none;
 }
 
 /* ===== MIDDLE PANEL (MOBILE: Fixed overlay when active) ===== */
@@ -211,17 +171,17 @@ header h1 i {
 }
 
 .middle-panel:not(.hidden) {
-    /* When active on mobile: full-screen overlay */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: white;
-    z-index: 20;
-    overflow-y: auto;
-    display: block;
-}
+        position: static;
+        width: auto;
+        /* CHANGED: Fill the full height */
+        height: 100%; 
+        max-height: none; 
+        z-index: auto;
+        background: white;
+        border-right: 3px solid #bbb;
+        /* ADDED: Allow scrolling inside the panel */
+        overflow-y: auto; 
+    }
 
 .middle-panel .panel-header {
     position: sticky;
@@ -584,8 +544,8 @@ header h1 i {
     position: fixed;
     top: 15px;
     right: 15px;
-    background: rgba(0, 0, 0, 0.1);
-    border: 2px solid rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.9); /* Opaque background to stand out */
+    border: 2px solid rgba(0, 0, 0, 0.1);
     font-size: 32px;
     color: #333;
     cursor: pointer;
@@ -596,8 +556,10 @@ header h1 i {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 35;
+    /* CHANGED: Z-Index must be higher than right-panel (200) */
+    z-index: 201; 
     padding: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .close-btn:active {
@@ -1300,9 +1262,13 @@ footer a:active {
     }
 
     /* Reset panel positioning for desktop */
-    .left-panel {
+.left-panel {
         border-right: 3px solid #bbb;
-        max-height: calc(100vh - 250px);
+        /* CHANGED: Fill the height of the container */
+        height: 100%; 
+        max-height: none; 
+        /* ADDED: Restore the scrollbar */
+        overflow-y: auto; 
         padding: 25px;
     }
 
@@ -1465,20 +1431,48 @@ footer a:active {
         padding: 30px;
     }
 }
-/* FORCE DESKTOP VISIBILITY */
+/* FORCE DESKTOP VISIBILITY & STICKY LAYOUT */
 @media (min-width: 1024px) {
-    .right-panel {
-        display: block !important; /* This makes the Water Bottle appear */
-        height: 100%;
-        overflow-y: auto;
-    }
-    
-    /* Ensure the container fills the space without body scroll */
+    /* 1. Unlock the Main Container so the page can scroll naturally */
     .three-column-container {
         display: grid;
         grid-template-columns: 350px 300px 1fr;
-        height: 100%; /* Fill the flex parent */
-        overflow: hidden; /* Stop the container itself from scrolling */
+        min-height: 100vh;
+        height: auto;
+        overflow: visible; 
+    }
+
+    /* 2. Left Panel: Sticky */
+    .left-panel {
+        height: auto;
+        overflow-y: visible;
+        max-height: none;
+        /* STICKY MAGIC */
+        position: sticky;
+        top: 20px; /* Sticks 20px from the top of the browser */
+        align-self: start; 
+    }
+
+    /* 3. Middle Panel: grows long with content */
+    .middle-panel:not(.hidden) {
+        position: static;
+        width: auto;
+        height: auto; 
+        max-height: none;
+        overflow-y: visible;
+        border-right: 3px solid #bbb;
+    }
+
+    /* 4. Right Panel: Sticky & Visible */
+    .right-panel {
+        display: block !important;
+        height: auto; 
+        overflow-y: visible;
+        /* STICKY MAGIC */
+        position: sticky;
+        top: 20px; 
+        align-self: start;
+        padding-bottom: 50px; /* Extra space for the ad at bottom */
     }
 }
 /* ========================================
@@ -1517,3 +1511,4 @@ footer a:active {
     font-size: 0.8rem;
     opacity: 0.7;
 }
+
