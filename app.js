@@ -7,6 +7,14 @@ function toggleMobileBodyLock(isLocked) {
     if (window.innerWidth < 1024) {
         document.body.style.overflow = isLocked ? 'hidden' : '';
     }
+// --- HELPER: Convert Name to URL Slug ---
+function toSlug(text) {
+    return text.toString().toLowerCase()
+        .trim()
+        .replace(/\s+/g, '-')     // Replace spaces with -
+        .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+        .replace(/\-\-+/g, '-');  // Replace multiple - with single -
+}
 }
 // Setup Set for Saved Items (My Bag)
 let savedItems = new Set(); 
@@ -75,6 +83,9 @@ const adProvider = new AdProvider();
 // ---------------------------------------------------------
 // NAVIGATION MANAGER
 // ---------------------------------------------------------
+// ---------------------------------------------------------
+// NAVIGATION MANAGER
+// ---------------------------------------------------------
 class NavigationManager {
     constructor() { this.scrollPositions = new Map(); }
 
@@ -93,7 +104,8 @@ class NavigationManager {
     pushState(itemId, itemName) {
         try {
             const url = new URL(window.location);
-            url.searchParams.set('item', itemId);
+            // CHANGED: Save the text slug (e.g., "water-bottle") instead of the ID number
+            url.searchParams.set('item', toSlug(itemName));
             window.history.pushState({ itemId, itemName }, '', url);
         } catch (e) {}
     }
@@ -110,11 +122,19 @@ class NavigationManager {
     loadFromURL() {
         try {
             const url = new URL(window.location);
-            const itemId = url.searchParams.get('item');
+            const itemParam = url.searchParams.get('item');
             const category = url.searchParams.get('category');
 
-            if (itemId) {
-                const item = itemsData.find(i => i.id === parseInt(itemId));
+            if (itemParam) {
+                let item;
+                // CHECK: Is it a number (Old Link) or Text (New Link)?
+                if (!isNaN(itemParam)) {
+                    item = itemsData.find(i => i.id === parseInt(itemParam));
+                } else {
+                    // It is a Slug! Find the item by name
+                    item = itemsData.find(i => toSlug(i.name) === itemParam);
+                }
+
                 if (item) { displayItemResult(item, false); return true; }
             } else if (category) {
                 displayCategoryResults(category);
@@ -176,10 +196,30 @@ function resetToHome() {
     if(window.innerWidth >= 1024) {
          document.getElementById('rightPanel').innerHTML = `
             <div class="welcome-message" id="welcomeMessage">
-                <div class="welcome-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
-                <h2>Search for any item</h2>
-                <p>Type an item name in the search box...</p>
-            </div>`;
+                <div class="welcome-icon"><i class="fa-solid fa-plane-circle-check"></i></div>
+                <h2>Airport Carry-On Checker</h2>
+                <p style="max-width: 400px; margin: 0 auto; line-height: 1.6;">
+                    Instantly check if an item is allowed in your carry-on or checked luggage. 
+                    <br><br>
+                    <strong>⚠️ Important:</strong> Security rules vary by country and airline and can change constantly. Always double-check with your specific airline before travel.
+                </p>
+                <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee;">
+                    <p style="font-weight: 600; color: #667eea;">Select an item from the list to see details →</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; min-height: 600px; background: #f8f9fa; border: 1px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                 <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-8732422930809097"
+                     data-ad-slot="3936050583"
+                     data-ad-format="vertical"
+                     data-full-width-responsive="true"></ins>
+            </div>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+            `;
     }
 }
 
@@ -585,15 +625,30 @@ function displayCategoryResults(category, skipHistoryPush = false) {
         list.appendChild(div);
     });
     
-    // Setup desktop view placeholder
+// Setup desktop view placeholder
     if (window.innerWidth >= 1024) {
         document.getElementById('rightPanel').innerHTML = `
             <div class="welcome-message">
-                <div class="welcome-icon"><i class="fa-solid fa-arrow-left"></i></div>
-                <h2>Select an item</h2>
-                <p>Choose an item from the list to see details.</p>
+                <div class="welcome-icon"><i class="fa-solid fa-plane-circle-check"></i></div>
+                <h2>${category.charAt(0).toUpperCase() + category.slice(1)} Items</h2>
+                <p style="margin-bottom: 20px;">Browse the list on the left to see specific rules.</p>
+                <p style="font-size: 0.9em; opacity: 0.7;">Rules can change. Always verify with your airline.</p>
+                <div style="margin-top: 20px; font-weight: 600; color: #667eea;">Select an item to view details →</div>
             </div>
+            
             <div class="ad-inline"><div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div></div>
+
+            <div style="margin-top: 30px; min-height: 600px; background: #f8f9fa; border: 1px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                 <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-8732422930809097"
+                     data-ad-slot="3936050583"
+                     data-ad-format="vertical"
+                     data-full-width-responsive="true"></ins>
+            </div>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
         `;
     }
     adProvider.refreshInlineAd();
@@ -707,7 +762,13 @@ function showMyBagModal() {
 }
 
 function shareItemLink(id) {
-    const url = `${window.location.origin}/?item=${id}`;
+    const item = itemsData.find(i => i.id === id);
+    if (!item) return;
+
+    // Generate SEO-friendly URL
+    const slug = toSlug(item.name);
+    const url = `${window.location.origin}/?item=${slug}`;
+    
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(url).then(() => alert("Link copied! 📋")).catch(() => prompt("Copy link:", url));
     } else {
