@@ -44,7 +44,7 @@ class AdProvider {
             `;
             // Push the ad to Google
             try {
-                (window.adsbygoogle = window.adsbygoogle || []).push({});
+                (adsbygoogle = window.adsbygoogle || []).push({});
             } catch (e) {
                 console.error("AdSense error (Top):", e);
             }
@@ -84,7 +84,7 @@ class AdProvider {
 
             // 5. Trigger Google's script to fill the slot
             try {
-                (window.adsbygoogle = window.adsbygoogle || []).push({});
+                (adsbygoogle = window.adsbygoogle || []).push({});
             } catch (e) {
                 console.error("AdSense refresh error (Inline):", e);
             }
@@ -686,9 +686,17 @@ function shareItemLink(id) {
 }
 
 // Global Exports
-window.showItemById = (id) => { const item = itemsData.find(i => i.id === id); if(item) displayItemResult(item); };
+window.showItemById = (id) => { 
+    const item = itemsData.find(i => i.id === id); 
+    if(item) {
+        // Fix for related items: Check if middle panel is visible/active (for desktop context)
+        const middlePanel = document.getElementById('middlePanel');
+        const isMiddlePanelVisible = middlePanel && !middlePanel.classList.contains('hidden');
+        displayItemResult(item, isMiddlePanelVisible); 
+    }
+};
 window.toggleBagItem = toggleBagItem;
 window.shareItemLink = shareItemLink;
 window.showMyBagModal = showMyBagModal;
 
-console.log('✅ App initialized with Ads & Features!');  
+console.log('✅ App initialized with Ads & Features!');

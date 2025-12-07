@@ -300,21 +300,31 @@ header h1 {
     display: none; /* Hidden by default on mobile */
 }
 
-/* When result card is active on mobile */
-.right-panel:has(.result-card:not(.hidden)),
-.right-panel:has(.welcome-message:not(.hidden)),
-.right-panel:has(.country-rules-section:not(.hidden)) {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: white;
-    z-index: 30;
-    overflow-y: auto;
-    display: block;
-    padding: 20px;
-    padding-top: 60px; /* Space for close button */
+/* Mobile Only: Logic for showing the Right Panel overlay */
+@media (max-width: 1023px) {
+    
+    /* 1. Hide the Welcome Message completely on mobile */
+    /* This ensures users start on the Search screen, not the "Select an item" screen */
+    .right-panel .welcome-message {
+        display: none !important;
+    }
+
+    /* 2. Show the panel ONLY if it has actual content (Result or Rules) */
+    /* We REMOVED the check for 'welcome-message' here */
+    .right-panel:has(.result-card:not(.hidden)),
+    .right-panel:has(.country-rules-section:not(.hidden)) {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: white;
+        z-index: 200; /* High z-index to cover search/categories */
+        overflow-y: auto;
+        display: block;
+        padding: 20px;
+        padding-top: 60px; /* Space for the close button */
+    }
 }
 
 /* ===== COUNTRY SELECTOR ===== */
@@ -730,7 +740,7 @@ header h1 {
     color: #333;
 }
 
-/* ===== AMAZON BUTTON ===== */
+/* ===== AMAZON BUTTON (OFFICIAL STYLE) ===== */
 .amazon-button-container {
     margin: 15px 0;
     text-align: center;
@@ -738,23 +748,28 @@ header h1 {
 
 .amazon-button {
     display: inline-block;
-    background: linear-gradient(135deg, #ff9900 0%, #ffb84d 100%);
-    color: #111;
-    padding: 14px 24px;
-    border-radius: 8px;
+    /* This is the specific Amazon 'Buy Now' yellow */
+    background-color: #FFD814; 
+    color: #0F1111;
+    padding: 12px 28px;
+    border-radius: 20px; /* Pill shape is more modern */
     text-decoration: none;
-    font-weight: 700;
+    font-weight: 500; /* Slightly lighter weight looks cleaner */
     font-size: 0.95rem;
-    border: 2px solid #e88a00;
-    box-shadow: 0 4px 8px rgba(255, 153, 0, 0.3);
-    transition: all 0.2s;
+    border: none; /* Removed the heavy border */
+    box-shadow: 0 2px 5px rgba(213, 217, 217, 0.5);
+    transition: all 0.2s ease-in-out;
+}
+
+.amazon-button:hover {
+    background-color: #F7CA00; /* Amazon hover state */
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(213, 217, 217, 0.8);
 }
 
 .amazon-button:active {
     transform: scale(0.98);
-    box-shadow: 0 2px 4px rgba(255, 153, 0, 0.3);
 }
-
 /* ===== BAG ACTIONS ===== */
 .bag-actions {
     margin: 15px 0;
@@ -1255,20 +1270,35 @@ footer a:active {
         border-left: 4px solid #667eea;
     }
 
+/* ===== RIGHT PANEL (MOBILE: Fixed overlay when active) ===== */
+/* This media query ensures we ONLY touch mobile behavior */
+@media (max-width: 1023px) {
     .right-panel {
-        display: block;
+        display: none; /* Default hidden on mobile */
     }
 
-    .right-panel:has(.result-card:not(.hidden)),
-    .right-panel:has(.welcome-message:not(.hidden)),
-    .right-panel:has(.country-rules-section:not(.hidden)) {
-        position: static;
-        width: auto;
-        height: auto;
-        z-index: auto;
-        padding: 30px;
-        max-height: calc(100vh - 250px);
+    /* CRITICAL FIX: Hide the Welcome Message on mobile so it doesn't block the search bar */
+    .right-panel .welcome-message {
+        display: none !important;
     }
+
+    /* Show panel ONLY if it has a Result Card or Country Rules */
+    /* Removed the check for 'welcome-message' so it stays hidden on load */
+    .right-panel:has(.result-card:not(.hidden)),
+    .right-panel:has(.country-rules-section:not(.hidden)) {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: white;
+        z-index: 200; /* Covers everything */
+        overflow-y: auto;
+        display: block;
+        padding: 20px;
+        padding-top: 60px; /* Space for close button */
+    }
+}
 
     /* Desktop close button - smaller, top-right of content */
     .close-btn {
