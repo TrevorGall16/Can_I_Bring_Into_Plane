@@ -2,120 +2,80 @@
 let itemsData = (typeof ITEMS_DATA !== 'undefined') ? ITEMS_DATA : [];
 let autocompleteTimeout = null;
 let currentCountry = 'USA';
-let currentCategory = null; // NEW: Track active category to refresh on country change
+let currentCategory = null;
 
 // --- HELPER: Mobile Scroll Locking ---
-function toggleMobileBodyLock(isLocked) {
+// We don't need complex locking anymore because we are hiding the background!
+function toggleMobileView(showResult) {
     if (window.innerWidth < 1024) {
-        // When locked (true), body can't scroll. 
-        // The CSS "overflow-y: scroll" on the panel takes over.
-        document.body.style.overflow = isLocked ? 'hidden' : '';
+        const leftPanel = document.querySelector('.left-panel');
+        if (showResult) {
+            leftPanel.classList.add('hidden'); // Hide Home
+            window.scrollTo(0, 0); // Reset scroll to top
+        } else {
+            leftPanel.classList.remove('hidden'); // Show Home
+        }
     }
 }
 
 // --- HELPER: Convert Name to URL Slug ---
 function toSlug(text) {
     return text.toString().toLowerCase()
-        .trim()
-        .replace(/\s+/g, '-')     // Replace spaces with -
-        .replace(/[^\w\-]+/g, '') // Remove all non-word chars
-        .replace(/\-\-+/g, '-');  // Replace multiple - with single -
+        .trim().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '').replace(/\-\-+/g, '-');
 }
 
 // Setup Set for Saved Items (My Bag)
 let savedItems = new Set(); 
-
-// Load saved items from localStorage on startup
 if (localStorage.getItem('myBag')) {
     try {
         const savedIds = JSON.parse(localStorage.getItem('myBag'));
         savedIds.forEach(id => savedItems.add(id));
-    } catch (e) {
-        console.error("Error loading saved bag:", e);
-    }
+    } catch (e) { console.error("Error loading bag:", e); }
 }
 
 // ---------------------------------------------------------
-// NEW FEATURE: RICH CONTENT CONTEXT
+// RICH CONTENT CONTEXT
 // ---------------------------------------------------------
 function getCategoryContext(category, itemName) {
     const contexts = {
-        'liquids': `
-            <h4>💧 The 3-1-1 Liquid Rule Explained</h4>
-            <p>For <strong>${itemName}</strong>, standard airport security rules for liquids apply. You are generally limited to containers of 3.4oz (100ml) or less in your carry-on bag. These must fit comfortably in one quart-sized, clear plastic, zip-top bag. If your container is larger than 3.4oz—even if it is partially empty—it will likely be confiscated at the checkpoint. Pack larger quantities in your checked luggage.</p>`,
-        'electronics': `
-            <h4>🔋 Battery & Fire Safety Rules</h4>
-            <p>When traveling with <strong>${itemName}</strong>, the primary concern is often the battery. Lithium-ion batteries have a risk of overheating (thermal runaway). For this reason, spare batteries and power banks are <strong>forbidden in checked luggage</strong> and must be kept in the cabin with you. Ensure your device is charged enough to power on if requested by security agents.</p>`,
-        'food': `
-            <h4>🍎 X-Ray Screening & Customs</h4>
-            <p>Solid foods like <strong>${itemName}</strong> are generally allowed through security checkpoints. However, you may be asked to remove food items from your bag to facilitate a clear X-ray image. <strong>Warning for International Travel:</strong> Many countries strictly ban fresh fruits, vegetables, and meats to prevent agricultural pests. Always declare food items at customs or discard them before landing.</p>`,
-        'toiletries': `
-            <h4>🧴 Packing Personal Care Items</h4>
-            <p>For <strong>${itemName}</strong>, ensure it complies with the liquids rule if it is a gel, paste, or aerosol. Solid toiletries (like bar soap or stick deodorant) have no size limits. To speed up your security screening, place liquids in a separate bin or an easily accessible part of your carry-on.</p>`,
-        'tools': `
-            <h4>🛠️ Sharp Objects Policy</h4>
-            <p>Security regulations are strict regarding <strong>${itemName}</strong>. Generally, tools longer than 7 inches (approx 18cm) or those with sharp blades/edges are prohibited in the cabin as they are considered potential weapons. To ensure a smooth journey, pack these items securely in your checked luggage with proper sheathing to prevent injury to baggage handlers.</p>`,
-        'weapons': `
-            <h4>⚠️ Zero Tolerance Policy</h4>
-            <p>Items categorized as self-defense or weapons, such as <strong>${itemName}</strong>, are almost universally prohibited in the aircraft cabin. Attempting to bring them through a security checkpoint can result in confiscation, delays, and potential legal action. Always declare firearms and dangerous goods in checked luggage according to strict airline procedures.</p>`,
-        'default': `
-            <h4>ℹ️ General Security Advice</h4>
-            <p>When packing <strong>${itemName}</strong>, always prioritize safety and ease of inspection. If the item is dense, electronic, or metallic, be prepared to remove it from your bag for separate screening. If you are unsure, the safest option is usually to place it in your checked luggage to avoid potential confiscation at the checkpoint.</p>`
+        'liquids': `<h4>💧 The 3-1-1 Liquid Rule Explained</h4><p>For <strong>${itemName}</strong>, standard airport security rules for liquids apply. You are generally limited to containers of 3.4oz (100ml) or less in your carry-on bag.</p>`,
+        'electronics': `<h4>🔋 Battery & Fire Safety Rules</h4><p>When traveling with <strong>${itemName}</strong>, the primary concern is often the battery. Lithium-ion batteries have a risk of overheating (thermal runaway) and must be kept in the cabin.</p>`,
+        'food': `<h4>🍎 X-Ray Screening & Customs</h4><p>Solid foods like <strong>${itemName}</strong> are generally allowed. Warning: International travel often bans fresh agricultural products.</p>`,
+        'toiletries': `<h4>🧴 Packing Personal Care Items</h4><p>For <strong>${itemName}</strong>, ensure it complies with the liquids rule if it is a gel, paste, or aerosol.</p>`,
+        'tools': `<h4>🛠️ Sharp Objects Policy</h4><p>Tools longer than 7 inches or those with sharp blades like <strong>${itemName}</strong> are generally prohibited in the cabin.</p>`,
+        'weapons': `<h4>⚠️ Zero Tolerance Policy</h4><p>Items categorized as self-defense or weapons, such as <strong>${itemName}</strong>, are prohibited in the cabin.</p>`,
+        'default': `<h4>ℹ️ General Security Advice</h4><p>When packing <strong>${itemName}</strong>, always prioritize safety and ease of inspection.</p>`
     };
-
     if (Array.isArray(category)) {
-        for (let c of category) {
-            if (contexts[c]) return contexts[c];
-        }
+        for (let c of category) { if (contexts[c]) return contexts[c]; }
     }
     return contexts['default'];
 }
 
 // ---------------------------------------------------------
-// AD PROVIDER CLASS
+// AD PROVIDER
 // ---------------------------------------------------------
 class AdProvider {
     constructor() {
-        this.inlineAdCounter = 0;
         this.lastRefreshTime = 0;
-        this.minRefreshInterval = 30000; 
         this.clientId = 'ca-pub-8732422930809097'; 
         this.initTopBanner();
     }
-
     initTopBanner() {
         const adSlot = document.getElementById('ad-top-slot');
         if (adSlot) {
-            adSlot.innerHTML = `
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="${this.clientId}"
-                     data-ad-slot="3472136875" 
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-            `;
+            adSlot.innerHTML = `<ins class="adsbygoogle" style="display:block" data-ad-client="${this.clientId}" data-ad-slot="3472136875" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
             try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
         }
     }
-
     refreshInlineAd() {
         const now = Date.now();
-        if (now - this.lastRefreshTime < this.minRefreshInterval) return;
-
-        this.inlineAdCounter++;
+        if (now - this.lastRefreshTime < 30000) return;
         this.lastRefreshTime = now;
-        
         const adContainer = document.getElementById('ad-inline-slot');
         if (adContainer) {
             adContainer.innerHTML = ''; 
-            adContainer.innerHTML = `
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="${this.clientId}"
-                     data-ad-slot="7464897364"
-                     data-ad-format="rectangle"
-                     data-full-width-responsive="true"></ins>
-            `;
+            adContainer.innerHTML = `<ins class="adsbygoogle" style="display:block" data-ad-client="${this.clientId}" data-ad-slot="7464897364" data-ad-format="rectangle" data-full-width-responsive="true"></ins>`;
             try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
         }
     }
@@ -127,19 +87,16 @@ const adProvider = new AdProvider();
 // ---------------------------------------------------------
 class NavigationManager {
     constructor() { this.scrollPositions = new Map(); }
-
     saveScrollPosition(key) {
         const rightPanel = document.getElementById('rightPanel');
         if (rightPanel) this.scrollPositions.set(key, rightPanel.scrollTop);
     }
-
     restoreScrollPosition(key) {
         const rightPanel = document.getElementById('rightPanel');
         if (rightPanel && this.scrollPositions.has(key)) {
             setTimeout(() => { rightPanel.scrollTop = this.scrollPositions.get(key); }, 50);
         }
     }
-
     pushState(itemId, itemName) {
         try {
             const url = new URL(window.location);
@@ -148,7 +105,6 @@ class NavigationManager {
             window.history.pushState({ itemId, itemName }, '', url);
         } catch (e) {}
     }
-
     pushCategoryState(category) {
         try {
             const url = new URL(window.location);
@@ -157,20 +113,13 @@ class NavigationManager {
             window.history.pushState({ category }, '', url);
         } catch (e) {}
     }
-
     loadFromURL() {
         try {
             const url = new URL(window.location);
             const itemParam = url.searchParams.get('item');
             const category = url.searchParams.get('category');
-
             if (itemParam) {
-                let item;
-                if (!isNaN(itemParam)) {
-                    item = itemsData.find(i => i.id === parseInt(itemParam));
-                } else {
-                    item = itemsData.find(i => toSlug(i.name) === itemParam);
-                }
+                let item = !isNaN(itemParam) ? itemsData.find(i => i.id === parseInt(itemParam)) : itemsData.find(i => toSlug(i.name) === itemParam);
                 if (item) { displayItemResult(item, false); return true; }
             } else if (category) {
                 displayCategoryResults(category);
@@ -200,13 +149,11 @@ const countryRules = {
 // INITIALIZATION
 // ---------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
-    if (itemsData.length === 0) console.error("❌ ITEMS_DATA is empty.");
     initializeEventListeners();
     updateBagCounter(); 
     navManager.loadFromURL();
 });
 
-// Handle Browser Back Button
 window.addEventListener('popstate', (event) => {
     if (event.state) {
         if (event.state.itemId) {
@@ -223,44 +170,38 @@ window.addEventListener('popstate', (event) => {
 });
 
 function resetToHome() {
+    // Hide panels
     document.getElementById('middlePanel').classList.add('hidden');
     document.getElementById('rightPanel').classList.add('hidden');
     document.getElementById('rightPanel').innerHTML = ''; 
-    currentCategory = null; // Reset category
+    currentCategory = null;
     
+    // CRITICAL: SHOW HOME PANEL ON MOBILE
+    toggleMobileView(false); 
+
+    // Desktop Welcome Message Logic
     if(window.innerWidth >= 1024) {
          document.getElementById('rightPanel').innerHTML = `
             <div class="welcome-message" id="welcomeMessage">
                 <div class="welcome-icon"><i class="fa-solid fa-plane-circle-check"></i></div>
                 <h2>Airport Carry-On Checker: Our Mission</h2>
                 <p style="max-width: 500px; margin: 0 auto 25px; line-height: 1.6; font-size: 1.05rem; color: #4a5568;">
-                    Traveling should be exciting, not stressful. Our mission is to provide <strong>instant, clear, and accurate information</strong> by aggregating data from major global security authorities.
+                    Traveling should be exciting, not stressful. Our mission is to provide <strong>instant, clear, and accurate information</strong>.
                 </p>
                 <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee;">
                     <p style="font-weight: 600; color: #667eea;">Select an item from the search bar or categories to get started →</p>
                 </div>
             </div>
-
             <section style="padding: 20px 0; max-width: 700px; margin: 0 auto;">
                 <h2 style="font-size: 1.6rem; color: #2d3748; border-bottom: 2px solid #ddd; padding-bottom: 10px; margin-bottom: 25px;">
-                    <i class="fa-solid fa-fire-extinguisher" style="color: #e53935; margin-right: 10px;"></i> The Ultimate Guide: Lithium Batteries, Vaping & Fire Safety
+                    <i class="fa-solid fa-fire-extinguisher" style="color: #e53935; margin-right: 10px;"></i> Guide: Lithium Batteries & Safety
                 </h2>
                 <p style="line-height: 1.7;">
-                    The most common cause of confusion and confiscation at airport security relates to **Lithium-Ion batteries** (found in power banks, laptops, vapes, and drones). The rule is not set by individual airports but by the **FAA** and **IATA** due to the extreme fire risk posed by these batteries in the cargo hold.
-                </p>
-                
-                <h3 style="font-size: 1.2rem; color: #667eea; margin-top: 20px;">Rule #1: Why Loose Batteries Must Be Carry-On</h3>
-                <p style="line-height: 1.7;">
-                    Loose lithium batteries and power banks are **strictly forbidden in checked luggage**. If a battery short circuits or overheats (a process called "thermal runaway"), it must be contained immediately.
+                    The most common cause of confusion is **Lithium-Ion batteries**. The rule is simple: **Loose lithium batteries and power banks are strictly forbidden in checked luggage** and must be in your carry-on.
                 </p>
             </section>
             <div style="margin-top: 30px; min-height: 600px; background: #f8f9fa; border: 1px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                 <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-8732422930809097"
-                     data-ad-slot="3936050583"
-                     data-ad-format="vertical"
-                     data-full-width-responsive="true"></ins>
+                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
             </div>
             <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
             `;
@@ -273,29 +214,22 @@ function initializeEventListeners() {
     const popularTags = document.querySelectorAll('.popular-tag');
     const countrySelector = document.getElementById('countrySelector');
     const bagFAB = document.getElementById('bagFAB');
-
     const panelBackBtn = document.getElementById('panelBackBtn');
+
     if (panelBackBtn) {
         panelBackBtn.addEventListener('click', () => {
-            document.getElementById('middlePanel').classList.add('hidden');
-            document.getElementById('rightPanel').classList.add('hidden');
-            document.querySelectorAll('.category-item-card').forEach(c => c.classList.remove('active'));
-            toggleMobileBodyLock(false);
-            currentCategory = null;
+            resetToHome(); // Use reset function to handle mobile visibility
         });
     }
 
     if (bagFAB) bagFAB.addEventListener('click', showMyBagModal);
 
-    // FIX: REFRESH LIST ON COUNTRY CHANGE
     countrySelector.addEventListener('change', (e) => {
         currentCountry = e.target.value;
         showCountryRules(currentCountry);
         adProvider.refreshInlineAd();
-        
-        // If a category list is currently visible, refresh it to show correct bans!
         if (currentCategory && !document.getElementById('middlePanel').classList.contains('hidden')) {
-            displayCategoryResults(currentCategory, true); // true = skip history push
+            displayCategoryResults(currentCategory, true);
         }
     });
 
@@ -313,9 +247,7 @@ function initializeEventListeners() {
 
     categoryButtons.forEach(button => {
         button.addEventListener('click', () => {
-            toggleMobileBodyLock(true); 
-            const cat = button.getAttribute('data-category');
-            displayCategoryResults(cat);
+            displayCategoryResults(button.getAttribute('data-category'));
             adProvider.refreshInlineAd();
         });
     });
@@ -332,13 +264,9 @@ function initializeEventListeners() {
     });
 }
 
-// ---------------------------------------------------------
-// SEARCH & LOGIC
-// ---------------------------------------------------------
 function handleSearch(query) {
     const autocompleteResults = document.getElementById('autocompleteResults');
     if (query.trim().length < 2) { hideAutocomplete(); return; }
-
     const matches = searchItems(query);
     if (matches.length === 0) {
         autocompleteResults.innerHTML = '<div class="autocomplete-item">No items found</div>';
@@ -390,7 +318,7 @@ function hideAutocomplete() {
 }
 
 // ---------------------------------------------------------
-// DISPLAY ITEM
+// DISPLAY ITEM (Updated for Single-Column Mobile View)
 // ---------------------------------------------------------
 function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = false) {
     const countrySources = {
@@ -415,17 +343,19 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     document.getElementById('welcomeMessage')?.classList.add('hidden');
     document.getElementById('countryRulesSection')?.classList.add('hidden');
     
+    // CRITICAL: Hide middle panel on mobile so we see the result clearly
     if (!keepMiddlePanel && window.innerWidth < 1024) {
         document.getElementById('middlePanel').classList.add('hidden');
     }
-    toggleMobileBodyLock(true);
+    
+    // CRITICAL: HIDE HOME SCREEN ON MOBILE
+    toggleMobileView(true); 
 
     let variants = findItemVariants(item);
     variants = variants.filter((v, index, self) =>
         index === self.findIndex((t) => t.name.trim().toLowerCase() === v.name.trim().toLowerCase())
     );
 
-    // --- REUSEABLE STATUS CHECKER ---
     const getDisplayStatus = (itemToCheck) => {
         const restrictedCountries = itemToCheck.customs_restricted || []; 
         const isCustomsBanned = restrictedCountries.includes(currentCountry);
@@ -525,9 +455,7 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
             }
             </div>
 
-            <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; color: #444;">
-                ${richContext}
-            </div>
+            <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; color: #444;">${richContext}</div>
             
             <div style="margin-top: 15px; text-align: center; font-size: 0.8rem;">
                 <a href="${sourceData.url}" target="_blank" style="color: #667eea; text-decoration: underline;">
@@ -537,18 +465,9 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
 
             <div class="related-items" id="relatedItems"></div>
         </div>
-
-        <div class="ad-inline" id="resultAd">
-            <div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div>
-        </div>
-
+        <div class="ad-inline" id="resultAd"><div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div></div>
         <div style="margin-top: 30px; min-height: 600px; background: #f8f9fa; border: 1px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-             <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-8732422930809097"
-                 data-ad-slot="3936050583"
-                 data-ad-format="vertical"
-                 data-full-width-responsive="true"></ins>
+             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
         </div>
         <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     `;
@@ -563,12 +482,16 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     document.getElementById('closeResult')?.addEventListener('click', () => {
         rightPanel.classList.add('hidden');
         document.getElementById('searchInput').value = '';
+        
+        // Mobile Logic: If going back from result, check if we came from a category
         const midPanel = document.getElementById('middlePanel');
         if (midPanel && midPanel.querySelector('.category-item-card')) {
             midPanel.classList.remove('hidden');
-            toggleMobileBodyLock(true);
+            // We are still in "View 2" (Category List), so keep home hidden
+            toggleMobileView(true); 
         } else {
-            toggleMobileBodyLock(false);
+            // We are going all the way back to home
+            toggleMobileView(false);
         }
     });
 
@@ -578,9 +501,6 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     updateSocialMeta(item);
 }
 
-// ---------------------------------------------------------
-// HELPER FUNCTIONS
-// ---------------------------------------------------------
 function findItemVariants(item) {
     const baseName = item.name.replace(/\s*\([^)]*\)/g, '').trim();
     return itemsData.filter(i => i.name.replace(/\s*\([^)]*\)/g, '').trim().toLowerCase() === baseName.toLowerCase());
@@ -614,18 +534,18 @@ function displayRelatedItems(currentItem) {
 }
 
 // ---------------------------------------------------------
-// FIXED: CATEGORY DISPLAY LOGIC (Respects Country Bans)
+// DISPLAY CATEGORY (Updated for Single-Column Mobile View)
 // ---------------------------------------------------------
 function displayCategoryResults(category, skipHistoryPush = false) {
     if (!skipHistoryPush) navManager.pushCategoryState(category);
-    
-    // SAVE THE CURRENT CATEGORY (for refresh logic)
     currentCategory = category;
 
     const midPanel = document.getElementById('middlePanel');
     midPanel.classList.remove('hidden');
     midPanel.scrollTop = 0; 
-    toggleMobileBodyLock(true);
+    
+    // CRITICAL: HIDE HOME SCREEN ON MOBILE
+    toggleMobileView(true); 
 
     document.getElementById('welcomeMessage')?.classList.add('hidden');
     document.getElementById('countryRulesSection')?.classList.add('hidden');
@@ -635,16 +555,14 @@ function displayCategoryResults(category, skipHistoryPush = false) {
     document.getElementById('categoryCount').textContent = `${items.length} items`;
 
     items.sort((a, b) => {
-        // IMPROVED SORTING: Respect bans in sorting
         const getScore = (item) => {
             const isBanned = item.customs_restricted?.includes(currentCountry);
             const status = isBanned ? 'prohibited' : item.carryOn;
-            
             if (status === 'allowed' && item.checked === 'allowed') return 4;
             if (status === 'allowed') return 3;
             if (item.checked === 'allowed') return 2;
             if (status === 'restricted' || item.checked === 'restricted') return 1;
-            return 0; // prohibited
+            return 0; 
         };
         return getScore(b) - getScore(a);
     });
@@ -652,7 +570,6 @@ function displayCategoryResults(category, skipHistoryPush = false) {
     const list = document.getElementById('categoryItemsList');
     list.innerHTML = '';
     items.forEach(item => {
-        // --- LOGIC FIX: CHECK COUNTRY BAN FOR LIST VIEW ---
         const isBanned = item.customs_restricted && item.customs_restricted.includes(currentCountry);
         let status = isBanned ? 'prohibited' : item.carryOn;
         let displayText = formatStatus(status);
@@ -662,7 +579,6 @@ function displayCategoryResults(category, skipHistoryPush = false) {
             displayText = '❌ Customs Ban';
             displayClass = 'status-prohibited';
         }
-        // --------------------------------------------------
 
         const div = document.createElement('div');
         div.className = 'category-item-card';
@@ -681,25 +597,17 @@ function displayCategoryResults(category, skipHistoryPush = false) {
         list.appendChild(div);
     });
     
-    // Desktop Placeholder with Ad
     if (window.innerWidth >= 1024) {
         document.getElementById('rightPanel').innerHTML = `
             <div class="welcome-message">
                 <div class="welcome-icon"><i class="fa-solid fa-plane-circle-check"></i></div>
                 <h2>${category.charAt(0).toUpperCase() + category.slice(1)} Items</h2>
-                <p style="margin-bottom: 20px; max-width: 450px; margin-left: auto; margin-right: auto; color: #4a5568;">
-                    Our database is sourced from global aviation standards. Browse the list on the left and select an item to see specific rules tailored to your destination country.
-                </p>
+                <p>Our database is sourced from global aviation standards.</p>
                 <div style="margin-top: 20px; font-weight: 600; color: #667eea;">Select an item to view details →</div>
             </div>
             <div class="ad-inline"><div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div></div>
             <div style="margin-top: 30px; min-height: 600px; background: #f8f9fa; border: 1px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                 <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-8732422930809097"
-                     data-ad-slot="3936050583"
-                     data-ad-format="vertical"
-                     data-full-width-responsive="true"></ins>
+                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
             </div>
             <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
         `;
@@ -714,6 +622,7 @@ function showCountryRules(country) {
     
     if (window.innerWidth < 1024) {
         document.getElementById('middlePanel').classList.add('hidden');
+        toggleMobileView(true); // Hide home
     }
     
     rightPanel.classList.remove('hidden');
@@ -734,7 +643,8 @@ function showCountryRules(country) {
 
     document.getElementById('closeResult')?.addEventListener('click', () => {
         rightPanel.classList.add('hidden');
-        toggleMobileBodyLock(false);
+        // Mobile back logic
+        if (window.innerWidth < 1024) toggleMobileView(false);
     });
 
     adProvider.refreshInlineAd();
@@ -745,7 +655,6 @@ function toggleBagItem(id) {
     else savedItems.add(id);
     localStorage.setItem('myBag', JSON.stringify([...savedItems]));
     updateBagCounter();
-    
     const item = itemsData.find(i => i.id === id);
     const rightPanel = document.getElementById('rightPanel');
     if (item && rightPanel && !rightPanel.classList.contains('hidden')) {
@@ -768,40 +677,23 @@ function showMyBagModal() {
     if (savedItems.size === 0) {
         content += '<p>Your bag is empty. Add items to track them!</p>';
     } else {
-        content += `
-            <div style="background:#f8f9fa; padding:10px; border-radius:5px; margin-bottom:15px; display:flex; justify-content:space-around; font-size:0.9em;">
-                <span style="color:green">✅ ${allowedCount} Allowed</span>
-                <span style="color:orange">⚠️ ${restrictedCount} Restricted</span>
-                <span style="color:red">❌ ${prohibitedCount} Prohibited</span>
-            </div>
-            <ul style="list-style:none; padding:0;">`;
-            
+        content += `<div style="background:#f8f9fa; padding:10px; border-radius:5px; margin-bottom:15px; display:flex; justify-content:space-around; font-size:0.9em;"><span style="color:green">✅ ${allowedCount} Allowed</span><span style="color:orange">⚠️ ${restrictedCount} Restricted</span><span style="color:red">❌ ${prohibitedCount} Prohibited</span></div><ul style="list-style:none; padding:0;">`;
         bagList.forEach(item => {
             const icon = item.carryOn === 'allowed' ? '✅' : (item.carryOn === 'prohibited' ? '❌' : '⚠️');
-            content += `<li style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
-                <span>${icon} <strong>${item.name}</strong></span>
-                <button onclick="toggleBagItem(${item.id}); showMyBagModal();" style="color:red; border:none; background:none; cursor:pointer;">Remove</button>
-            </li>`;
+            content += `<li style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;"><span>${icon} <strong>${item.name}</strong></span><button onclick="toggleBagItem(${item.id}); showMyBagModal();" style="color:red; border:none; background:none; cursor:pointer;">Remove</button></li>`;
         });
-        content += '</ul>';
-        content += `<button onclick="savedItems.clear(); localStorage.setItem('myBag', '[]'); updateBagCounter(); showMyBagModal();" style="width:100%; padding:10px; background:#ffebee; color:red; border:none; border-radius:5px; margin-top:10px;">Clear All Items</button>`;
+        content += '</ul><button onclick="savedItems.clear(); localStorage.setItem(\'myBag\', \'[]\'); updateBagCounter(); showMyBagModal();" style="width:100%; padding:10px; background:#ffebee; color:red; border:none; border-radius:5px; margin-top:10px;">Clear All Items</button>';
     }
     
     let modal = document.getElementById('bagModal');
     if (!modal) {
         modal = document.createElement('div');
         modal.id = 'bagModal';
-        modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; display:flex; justify-content:center; align-items:center;';
+        modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:2000; display:flex; justify-content:center; align-items:center;';
         document.body.appendChild(modal);
         modal.onclick = (e) => { if(e.target === modal) modal.remove(); };
     }
-    
-    modal.innerHTML = `
-        <div style="background:white; padding:20px; border-radius:10px; max-width:90%; width:400px; max-height:80vh; overflow-y:auto; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
-            ${content}
-            <button onclick="document.getElementById('bagModal').remove()" style="margin-top:15px; width:100%; padding:10px; background:#eee; border:none; border-radius:5px; cursor:pointer;">Close</button>
-        </div>
-    `;
+    modal.innerHTML = `<div style="background:white; padding:20px; border-radius:10px; max-width:90%; width:400px; max-height:80vh; overflow-y:auto;">${content}<button onclick="document.getElementById('bagModal').remove()" style="margin-top:15px; width:100%; padding:10px; background:#eee; border:none; border-radius:5px; cursor:pointer;">Close</button></div>`;
 }
 
 function shareItemLink(id) {
@@ -827,14 +719,10 @@ window.toggleBagItem = toggleBagItem;
 window.shareItemLink = shareItemLink;
 window.showMyBagModal = showMyBagModal;
 
-// SEO Functions
 function injectSchema(item) {
     const existing = document.getElementById('dynamic-schema');
     if (existing) existing.remove();
-    const schemaData = {
-        "@context": "https://schema.org", "@type": "FAQPage",
-        "mainEntity": [{ "@type": "Question", "name": `Can I bring ${item.name} on a plane?`, "acceptedAnswer": { "@type": "Answer", "text": `Carry-on: ${item.carryOn}. Checked: ${item.checked}.` } }]
-    };
+    const schemaData = { "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{ "@type": "Question", "name": `Can I bring ${item.name} on a plane?`, "acceptedAnswer": { "@type": "Answer", "text": `Carry-on: ${item.carryOn}. Checked: ${item.checked}.` } }] };
     const script = document.createElement('script');
     script.id = 'dynamic-schema';
     script.type = 'application/ld+json';

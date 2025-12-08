@@ -95,22 +95,29 @@ header h1 i {
     font-weight: 500;
 }
 
-/* ===== DISCLAIMER (Base Styles) ===== */
+/* ===== DISCLAIMER (Compact Desktop Version) ===== */
 .disclaimer-banner {
-    position: fixed !important;
-    top: auto !important;     
-    bottom: 10px !important;   
-    left: 20px !important;    
+    position: fixed !important; 
+    bottom: 15px !important;   /* Slightly raised from edge */
+    left: 20px !important;     
     right: auto !important;    
+    top: auto !important;
+    
+    /* COMPACT SIZING */
     width: auto !important;
-    max-width: 880px !important;
+    max-width: 400px !important; /* Reduced from 880px to 400px */
+    
     z-index: 9999 !important; 
-    background: rgba(39, 39, 39, 0.95);
-    border-left: 5px solid #ffffff;
-    border-radius: 4px;
-    padding: 10px 15px;
+    background: rgba(30, 30, 30, 0.92); /* Darker, slightly transparent */
+    border-left: 3px solid #ff4757; /* Thinner accent line */
+    border-radius: 6px;
+    
+    /* SMALLER SPACING & TEXT */
+    padding: 8px 12px !important;
+    font-size: 0.75rem !important; /* 12px text instead of 16px */
+    line-height: 1.35 !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    color: #ffffff !important; 
+    color: #e0e0e0 !important; 
 }
 
 .disclaimer-mobile-only {
@@ -733,197 +740,181 @@ footer {
 }
 footer a { color: #cdd6ff; text-decoration: none; }
 
+/* ========================================
+   MOBILE-FIRST RESPONSIVE ARCHITECTURE
+   ======================================== */
+
+/* ===== RESET & BASE (MOBILE DEFAULT) ===== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+    min-height: 100vh; 
+    overflow-x: hidden; 
+    display: flex;
+    flex-direction: column;
+    font-size: 16px; 
+    letter-spacing: -0.01em;
+}
+
+.hidden { display: none !important; }
+
+/* Ad Banners */
+.ad-banner-top { background-color: #f9f9f9; padding: 10px; text-align: center; border-bottom: 2px solid #e0e0e0; min-height: 70px; overflow: hidden; }
+.ad-banner-top .ad-placeholder { max-width: 320px; height: 50px; margin: 0 auto; display: flex; align-items: center; justify-content: center; flex-direction: column; font-size: 10px; }
+.ad-inline { margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 8px; max-width: 100%; }
+
+/* Header */
+header { background-color: #ffffff; color: #1a202c; padding: 20px; text-align: center; border-bottom: 1px solid #636363; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+header h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 4px; color: #2d3748; letter-spacing: -0.5px; }
+header h1 i { color: #667eea; }
+.tagline { font-size: 0.9rem; color: #718096; font-weight: 500; }
+
+/* Disclaimer (Base) */
+.disclaimer-banner {
+    position: fixed !important; bottom: 10px !important; left: 20px !important; right: auto !important; top: auto !important;
+    width: auto !important; max-width: 880px !important; z-index: 9999 !important;
+    background: rgba(39, 39, 39, 0.95); border-left: 5px solid #ffffff; border-radius: 4px; padding: 10px 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); color: #ffffff !important;
+}
+.disclaimer-mobile-only { display: none; }
+.disclaimer-banner strong { font-weight: 700; color: #ff3c4f; }
+
+/* Layout Containers */
+.three-column-container { flex: 1; min-height: 0; background: white; position: relative; }
+.left-panel { background: #f8f9fa; padding: 20px; padding-bottom: 100px; overflow-y: visible; height: auto; }
+
+/* Middle Panel */
+.middle-panel { display: none; } /* Hidden by default */
+.middle-panel .panel-header {
+    position: sticky; top: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-bottom: 2px solid #e0e0e0; z-index: 21; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.panel-back-btn { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 8px 15px; border-radius: 6px; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+.category-item-card { padding: 15px; border-bottom: 1px solid #e0e0e0; cursor: pointer; transition: all 0.2s ease; }
+.category-item-card:active { background: #f0f0f0; }
+.status-allowed { background: #d4edda; color: #155724; padding: 3px 8px; border-radius: 4px; font-weight: 500; font-size: 0.75rem; }
+.status-restricted { background: #fff3cd; color: #856404; padding: 3px 8px; border-radius: 4px; font-weight: 500; font-size: 0.75rem; }
+.status-prohibited { background: #f8d7da; color: #721c24; padding: 3px 8px; border-radius: 4px; font-weight: 500; font-size: 0.75rem; }
+
+/* Right Panel */
+.right-panel { display: none; } 
+
+/* Components */
+.country-section, .search-section, .categories-section, .popular-section { background: white; padding: 15px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); }
+.search-input, .country-selector { width: 100%; padding: 12px 14px; font-size: 16px; border: 2px solid #ddd; border-radius: 8px; outline: none; }
+.category-btn { background: white; border: 2px solid #e0e0e0; padding: 12px 15px; border-radius: 8px; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+.popular-tag { background: #f0f0f0; border: 1px solid #ddd; padding: 8px 12px; border-radius: 15px; cursor: pointer; font-size: 0.85rem; margin: 4px; display: inline-block; }
+
+/* Welcome Message */
+.welcome-message { text-align: center; padding: 40px 20px; color: #666; }
+.welcome-icon { font-size: 3rem; margin-bottom: 15px; opacity: 0.5; }
+
+/* Result Card */
+.result-card { animation: fadeIn 0.3s ease-in; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+.close-btn { position: fixed; top: 15px; right: 15px; background: rgba(255, 255, 255, 0.9); border: 2px solid rgba(0, 0, 0, 0.1); font-size: 32px; color: #333; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 201; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+.item-name { font-size: 1.5rem; color: #333; margin-bottom: 15px; padding-right: 50px; }
+
+/* Status Grid */
+.status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+.status-box { padding: 20px 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.status-box:has(.status-value.allowed) { background-color: #e3f9e5; border: 2px solid #28a745; color: #155724; }
+.status-box:has(.status-value.prohibited) { background-color: #ffeef0; border: 2px solid #dc3545; color: #721c24; }
+.status-box:has(.status-value.restricted) { background-color: #fff8d6; border: 2px solid #ffc107; color: #856404; }
+.status-icon { font-size: 2.2rem; margin-bottom: 5px; display: block; }
+.status-value { font-size: 1.1rem; font-weight: 800; }
+
+/* Buttons & FAB */
+.action-buttons-row { display: flex; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
+.action-btn { flex: 1; min-width: 200px; padding: 14px 20px; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; text-decoration: none; text-align: center; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.amazon-btn { background: #ffb514; color: #0F1111; }
+.action-btn:not(.amazon-btn) { background: #2d3748; }
+.bag-fab { position: fixed; bottom: 20px; right: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 50px; padding: 14px 20px; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 700; cursor: pointer; box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4); z-index: 1000; }
+.bag-fab .fab-text { display: none; }
+.bag-counter { background: #ff4757; color: white; border-radius: 20px; padding: 4px 10px; font-size: 0.8rem; font-weight: 700; }
+
+/* Modal & Footer */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 10px; }
+.modal-content { background: white; border-radius: 12px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+footer { background: #414141; color: white; padding: 7px 15px; text-align: center; margin-top: auto; font-size: 0.65rem; }
+footer a { color: #cdd6ff; text-decoration: none; }
+
 /* =================================================================
-   1. MOBILE FIXES (Phones & Tablets)
+   1. MOBILE & TABLET STYLES (App-Like Flow)
    ================================================================= */
 @media (max-width: 1023px) {
+    /* HIDE the Left Panel when switching views */
+    .left-panel.hidden { display: none !important; }
 
-    /* FIX: Force Panels to Scroll Independently */
-    .middle-panel, 
-    .right-panel {
-        display: none; /* Hidden by default */
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-        background: white !important;
-        z-index: 99999 !important; /* Highest priority */
-        
-        /* ENABLE SCROLLING */
-        overflow-y: scroll !important; 
-        -webkit-overflow-scrolling: touch !important;
-        overscroll-behavior: contain; /* Prevents body scroll when panel ends */
-        
-        margin: 0 !important;
-        padding-bottom: 80px !important; /* Space for bottom scroll */
+    /* Force Panels to take full screen naturally */
+    .middle-panel, .right-panel {
+        display: none; 
+        width: 100%;
+        min-height: 100vh;
+        background: white;
+        margin: 0;
+        padding-bottom: 80px;
     }
-
-    /* Show panel when active */
+    
+    /* When active, show them as blocks (not fixed/floating) */
     .middle-panel:not(.hidden), 
     .right-panel:not(.hidden) {
         display: block !important;
     }
 
-    /* FIX: Tame the Disclaimer */
-    .disclaimer-banner:not(.disclaimer-mobile-only) {
-        display: none !important; /* Hide desktop version */
-    }
-
+    /* Disclaimer fixes */
+    .disclaimer-banner:not(.disclaimer-mobile-only) { display: none !important; }
     .disclaimer-mobile-only {
-        display: block !important;
-        position: static !important; /* Sit in flow, don't float */
-        width: 100% !important;
-        margin: 10px 0 !important;
-        padding: 10px !important;
-        font-size: 0.75rem !important;
-        background: #fff3cd !important;
-        color: #856404 !important;
-        border: 1px solid #ffeeba !important;
-        text-align: center;
-        box-shadow: none !important;
-    }
-
-    /* Ensure Headers Stick to Top of Panel */
-    .panel-header {
-        position: sticky;
-        top: 0;
-        z-index: 100000;
+        display: block !important; position: static !important; width: 100% !important; margin: 10px 0 !important; padding: 10px !important; font-size: 0.75rem !important; background: #fff3cd !important; color: #856404 !important; border: 1px solid #ffeeba !important; text-align: center; box-shadow: none !important;
     }
 }
 
 /* =================================================================
-   2. DESKTOP ONLY STYLES (Laptops & PC)
+   2. DESKTOP STYLES (Grid Layout)
    ================================================================= */
 @media (min-width: 1024px) {
-
-    /* Desktop Close Button (Small, Top-Right) */
-    .close-btn {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: auto;
-        height: auto;
-        background: none;
-        border: none;
-        font-size: 28px;
-        color: #999;
-        border-radius: 0;
-    }
-    .close-btn:hover {
-        color: #333;
-        background: none;
-    }
-
-    /* Desktop Hover Effects (Prevent 'Sticky' buttons on mobile) */
-    .category-btn:hover {
-        border-color: #667eea;
-        background: #f8f9ff;
-        transform: translateY(-1px);
-    }
-    .popular-tag:hover, .related-tag:hover {
-        background: #667eea;
-        color: white;
-        border-color: #667eea;
-    }
-    .autocomplete-item:hover {
-        background: #f5f5f5;
-    }
-    .amazon-button:hover {
-        background: linear-gradient(135deg, #ffb84d 0%, #ff9900 100%);
-        box-shadow: 0 6px 12px rgba(255, 153, 0, 0.4);
-        transform: translateY(-2px);
-    }
-    .add-to-bag-btn:hover {
-        background: #5568d3;
-        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
-        transform: translateY(-1px);
-    }
-    .bag-fab:hover {
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-        transform: translateY(-3px);
-    }
-    .bag-item:hover {
-        background: #f8f9fa;
-    }
-    .bag-item-remove:hover {
-        background: #c0392b;
-    }
-
-    /* 3-Column Layout & Sticky Panels */
     .three-column-container {
         display: grid;
-        grid-template-columns: 350px 300px 1fr;
+        grid-template-columns: 350px 300px 1fr; /* Default 3 columns */
         min-height: 100vh;
-        height: auto;
-        overflow: visible; 
     }
+    
+    /* CRITICAL FIX: If middle panel is hidden, stretch right panel */
+    .three-column-container:has(.middle-panel.hidden) {
+        grid-template-columns: 350px 1fr;
+    }
+    
+    /* Left Panel: Sticky Sidebar */
     .left-panel {
-        height: auto;
-        overflow-y: visible;
+        height: 100vh; /* Fill height */
         position: sticky;
-        top: 20px;
-        align-self: start; 
-        border-right: 3px solid #bbb;
-        padding: 25px;
+        top: 0;
+        overflow-y: auto;
+        border-right: 1px solid #ddd;
     }
+
+    /* Middle Panel */
     .middle-panel:not(.hidden) {
-        position: static;
-        width: auto;
-        height: auto; 
-        max-height: none;
-        overflow-y: visible;
-        border-right: 3px solid #bbb;
-        max-height: calc(100vh - 250px);
-    }
-    .middle-panel { display: block; }
-    .middle-panel.hidden { display: none; }
-    .middle-panel .panel-header { padding: 20px; }
-    .middle-panel .panel-header h3 { font-size: 1.2rem; }
-    .middle-panel .item-count { font-size: 0.85rem; }
-    .panel-back-btn { display: none; }
-
-    .right-panel {
         display: block !important;
-        height: auto; 
-        overflow-y: visible;
-        position: sticky;
-        top: 20px; 
-        align-self: start;
-        padding-bottom: 50px;
+        height: 100vh;
+        overflow-y: auto;
+        border-right: 1px solid #ddd;
     }
-}
 
-/* =================================================================
-   3. LARGE SCREENS (Wide Monitors)
-   ================================================================= */
-@media (min-width: 1440px) {
-    header h1 { font-size: 2rem; }
-    .item-name { font-size: 1.9rem; }
-    .left-panel, .right-panel { padding: 30px; }
-}
+    /* Right Panel */
+    .right-panel {
+        display: block !important; /* Always visible on desktop */
+        height: 100vh;
+        overflow-y: auto;
+        padding: 40px;
+    }
 
-/* =================================================================
-   4. ENGAGEMENT BOOSTERS (Tags & Chips)
-   ================================================================= */
-.related-tag, .popular-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: white;
-    border: 1px solid #e2e8f0;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #2d3748;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    margin: 4px;
-}
-.related-tag::before {
-    content: "🔎"; 
-    font-size: 0.8rem;
-    opacity: 0.7;
+    /* Hide Mobile Buttons */
+    .close-btn, .panel-back-btn, .disclaimer-mobile-only { display: none !important; }
+    
+    /* Desktop Hover Effects */
+    .category-btn:hover { background: #f8f9ff; border-color: #667eea; }
+    .bag-fab .fab-text { display: inline; }
 }
