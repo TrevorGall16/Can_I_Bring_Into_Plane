@@ -14,22 +14,17 @@ body {
     line-height: 1.6;
     color: #333;
     background-color: #f5f5f5;
-    
-    /* CHANGED: Allow natural scrolling on mobile */
     min-height: 100vh; 
-    overflow-x: hidden; /* Only hide horizontal wobble */
-    /* REMOVED: height: 100vh and overflow: hidden */
-    
+    overflow-x: hidden; 
     display: flex;
     flex-direction: column;
     font-size: 16px; 
     letter-spacing: -0.01em;
 }
+
 .hidden {
     display: none !important;
 }
-
-
 
 /* Mobile: 320x50 banner (DEFAULT) */
 .ad-banner-top {
@@ -38,7 +33,7 @@ body {
     text-align: center;
     border-bottom: 2px solid #e0e0e0;
     min-height: 70px;
-    overflow: hidden; /* Hide overflow on mobile */
+    overflow: hidden; 
 }
 
 .ad-banner-top .ad-placeholder {
@@ -61,7 +56,7 @@ body {
     padding: 10px;
     background: #f9f9f9;
     border-radius: 8px;
-    max-width: 100%; /* Ensure it respects container width */
+    max-width: 100%; 
 }
 
 .ad-rectangle {
@@ -74,68 +69,53 @@ body {
 
 /* ===== HEADER ===== */
 header {
-    background-color: #ffffff; /* Pure White */
-    color: #1a202c; /* Dark Grey text (softer than black) */
-    
+    background-color: #ffffff; 
+    color: #1a202c; 
     padding: 20px; 
     text-align: center;
-    
-    /* Very subtle border bottom instead of the heavy yellow one */
     border-bottom: 1px solid #636363;
-    
-    /* Soft shadow to separate it from the content */
     box-shadow: 0 2px 4px rgba(0,0,0,0.02); 
 }
 
 header h1 {
     font-size: 1.6rem;
-    font-weight: 800; /* Extra bold looks premium */
+    font-weight: 800; 
     margin-bottom: 4px;
     color: #2d3748;
     letter-spacing: -0.5px;
 }
 
-/* Make the icon match your brand blue */
 header h1 i {
     color: #667eea; 
 }
 
 .tagline {
     font-size: 0.9rem;
-    color: #718096; /* Light grey for subtitle */
+    color: #718096; 
     font-weight: 500;
 }
 
-/* ========================================
-   FINAL DISCLAIMER POSITION FIX
-   ======================================== */
+/* ===== DISCLAIMER (Base Styles) ===== */
 .disclaimer-banner {
     position: fixed !important;
-    
-    /* Force it to the Bottom Left */
-    top: auto !important;      /* Stop it from going to the top */
-    bottom: 10px !important;   /* 20px from bottom */
-    left: 20px !important;     /* 20px from left */
-    right: auto !important;    /* Stop it from going to the right */
-    
-    /* Sizing */
+    top: auto !important;     
+    bottom: 10px !important;   
+    left: 20px !important;    
+    right: auto !important;    
     width: auto !important;
     max-width: 880px !important;
-    
-    /* Visuals */
-    z-index: 9999 !important; /* Ensure it sits on top of everything */
+    z-index: 9999 !important; 
     background: rgba(39, 39, 39, 0.95);
     border-left: 5px solid #ffffff;
     border-radius: 4px;
     padding: 10px 15px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    color: #ffffff !important; /* Dark Grey (Standard readable text) */
-}
-/* ADD THIS LINE: Hide mobile version by default */
-.disclaimer-mobile-only {
-    display: none;
+    color: #ffffff !important; 
 }
 
+.disclaimer-mobile-only {
+    display: none; /* Hidden by default, shown in mobile media query */
+}
 
 .disclaimer-banner:hover {
     opacity: 1;
@@ -147,46 +127,28 @@ header h1 i {
     color: #ff3c4f;
 }
 
-/* ===== THREE-COLUMN LAYOUT - MOBILE FIRST ===== */
-/* Mobile: Stack vertically (single column) */
+/* ===== THREE-COLUMN LAYOUT ===== */
 .three-column-container {
-/* FIX: Use Flexbox to fill remaining space automatically */
     flex: 1; 
-    min-height: 0; /* CRITICAL: Allows internal panels to scroll independently */
+    min-height: 0; 
     background: white;
-    flex: 1;
     position: relative;
 }
 
-/* ===== LEFT PANEL (MOBILE: Always visible by default) ===== */
+/* Left Panel */
 .left-panel {
     background: #f8f9fa;
     padding: 20px;
-    /* ADDED: Space at bottom for the button */
     padding-bottom: 100px; 
-    /* CHANGED: Let it scroll naturally */
     overflow-y: visible; 
     height: auto;
     max-height: none;
 }
 
-/* ===== MIDDLE PANEL (MOBILE: Fixed overlay when active) ===== */
+/* Middle Panel */
 .middle-panel {
-    display: none; /* Hidden by default on mobile */
+    display: none; 
 }
-
-.middle-panel:not(.hidden) {
-        position: static;
-        width: auto;
-        /* CHANGED: Fill the full height */
-        height: 100%; 
-        max-height: none; 
-        z-index: auto;
-        background: white;
-        border-right: 3px solid #bbb;
-        /* ADDED: Allow scrolling inside the panel */
-        overflow-y: auto; 
-    }
 
 .middle-panel .panel-header {
     position: sticky;
@@ -213,7 +175,7 @@ header h1 i {
     opacity: 0.9;
 }
 
-/* Mobile Back Button (visible only on mobile) */
+/* Panel Back Button */
 .panel-back-btn {
     background: rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -273,75 +235,13 @@ header h1 i {
     font-weight: 500;
 }
 
-.status-allowed {
-    background: #d4edda;
-    color: #155724;
-}
+.status-allowed { background: #d4edda; color: #155724; }
+.status-restricted { background: #fff3cd; color: #856404; }
+.status-prohibited { background: #f8d7da; color: #721c24; }
 
-.status-restricted {
-    background: #fff3cd;
-    color: #856404;
-}
-
-.status-prohibited {
-    background: #f8d7da;
-    color: #721c24;
-}
-
-/* ===== RIGHT PANEL (MOBILE: Fixed overlay when active) ===== */
+/* Right Panel */
 .right-panel {
-    display: none; /* Hidden by default on mobile */
-}
-
-/* Mobile Only: Logic for showing the Right Panel overlay */
-@media (max-width: 1023px) {
-    
-    /* CRITICAL FIX 1: Aggressively force single-column stacking */
-    .three-column-container {
-        display: block !important; 
-        width: 100%;
-        height: auto; 
-    }
-
-    /* CRITICAL FIX 2: Reset the Left Panel to flow normally */
-    .left-panel {
-        width: 100%;
-        height: auto;
-        position: relative;
-        padding-bottom: 20px;
-        overflow: visible;
-        border-right: none;
-    }
-
-    /* CRITICAL FIX 3: Ensure overlays are 100% viewport size and fixed */
-    .middle-panel, .right-panel {
-        position: fixed !important; 
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-        box-sizing: border-box !important;
-        margin: 0 !important;
-    }
-
-    /* Standard Mobile Logic */
-    .middle-panel {
-        display: none;
-    }
-
-    .right-panel .welcome-message {
-        display: none !important;
-    }
-
-    .right-panel:has(.result-card:not(.hidden)),
-    .right-panel:has(.country-rules-section:not(.hidden)) {
-        background: white;
-        z-index: 200;
-        overflow-y: auto;
-        display: block;
-        padding: 20px;
-        padding-top: 60px;
-    }
+    display: none; 
 }
 
 /* ===== COUNTRY SELECTOR ===== */
@@ -361,15 +261,10 @@ header h1 i {
     color: #333;
 }
 
-.country-icon {
-    font-size: 1.1rem;
-    margin-right: 5px;
-}
-
 .country-selector {
     width: 100%;
     padding: 12px 14px;
-    font-size: 16px; /* CRITICAL: Prevents iOS zoom */
+    font-size: 16px; 
     border: 2px solid #ddd;
     border-radius: 8px;
     background: white;
@@ -403,7 +298,7 @@ header h1 i {
 .search-input {
     width: 100%;
     padding: 12px 14px;
-    font-size: 16px; /* CRITICAL: Prevents iOS zoom */
+    font-size: 16px; 
     border: 2px solid #ddd;
     border-radius: 8px;
     outline: none;
@@ -434,13 +329,8 @@ header h1 i {
     border-bottom: 1px solid #f0f0f0;
 }
 
-.autocomplete-item:active {
-    background: #e8ecff;
-}
-
-.autocomplete-item:last-child {
-    border-bottom: none;
-}
+.autocomplete-item:active { background: #e8ecff; }
+.autocomplete-item:last-child { border-bottom: none; }
 
 /* ===== CATEGORIES SECTION ===== */
 .categories-section {
@@ -459,25 +349,23 @@ header h1 i {
 
 .categories-grid {
     display: grid;
-    grid-template-columns: 1fr; /* Mobile: Single column */
+    grid-template-columns: 1fr;
     gap: 10px;
 }
 
 .category-btn {
     background: white;
     border: 2px solid #e0e0e0;
-    padding: 12px 15px; /* Slightly more compact */
+    padding: 12px 15px;
     border-radius: 8px;
     font-size: 0.95rem;
     cursor: pointer;
     transition: all 0.2s;
-    
-    /* NEW FLEXBOX ALIGNMENT */
-    display: flex;           /* Forces Icon and Text into a row */
-    align-items: center;     /* Centers them vertically */
-    justify-content: flex-start; /* Aligns them to the left */
-    gap: 10px;               /* Clean space between icon and text */
-    text-align: left;        /* Failsafe for older browsers */
+    display: flex;           
+    align-items: center;     
+    justify-content: flex-start; 
+    gap: 10px;               
+    text-align: left;        
 }
 
 .category-btn:active {
@@ -545,12 +433,6 @@ header h1 i {
     margin-bottom: 8px;
 }
 
-.welcome-note {
-    font-size: 0.85rem;
-    color: #999;
-    font-style: italic;
-}
-
 /* ===== RESULT CARD ===== */
 .result-card {
     position: relative;
@@ -558,22 +440,16 @@ header h1 i {
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* Close Button - LARGE and VISIBLE on mobile */
+/* Close Button (Mobile Default) */
 .close-btn {
     position: fixed;
     top: 15px;
     right: 15px;
-    background: rgba(255, 255, 255, 0.9); /* Opaque background to stand out */
+    background: rgba(255, 255, 255, 0.9);
     border: 2px solid rgba(0, 0, 0, 0.1);
     font-size: 32px;
     color: #333;
@@ -585,21 +461,16 @@ header h1 i {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* CHANGED: Z-Index must be higher than right-panel (200) */
     z-index: 201; 
     padding: 0;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.close-btn:active {
-    background: rgba(0, 0, 0, 0.2);
 }
 
 .item-name {
     font-size: 1.5rem;
     color: #333;
     margin-bottom: 15px;
-    padding-right: 50px; /* Space for close button */
+    padding-right: 50px; 
 }
 
 /* ===== VARIANT SELECTOR ===== */
@@ -622,7 +493,7 @@ header h1 i {
 .variant-select {
     width: 100%;
     padding: 10px 12px;
-    font-size: 16px; /* Prevent iOS zoom */
+    font-size: 16px; 
     border: 2px solid #ff9800;
     border-radius: 8px;
     background: white;
@@ -631,12 +502,7 @@ header h1 i {
     font-weight: 500;
 }
 
-.variant-select:focus {
-    border-color: #e65100;
-    box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.2);
-}
-
-/* ===== HIGH IMPACT STATUS GRID ===== */
+/* ===== STATUS GRID ===== */
 .status-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -656,21 +522,20 @@ header h1 i {
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-/* Dynamic Status Colors */
 .status-box:has(.status-value.allowed) {
-    background-color: #e3f9e5; /* Soft Green */
+    background-color: #e3f9e5; 
     border: 2px solid #28a745;
     color: #155724;
 }
 
 .status-box:has(.status-value.prohibited) {
-    background-color: #ffeef0; /* Soft Red */
+    background-color: #ffeef0; 
     border: 2px solid #dc3545;
     color: #721c24;
 }
 
 .status-box:has(.status-value.restricted) {
-    background-color: #fff8d6; /* Soft Yellow */
+    background-color: #fff8d6; 
     border: 2px solid #ffc107;
     color: #856404;
 }
@@ -698,42 +563,7 @@ header h1 i {
     color: inherit;
 }
 
-.status-icon {
-    font-size: 2.5rem;
-    margin-bottom: 8px;
-}
-
-.status-label {
-    font-size: 0.85rem;
-    color: #666;
-    margin-bottom: 8px;
-    font-weight: 600;
-}
-
-.status-value {
-    font-size: 0.95rem;
-    font-weight: bold;
-    padding: 8px 12px;
-    border-radius: 20px;
-    display: inline-block;
-}
-
-.status-value.allowed {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.status-value.prohibited {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-.status-value.restricted {
-    background-color: #fff3cd;
-    color: #856404;
-}
-
-/* ===== CUSTOMS WARNING ===== */
+/* ===== CUSTOMS & NOTES ===== */
 .customs-warning-banner {
     background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
     border: 3px solid #e53935;
@@ -758,12 +588,6 @@ header h1 i {
     color: #b71c1c;
 }
 
-.customs-warning-content strong {
-    color: #b71c1c;
-    font-weight: 700;
-}
-
-/* ===== ITEM NOTE ===== */
 .item-note {
     background: #e8f4f8;
     padding: 15px;
@@ -774,112 +598,57 @@ header h1 i {
     line-height: 1.6;
 }
 
-.item-note ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.item-note li {
-    margin-bottom: 8px;
-    padding-left: 0;
-}
-
-.item-note li:last-child {
-    margin-bottom: 0;
-}
-
-.item-note strong {
-    font-weight: 600;
-    color: #333;
-}
-
-/* ========================================
-   MODERN ACTION BUTTONS (New & Sleek)
-   ======================================== */
-
-/* Container to hold the buttons */
+/* ===== ACTION BUTTONS ===== */
 .action-buttons-row {
     display: flex;
     gap: 15px;
     margin: 20px 0;
-    flex-wrap: wrap; /* Allows stacking on very small screens */
+    flex-wrap: wrap; 
 }
 
-/* Base Button Style */
 .action-btn {
-    flex: 1; /* Both buttons take equal width */
-    min-width: 200px; /* Prevent getting too squished */
+    flex: 1; 
+    min-width: 200px; 
     padding: 14px 20px;
     border: none;
-    border-radius: 12px; /* Modern rounded corners */
+    border-radius: 12px; 
     font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
-    text-decoration: none; /* Removes underline from links */
+    text-decoration: none; 
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Subtle depth */
-    font-family: inherit; /* Ensure font matches app */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+    font-family: inherit; 
 }
 
-/* Hover Effect for both */
-.action-btn:active {
-    transform: scale(0.98); /* Click press effect */
-}
+.action-btn:active { transform: scale(0.98); }
 
-/* 1. AMAZON BUTTON (The "Golden" Button) */
 .amazon-btn {
-    background: #ffb514; /* Official Amazon Yellow */
-    color: #0F1111; /* Amazon Black */
+    background: #ffb514; 
+    color: #0F1111; 
 }
 .amazon-btn:hover {
-    background: #f76f00; /* Darker yellow on hover */
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    background: #f76f00; 
 }
 
-/* 2. BAG BUTTON (The "Action" Button) */
 .action-btn:not(.amazon-btn) {
-    background: #2d3748; /* Professional Slate/Navy */
+    background: #2d3748; 
     color: white;
 }
 
-.action-btn:not(.amazon-btn):hover {
-    background: #1a202c; /* Darker Navy */
-    box-shadow: 0 6px 12px rgba(45, 55, 72, 0.3);
-}
-
-/* Saved State (Green) */
 .action-btn.saved {
-    background: #48bb78 !important; /* Success Green */
+    background: #48bb78 !important; 
     color: white !important;
 }
 
-/* Mobile Tweak: Make them stack nicely if needed */
-@media (max-width: 480px) {
-    .action-buttons-row {
-        flex-direction: column;
-    }
-    .action-btn {
-        width: 100%;
-    }
-}
-
 /* ===== RELATED ITEMS ===== */
-.related-items {
-    margin-top: 20px;
-}
-
-.related-items h4 {
-    font-size: 0.95rem;
-    margin-bottom: 10px;
-    color: #666;
-}
-
+.related-items { margin-top: 20px; }
+.related-items h4 { font-size: 0.95rem; margin-bottom: 10px; color: #666; }
 .related-tag {
     display: inline-block;
     background: #f0f0f0;
@@ -890,18 +659,10 @@ header h1 i {
     cursor: pointer;
     border: 1px solid #ddd;
 }
-
-.related-tag:active {
-    background: #667eea;
-    color: white;
-    border-color: #667eea;
-}
+.related-tag:active { background: #667eea; color: white; border-color: #667eea; }
 
 /* ===== COUNTRY RULES ===== */
-.country-rules-section {
-    animation: fadeIn 0.3s ease-in;
-}
-
+.country-rules-section { animation: fadeIn 0.3s ease-in; }
 .country-disclaimer {
     background: #fff3cd;
     border: 2px solid #ffc107;
@@ -913,57 +674,16 @@ header h1 i {
     line-height: 1.6;
     color: #856404;
 }
-
-.country-disclaimer strong {
-    color: #721c24;
-}
-
-.verify-reminder {
-    background: #e3f2fd;
-    border: 2px solid #2196f3;
-    border-radius: 6px;
-    padding: 12px 15px;
-    margin-top: 20px;
-    font-size: 0.85rem;
-    color: #0d47a1;
-    text-align: center;
-}
-
-.verify-reminder strong {
-    color: #01579b;
-}
-
-.country-rules-section h3 {
-    font-size: 1.3rem;
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.info-cards {
-    display: grid;
-    gap: 12px;
-}
-
 .info-card {
     background: #f9f9f9;
     padding: 15px;
     border-radius: 8px;
     border-left: 4px solid #667eea;
+    margin-bottom: 10px;
 }
+.info-card h4 { color: #667eea; margin-bottom: 8px; font-size: 0.95rem; }
 
-.info-card h4 {
-    color: #667eea;
-    margin-bottom: 8px;
-    font-size: 0.95rem;
-}
-
-.info-card p {
-    color: #555;
-    line-height: 1.6;
-    font-size: 0.85rem;
-}
-
-/* ===== FLOATING ACTION BUTTON ===== */
+/* ===== FAB ===== */
 .bag-fab {
     position: fixed;
     bottom: 20px;
@@ -980,23 +700,9 @@ header h1 i {
     font-weight: 700;
     cursor: pointer;
     box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-    transition: all 0.3s;
     z-index: 1000;
 }
-
-.bag-fab:active {
-    transform: scale(0.95);
-}
-
-.bag-fab .fab-icon {
-    font-size: 1.2rem; /* Adjusted for FontAwesome */
-    margin-right: 5px;
-}
-
-.bag-fab .fab-text {
-    display: none; /* Hidden on mobile to save space */
-}
-
+.bag-fab .fab-text { display: none; }
 .bag-counter {
     background: #ff4757;
     color: white;
@@ -1004,394 +710,94 @@ header h1 i {
     padding: 4px 10px;
     font-size: 0.8rem;
     font-weight: 700;
-    min-width: 24px;
-    text-align: center;
 }
 
-/* ===== MODAL ===== */
+/* ===== MODAL & FOOTER ===== */
 .modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     z-index: 2000;
-    animation: fadeIn 0.2s;
     padding: 10px;
 }
-
 .modal-content {
-    background: white;
-    border-radius: 12px;
-    width: 100%;
-    max-width: 500px;
-    max-height: 90vh;
+    background: white; border-radius: 12px;
+    width: 100%; max-width: 500px; max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    animation: slideUp 0.3s;
 }
-
-@keyframes slideUp {
-    from {
-        transform: translateY(30px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    border-bottom: 2px solid #e0e0e0;
-}
-
-.modal-header h2 {
-    margin: 0;
-    font-size: 1.2rem;
-    color: #333;
-}
-
-.modal-close {
-    background: none;
-    border: none;
-    font-size: 1.8rem;
-    color: #999;
-    cursor: pointer;
-    padding: 0;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    transition: all 0.2s;
-}
-
-.modal-close:active {
-    background: #f0f0f0;
-    color: #333;
-}
-
-.bag-summary {
-    padding: 12px 20px;
-    background: #f8f9fa;
-    border-bottom: 1px solid #e0e0e0;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center;
-    font-size: 0.85rem;
-}
-
-.bag-summary strong {
-    color: #333;
-}
-
-.summary-allowed,
-.summary-restricted,
-.summary-prohibited {
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.summary-allowed {
-    background: #d4edda;
-    color: #155724;
-}
-
-.summary-restricted {
-    background: #fff3cd;
-    color: #856404;
-}
-
-.summary-prohibited {
-    background: #f8d7da;
-    color: #721c24;
-}
-
-.bag-items-list {
-    padding: 15px 20px;
-}
-
-.bag-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    border-bottom: 1px solid #f0f0f0;
-    transition: background 0.2s;
-}
-
-.bag-item:active {
-    background: #f8f9fa;
-}
-
-.bag-item:last-child {
-    border-bottom: none;
-}
-
-.bag-item-status {
-    font-size: 1.3rem;
-    flex-shrink: 0;
-}
-
-.bag-item-name {
-    flex: 1;
-    font-weight: 500;
-    color: #333;
-    font-size: 0.9rem;
-}
-
-.bag-item-remove {
-    background: #e74c3c;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 5px;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.bag-item-remove:active {
-    background: #c0392b;
-}
-
-.empty-bag {
-    text-align: center;
-    padding: 40px 20px;
-    color: #999;
-    font-size: 1rem;
-}
-
-/* ===== TOAST NOTIFICATION ===== */
-.toast {
-    position: fixed;
-    bottom: 100px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: #2c3e50;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-    z-index: 3000;
-    opacity: 0;
-    transition: all 0.3s;
-    max-width: 90%;
-}
-
-.toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
-/* ===== FOOTER ===== */
 footer {
-    background: #414141;
-    color: white;
-    padding: 7px 15px;
-    text-align: center;
-    margin-top: auto;
-    font-size: 0.65rem;
+    background: #414141; color: white;
+    padding: 7px 15px; text-align: center;
+    margin-top: auto; font-size: 0.65rem;
 }
+footer a { color: #cdd6ff; text-decoration: none; }
 
-footer a {
-    color: #cdd6ff;
-    text-decoration: none;
-}
-
-footer a:active {
-    text-decoration: underline;
-}
-
-.footer-note {
-    margin-top: 3px;
-    font-size: 0.8rem;
-    opacity: 0.8;
-}
-
-/* ========================================
-   TABLET BREAKPOINT (768px+)
-   ======================================== */
-@media (min-width: 768px) {
-    /* Slightly larger fonts and spacing */
-    body {
-        font-size: 17px;
-    }
-
-    header h1 {
-        font-size: 1.7rem;
-    }
-
-    .tagline {
-        font-size: 1rem;
-    }
-
-    .item-name {
-        font-size: 1.7rem;
-    }
-
-/* FIX: Force categories into 1 neat list on Desktop Sidebar */
-    .categories-grid {
-        grid-template-columns: 1fr; /* Stack vertically */
-    }
-
-    .status-grid {
-        grid-template-columns: 1fr 1fr; /* Side by side on tablet */
-    }
-
-    .disclaimer-banner {
-        right: 20px;
-        left: auto;
-        max-width: 280px;
-        font-size: 0.65rem;
-    }
-
-    .bag-fab .fab-text {
-        display: inline; /* Show text on tablet */
-    }
-
-    /* Desktop ad size on tablet */
-    .ad-banner-top {
-        min-height: 110px;
-    }
-
-    .ad-banner-top .ad-placeholder {
-        max-width: 728px;
-        height: 90px;
-        font-size: 12px;
-    }
-}
-
-/* ========================================
-   DESKTOP BREAKPOINT (1024px+)
-   ======================================== */
-@media (min-width: 1024px) {
-    /* Restore 3-column desktop layout */
-    .three-column-container {
-        display: grid;
-        grid-template-columns: 350px 300px 1fr;
-        gap: 0;
-    }
-
-    /* When middle panel is hidden, collapse to two columns */
-    .three-column-container:has(.middle-panel.hidden) {
-        grid-template-columns: 350px 1fr;
-    }
-
-    /* Reset panel positioning for desktop */
-.left-panel {
-        border-right: 3px solid #bbb;
-        /* CHANGED: Fill the height of the container */
-        height: 100%; 
-        max-height: none; 
-        /* ADDED: Restore the scrollbar */
-        overflow-y: auto; 
-        padding: 25px;
-    }
-
-    .middle-panel {
-        display: block;
-    }
-
-    .middle-panel.hidden {
-        display: none;
-    }
-
-    .middle-panel:not(.hidden) {
-        position: static;
-        width: auto;
-        height: auto;
-        z-index: auto;
-        background: white;
-        border-right: 3px solid #bbb;
-        max-height: calc(100vh - 250px);
-    }
-
-    .middle-panel .panel-header {
-        padding: 20px;
-    }
-
-    .middle-panel .panel-header h3 {
-        font-size: 1.2rem;
-    }
-
-    .middle-panel .item-count {
-        font-size: 0.85rem;
-    }
-
-    /* Hide back button on desktop */
-    .panel-back-btn {
-        display: none;
-    }
-
-    .category-item-card:hover {
-        background: #f8f9fa;
-        border-left: 4px solid #667eea;
-    }
-
-/* ========================================
-   CRITICAL MOBILE FIXES
-   ======================================== */
-
+/* =================================================================
+   1. MOBILE FIXES (Phones & Tablets)
+   ================================================================= */
 @media (max-width: 1023px) {
 
-    /* 1. FIX THE "GIANT DISCLAIMER" */
-    /* Make it static (part of the page flow) instead of fixed over the screen */
-    .disclaimer-banner, 
-    .disclaimer-mobile-only {
-        position: relative !important; /* Pushes content down, doesn't cover it */
-        top: auto !important;
-        bottom: auto !important;
-        left: auto !important;
-        transform: none !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        margin-bottom: 10px;
-        box-shadow: none;
-        z-index: 1; /* Lower z-index so menus go over it */
-    }
-
-    /* 2. FIX THE "FREEZING" MENU */
-    /* Ensure the Category Panel is scrollable and sits on top */
-    .middle-panel, .right-panel {
+    /* FIX: Force Panels to Scroll Independently */
+    .middle-panel, 
+    .right-panel {
+        display: none; /* Hidden by default */
         position: fixed !important;
         top: 0 !important;
         left: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        z-index: 99999 !important; /* Must be higher than everything else */
         background: white !important;
+        z-index: 99999 !important; /* Highest priority */
         
-        /* FORCE SCROLLING */
-        overflow-y: auto !important; 
-        -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+        /* ENABLE SCROLLING */
+        overflow-y: scroll !important; 
+        -webkit-overflow-scrolling: touch !important;
+        overscroll-behavior: contain; /* Prevents body scroll when panel ends */
         
-        /* Padding for the Back Button at top */
-        padding-top: 0 !important; 
-        padding-bottom: 80px !important; /* Space for bottom navigation if needed */
+        margin: 0 !important;
+        padding-bottom: 80px !important; /* Space for bottom scroll */
     }
 
-    /* Ensure the header inside the panel doesn't scroll away immediately */
+    /* Show panel when active */
+    .middle-panel:not(.hidden), 
+    .right-panel:not(.hidden) {
+        display: block !important;
+    }
+
+    /* FIX: Tame the Disclaimer */
+    .disclaimer-banner:not(.disclaimer-mobile-only) {
+        display: none !important; /* Hide desktop version */
+    }
+
+    .disclaimer-mobile-only {
+        display: block !important;
+        position: static !important; /* Sit in flow, don't float */
+        width: 100% !important;
+        margin: 10px 0 !important;
+        padding: 10px !important;
+        font-size: 0.75rem !important;
+        background: #fff3cd !important;
+        color: #856404 !important;
+        border: 1px solid #ffeeba !important;
+        text-align: center;
+        box-shadow: none !important;
+    }
+
+    /* Ensure Headers Stick to Top of Panel */
     .panel-header {
         position: sticky;
         top: 0;
-        z-index: 100000; /* Higher than the panel content */
+        z-index: 100000;
     }
 }
 
-    /* Desktop close button - smaller, top-right of content */
+/* =================================================================
+   2. DESKTOP ONLY STYLES (Laptops & PC)
+   ================================================================= */
+@media (min-width: 1024px) {
+
+    /* Desktop Close Button (Small, Top-Right) */
     .close-btn {
         position: absolute;
         top: 0;
@@ -1404,85 +810,47 @@ footer a:active {
         color: #999;
         border-radius: 0;
     }
-
     .close-btn:hover {
         color: #333;
         background: none;
     }
 
-    /* Hover effects for desktop */
+    /* Desktop Hover Effects (Prevent 'Sticky' buttons on mobile) */
     .category-btn:hover {
         border-color: #667eea;
         background: #f8f9ff;
         transform: translateY(-1px);
     }
-
-    .popular-tag:hover,
-    .related-tag:hover {
+    .popular-tag:hover, .related-tag:hover {
         background: #667eea;
         color: white;
         border-color: #667eea;
     }
-
     .autocomplete-item:hover {
         background: #f5f5f5;
     }
-
     .amazon-button:hover {
         background: linear-gradient(135deg, #ffb84d 0%, #ff9900 100%);
         box-shadow: 0 6px 12px rgba(255, 153, 0, 0.4);
         transform: translateY(-2px);
     }
-
     .add-to-bag-btn:hover {
         background: #5568d3;
         box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
         transform: translateY(-1px);
     }
-
-    .add-to-bag-btn.in-bag:hover {
-        background: #c0392b;
-    }
-
     .bag-fab:hover {
         box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
         transform: translateY(-3px);
     }
-
-    .modal-close:hover {
-        background: #f0f0f0;
-        color: #333;
-    }
-
     .bag-item:hover {
         background: #f8f9fa;
     }
-
     .bag-item-remove:hover {
         background: #c0392b;
     }
-}
 
-/* ========================================
-   LARGE DESKTOP (1440px+)
-   ======================================== */
-@media (min-width: 1440px) {
-    header h1 {
-        font-size: 2rem;
-    }
-
-    .item-name {
-        font-size: 1.9rem;
-    }
-
-    .left-panel,
-    .right-panel {
-        padding: 30px;
-    }
-}
-/* FORCE DESKTOP VISIBILITY & STICKY LAYOUT */
-@media (min-width: 1024px) {
-    /* 1. Unlock the Main Container so the page can scroll naturally */
+    /* 3-Column Layout & Sticky Panels */
     .three-column-container {
         display: grid;
         grid-template-columns: 350px 300px 1fr;
@@ -1490,19 +858,15 @@ footer a:active {
         height: auto;
         overflow: visible; 
     }
-
-    /* 2. Left Panel: Sticky */
     .left-panel {
         height: auto;
         overflow-y: visible;
-        max-height: none;
-        /* STICKY MAGIC */
         position: sticky;
-        top: 20px; /* Sticks 20px from the top of the browser */
+        top: 20px;
         align-self: start; 
+        border-right: 3px solid #bbb;
+        padding: 25px;
     }
-
-    /* 3. Middle Panel: grows long with content */
     .middle-panel:not(.hidden) {
         position: static;
         width: auto;
@@ -1510,25 +874,38 @@ footer a:active {
         max-height: none;
         overflow-y: visible;
         border-right: 3px solid #bbb;
+        max-height: calc(100vh - 250px);
     }
+    .middle-panel { display: block; }
+    .middle-panel.hidden { display: none; }
+    .middle-panel .panel-header { padding: 20px; }
+    .middle-panel .panel-header h3 { font-size: 1.2rem; }
+    .middle-panel .item-count { font-size: 0.85rem; }
+    .panel-back-btn { display: none; }
 
-    /* 4. Right Panel: Sticky & Visible */
     .right-panel {
         display: block !important;
         height: auto; 
         overflow-y: visible;
-        /* STICKY MAGIC */
         position: sticky;
         top: 20px; 
         align-self: start;
-        padding-bottom: 50px; /* Extra space for the ad at bottom */
+        padding-bottom: 50px;
     }
 }
-/* ========================================
-   ENGAGEMENT BOOSTERS (Chips & Tags)
-   ======================================== */
 
-/* Make Related Items irresistible to click */
+/* =================================================================
+   3. LARGE SCREENS (Wide Monitors)
+   ================================================================= */
+@media (min-width: 1440px) {
+    header h1 { font-size: 2rem; }
+    .item-name { font-size: 1.9rem; }
+    .left-panel, .right-panel { padding: 30px; }
+}
+
+/* =================================================================
+   4. ENGAGEMENT BOOSTERS (Tags & Chips)
+   ================================================================= */
 .related-tag, .popular-tag {
     display: inline-flex;
     align-items: center;
@@ -1536,7 +913,7 @@ footer a:active {
     background: white;
     border: 1px solid #e2e8f0;
     padding: 8px 16px;
-    border-radius: 20px; /* Pill shape */
+    border-radius: 20px;
     font-size: 0.9rem;
     font-weight: 500;
     color: #2d3748;
@@ -1545,19 +922,8 @@ footer a:active {
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     margin: 4px;
 }
-
-.related-tag:hover, .popular-tag:hover {
-    background: #ebf8ff; /* Light blue tint */
-    border-color: #4299e1;
-    color: #2b6cb0;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(66, 153, 225, 0.2);
-}
-
-/* Add a pseudo-icon via CSS to make them pop without adding HTML */
 .related-tag::before {
     content: "🔎"; 
     font-size: 0.8rem;
     opacity: 0.7;
 }
-

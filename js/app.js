@@ -7,6 +7,8 @@ let currentCategory = null; // NEW: Track active category to refresh on country 
 // --- HELPER: Mobile Scroll Locking ---
 function toggleMobileBodyLock(isLocked) {
     if (window.innerWidth < 1024) {
+        // When locked (true), body can't scroll. 
+        // The CSS "overflow-y: scroll" on the panel takes over.
         document.body.style.overflow = isLocked ? 'hidden' : '';
     }
 }
