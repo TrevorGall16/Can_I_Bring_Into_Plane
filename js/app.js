@@ -7,14 +7,14 @@ function toggleMobileBodyLock(isLocked) {
     if (window.innerWidth < 1024) {
         document.body.style.overflow = isLocked ? 'hidden' : '';
     }
-   // --- HELPER: Convert Name to URL Slug ---
+// --- HELPER: Convert Name to URL Slug ---
 function toSlug(text) {
     return text.toString().toLowerCase()
         .trim()
         .replace(/\s+/g, '-')     // Replace spaces with -
         .replace(/[^\w\-]+/g, '') // Remove all non-word chars
         .replace(/\-\-+/g, '-');  // Replace multiple - with single -
-} 
+}
 }
 // Setup Set for Saved Items (My Bag)
 let savedItems = new Set(); 
@@ -83,6 +83,9 @@ const adProvider = new AdProvider();
 // ---------------------------------------------------------
 // NAVIGATION MANAGER
 // ---------------------------------------------------------
+// ---------------------------------------------------------
+// NAVIGATION MANAGER
+// ---------------------------------------------------------
 class NavigationManager {
     constructor() { this.scrollPositions = new Map(); }
 
@@ -101,8 +104,12 @@ class NavigationManager {
 pushState(itemId, itemName) {
         try {
             const url = new URL(window.location);
-            // CHANGED: Use the slugified name instead of the ID
+            // Delete category param as we are now viewing a specific item
+            url.searchParams.delete('category'); 
+            
+            // Update item param with the SEO-friendly slug
             url.searchParams.set('item', toSlug(itemName));
+            
             window.history.pushState({ itemId, itemName }, '', url);
         } catch (e) {}
     }
@@ -115,7 +122,8 @@ pushState(itemId, itemName) {
             window.history.pushState({ category }, '', url);
         } catch (e) {}
     }
-loadFromURL() {
+
+    loadFromURL() {
         try {
             const url = new URL(window.location);
             const itemParam = url.searchParams.get('item');
@@ -123,11 +131,11 @@ loadFromURL() {
 
             if (itemParam) {
                 let item;
-                // Check if param is a number (Legacy ID support)
+                // CHECK: Is it a number (Old Link) or Text (New Link)?
                 if (!isNaN(itemParam)) {
                     item = itemsData.find(i => i.id === parseInt(itemParam));
                 } else {
-                    // It is a Slug (New support)
+                    // It is a Slug! Find the item by name
                     item = itemsData.find(i => toSlug(i.name) === itemParam);
                 }
 
@@ -193,14 +201,14 @@ function resetToHome() {
          document.getElementById('rightPanel').innerHTML = `
             <div class="welcome-message" id="welcomeMessage">
                 <div class="welcome-icon"><i class="fa-solid fa-plane-circle-check"></i></div>
-                <h2>Airport Carry-On Checker</h2>
-                <p style="max-width: 400px; margin: 0 auto; line-height: 1.6;">
-                    Instantly check if an item is allowed in your carry-on or checked luggage. 
+                <h2>Airport Carry-On Checker: Our Mission</h2>
+                <p style="max-width: 500px; margin: 0 auto 25px; line-height: 1.6; font-size: 1.05rem; color: #4a5568;">
+                    Traveling should be exciting, not stressful. Our mission is to provide <strong>instant, clear, and accurate information</strong> by aggregating data from major global security authorities, including the TSA (USA), EASA (Europe), and CATSA (Canada). 
                     <br><br>
-                    <strong>⚠️ Important:</strong> Security rules vary by country and airline and can change constantly. Always double-check with your specific airline before travel.
+                    This tool cross-references rules to help you pack with confidence. We are built on the pillars of <strong>Global Standards, Up-to-Date data, and Privacy.</strong>
                 </p>
                 <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee;">
-                    <p style="font-weight: 600; color: #667eea;">Select an item from the list to see details →</p>
+                    <p style="font-weight: 600; color: #667eea;">Select an item from the search bar or categories to get started →</p>
                 </div>
             </div>
 
@@ -627,8 +635,9 @@ function displayCategoryResults(category, skipHistoryPush = false) {
             <div class="welcome-message">
                 <div class="welcome-icon"><i class="fa-solid fa-plane-circle-check"></i></div>
                 <h2>${category.charAt(0).toUpperCase() + category.slice(1)} Items</h2>
-                <p style="margin-bottom: 20px;">Browse the list on the left to see specific rules.</p>
-                <p style="font-size: 0.9em; opacity: 0.7;">Rules can change. Always verify with your airline.</p>
+                <p style="margin-bottom: 20px; max-width: 450px; margin-left: auto; margin-right: auto; color: #4a5568;">
+                    Our database is sourced from global aviation standards. Browse the list on the left and select an item to see specific rules tailored to your destination country.
+                </p>
                 <div style="margin-top: 20px; font-weight: 600; color: #667eea;">Select an item to view details →</div>
             </div>
             
@@ -758,11 +767,10 @@ function showMyBagModal() {
 }
 
 function shareItemLink(id) {
-    // Find the item to get its name
     const item = itemsData.find(i => i.id === id);
     if (!item) return;
 
-    // Generate the SEO-friendly URL
+    // Generate SEO-friendly URL
     const slug = toSlug(item.name);
     const url = `${window.location.origin}/?item=${slug}`;
     

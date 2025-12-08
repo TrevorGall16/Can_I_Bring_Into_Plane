@@ -21,20 +21,20 @@ const ITEMS_DATA = [
         "keywords": ["water", "drink", "juice", "small bottle"]
     },
     {
-        "id": 121, 
+"id": 121, 
         "name": "Water Bottle (Full - over 100ml)", 
         "carryOn": "prohibited", 
         "checked": "allowed", 
-        "note": "❌ Security will confiscate liquids over 100ml. Empty it before screening! ✅ Allowed in checked bags. (Source: TSA)", 
+        "note": "❌ Liquids that exceed the 100ml (3.4 oz) limit are the most common item confiscated at security. The volume is based on the container size, not the liquid level inside. You MUST empty this before entering the checkpoint, or it will be seized. Refill fountains are usually available after security. (Source: TSA 3-1-1 Rule)", 
         "category": ["liquids"], 
         "keywords": ["water", "drink", "soda", "coke", "large bottle"]
     },
     {
-        "id": 97, 
+"id": 97, 
         "name": "Alcohol (Liquor/Wine)", 
         "carryOn": "restricted", 
         "checked": "allowed", 
-        "note": "⚠️ CARRY-ON: Mini bottles (under 100ml) only. ✅ CHECKED: Allowed (up to 5L per person if 24-70% ABV). ❌ Over 70% ABV (140 proof) PROHIBITED everywhere. (Source: FAA/TSA)", 
+        "note": "⚠️ CARRY-ON: Liquids (including alcohol) must be in containers of 100ml (3.4oz) or less and fit in your quart-sized bag. ✅ CHECKED: Allowed (up to 5 liters per person if between 24–70% alcohol by volume). ❌ Alcohol over 70% ABV (140 proof) is strictly PROHIBITED in both carry-on and checked luggage due to fire risk. (Source: FAA/TSA)", 
         "category": ["liquids", "alcohol"], 
         "keywords": ["alcohol", "wine", "beer", "vodka", "whiskey"]
     },
@@ -153,41 +153,41 @@ const ITEMS_DATA = [
 
     // --- ELECTRONICS & BATTERIES (FIRE SAFETY) ---
     {
-        "id": 3, 
+"id": 3, 
         "name": "Laptop", 
         "carryOn": "allowed", 
         "checked": "allowed", 
-        "note": "✅ Carry-on recommended to prevent damage. Remove from bag at security screening. (Source: TSA)", 
+        "note": "✅ CARRY-ON IS HIGHLY RECOMMENDED for expensive electronics to prevent damage and theft. Most passengers must remove their laptop from their bag at the security checkpoint for separate X-ray screening. Failure to remove it will result in your bag being pulled for inspection, slowing down the whole process. Always be prepared to power it on. (Source: TSA)", 
         "category": ["electronics"], 
         "keywords": ["laptop", "computer", "macbook", "dell", "pc"]
     },
     {
-        "id": 4, 
+"id": 4, 
         "name": "Power Bank / Portable Charger", 
         "carryOn": "allowed", 
         "checked": "prohibited", 
-        "note": "✅ CARRY-ON ONLY. ❌ NEVER CHECKED (Fire Risk). Must be under 100Wh (approx 27,000mAh). 🚨 CHINA WARNING: If capacity label is missing/rubbed off, security WILL confiscate it. (Source: FAA/IATA)", 
+        "note": "✅ CARRY-ON ONLY. This is a non-negotiable FAA safety rule because lithium batteries pose a significant fire risk (thermal runaway) in the cargo hold, where fires are difficult to extinguish. Power banks must be under 100 watt-hours (Wh). 🚨 CHINA WARNING: Security often confiscates chargers if the capacity label is missing or rubbed off. (Source: FAA/IATA)", 
         "category": ["electronics", "batteries"], 
         "keywords": ["power bank", "charger", "battery pack", "portable charger"]
     },
     {
-        "id": 39, 
+"id": 39, 
         "name": "Spare Lithium Batteries", 
         "carryOn": "allowed", 
         "checked": "prohibited", 
-        "note": "✅ CARRY-ON ONLY. ❌ NEVER CHECKED. Tape terminals to prevent short circuits. Max 100Wh per battery. (Source: FAA)", 
+        "note": "✅ CARRY-ON ONLY. Loose batteries are forbidden in checked baggage due to the extreme fire risk they pose in the cargo hold. You must protect the terminals from short circuits—use electrical tape or place each battery in its own protective case or plastic bag. Maximum individual capacity is 100Wh. (Source: FAA)", 
         "category": ["electronics", "batteries"], 
         "keywords": ["batteries", "lithium", "AA", "camera battery", "drone battery"]
     },
     {
-        "id": 20, 
+"id": 20, 
         "name": "E-Cigarette / Vape", 
         "carryOn": "allowed", 
         "checked": "prohibited", 
-        "note": "✅ CARRY-ON ONLY. ❌ NEVER CHECKED. 🚨 BANNED in Singapore, Thailand, Taiwan, Mexico, India. Possession can lead to fines or ARREST. Do not bring. (Source: FAA/Gov)", 
+        "note": "✅ CARRY-ON ONLY. This device contains a lithium battery and must be carried in the cabin, not checked. ❌ DO NOT USE ON PLANE. 🚨 CUSTOMS WARNING: Vaping is strictly ILLEGAL in many destinations (e.g., Thailand, Singapore, Mexico). Possession alone can lead to severe fines or ARREST. Always check local laws before traveling. (Source: FAA/Gov)", 
         "category": ["electronics", "smoking", "customs"], 
         "keywords": ["vape", "juul", "e-cig", "puff bar", "smoking"],
-        "customs_restricted": ["Thailand", "Singapore", "Mexico", "Taiwan", "India"]
+        "customs_restricted": ["Thailand", "Singapore", "Mexico", "Taiwan",]
     },
 
     // --- TOILETRIES ---
@@ -237,11 +237,11 @@ const ITEMS_DATA = [
         "keywords": ["scissors", "shears", "office scissors"]
     },
     {
-        "id": 7, 
+"id": 7, 
         "name": "Pocket Knife / Swiss Army", 
         "carryOn": "prohibited", 
         "checked": "allowed", 
-        "note": "❌ PROHIBITED in carry-on, even small ones. Must be checked. (Source: TSA)", 
+        "note": "❌ PROHIBITED. Security has a zero-tolerance policy for all knives, regardless of blade length or size. Do not attempt to bring small or novelty knives in your carry-on; they will be confiscated. This item MUST be packed securely in your checked luggage. (Source: TSA)", 
         "category": ["tools", "weapons"], 
         "keywords": ["knife", "blade", "swiss army", "leatherman"]
     },
@@ -286,14 +286,14 @@ const ITEMS_DATA = [
         "customs_restricted": ["Australia", "New Zealand"]
     },
     {
-        "id": 14, 
+"id": 14, 
         "name": "Prescription Medication (General)", 
         "carryOn": "allowed", 
         "checked": "allowed", 
-        "note": "✅ Allowed. Bring prescription. 🚨 JAPAN/UAE WARNING: Common meds like Adderall (stimulants) and Codeine (opiates) are ILLEGAL narcotics. You can be arrested. Check embassy lists.", 
+        "note": "✅ Allowed. It is highly recommended to keep all medication in its original packaging and bring a copy of the prescription or a doctor's note, especially when traveling internationally. Liquids (e.g., insulin) that are medically necessary are EXEMPT from the 100ml rule. 🚨 JAPAN/UAE WARNING: Certain common narcotics and stimulants (like Adderall or codeine) are ILLEGAL narcotics without special permits. Check embassy lists BEFORE travel. (Source: TSA/Gov)", 
         "category": ["medication", "customs"], 
         "keywords": ["medicine", "pills", "drugs", "adderall", "ritalin", "codeine"],
-        "customs_restricted": ["Japan", "UAE"] 
+        "customs_restricted": ["Japan", "UAE"]
     },
     {
         "id": 26, 
@@ -381,11 +381,11 @@ const ITEMS_DATA = [
     },
     // --- SPORTS EQUIPMENT ---
     {
-        "id": 300, 
+"id": 300, 
         "name": "Baseball / Cricket Bat", 
         "carryOn": "prohibited", 
         "checked": "allowed", 
-        "note": "❌ BANNED in cabin (potential weapon). Must be in checked luggage. (Source: TSA)", 
+        "note": "❌ BANNED in the cabin. The security rule views this as a potential blunt force weapon. It MUST be placed in checked luggage. Note that most airlines charge an oversize fee for specialized sports equipment. Always declare it during check-in. (Source: TSA)", 
         "category": ["sports", "weapons"], 
         "keywords": ["bat", "baseball", "cricket", "softball", "club"]
     },
@@ -869,11 +869,11 @@ const ITEMS_DATA = [
         "keywords": ["pot", "pan", "skillet", "wok", "cooking"]
     },
     {
-        "id": 503, 
+ "id": 503, 
         "name": "Kitchen Knives", 
         "carryOn": "prohibited", 
         "checked": "allowed", 
-        "note": "❌ All knives (steak, chef, paring) are BANNED in the cabin. Must be securely sheathed in checked bags. (Source: TSA)", 
+        "note": "❌ All knives, whether a small paring knife or a large chef's knife, are BANNED in the cabin. This rule is non-negotiable. They MUST be packed securely in checked baggage. Wrap the sharp edges safely (e.g., in cardboard or a sheath) to prevent injury to baggage handlers and TSA screeners. (Source: TSA)", 
         "category": ["household", "sharp objects", "weapons"], 
         "keywords": ["knife", "chef knife", "steak knife", "cutlery"]
     },

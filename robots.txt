@@ -1,8 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://www.google.com/search?q=https://www.canibringonplane.com/sitemap.xml
 
-Block specific technical folders if they exist to save crawl budget
-
-Disallow: /css/
-Disallow: /js/
+Sitemap: https://www.canibringonplane.com/sitemap.xml
