@@ -301,7 +301,7 @@ function displayAutocomplete(items) {
     autocompleteResults.innerHTML = '';
     items.forEach(item => {
         const div = document.createElement('div');
-        div.className = 'autocomplete-item';
+        div.className = 'category-item-card';
         div.textContent = item.name;
         div.addEventListener('click', () => {
             displayItemResult(item);
