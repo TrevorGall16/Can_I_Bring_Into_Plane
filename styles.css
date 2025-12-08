@@ -291,39 +291,51 @@ header h1 i {
 /* Mobile Only: Logic for showing the Right Panel overlay */
 @media (max-width: 1023px) {
     
-    /* CRITICAL FIX 1: Force single-column stacking */
+    /* CRITICAL FIX 1: Aggressively force single-column stacking */
     .three-column-container {
         display: block !important; 
         width: 100%;
         height: auto; 
     }
 
-    /* CRITICAL FIX 2: Ensure panels are full screen fixed overlays */
+    /* CRITICAL FIX 2: Reset the Left Panel to flow normally */
+    .left-panel {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding-bottom: 20px;
+        overflow: visible;
+        border-right: none;
+    }
+
+    /* CRITICAL FIX 3: Ensure overlays are 100% viewport size and fixed */
     .middle-panel, .right-panel {
         position: fixed !important; 
         top: 0 !important;
         left: 0 !important;
         width: 100% !important;
         height: 100% !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
     }
-    
-    /* 1. Hide the Welcome Message completely on mobile */
-    /* This ensures users start on the Search screen, not the "Select an item" screen */
+
+    /* Standard Mobile Logic */
+    .middle-panel {
+        display: none;
+    }
+
     .right-panel .welcome-message {
         display: none !important;
     }
 
-    /* 2. Show the panel ONLY if it has actual content (Result or Rules) */
-    /* We REMOVED the check for 'welcome-message' here */
     .right-panel:has(.result-card:not(.hidden)),
     .right-panel:has(.country-rules-section:not(.hidden)) {
-        /* These properties are now defined in the Critical Fix 2 block above */
         background: white;
-        z-index: 200; /* High z-index to cover search/categories */
+        z-index: 200;
         overflow-y: auto;
         display: block;
         padding: 20px;
-        padding-top: 60px; /* Space for the close button */
+        padding-top: 60px;
     }
 }
 
