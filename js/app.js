@@ -179,27 +179,41 @@ function resetToHome() {
     // CRITICAL: SHOW HOME PANEL ON MOBILE
     toggleMobileView(false); 
 
-    // Desktop Welcome Message Logic
+    // Desktop Welcome Message Logic - UPDATED TO MATCH HTML
     if(window.innerWidth >= 1024) {
-         document.getElementById('rightPanel').innerHTML = `
+         const rightPanel = document.getElementById('rightPanel');
+         rightPanel.classList.remove('hidden'); // Ensure it is visible on desktop
+         rightPanel.innerHTML = `
             <div class="welcome-message" id="welcomeMessage">
                 <div class="welcome-icon"><i class="fa-solid fa-plane-circle-check"></i></div>
-                <h2>Airport Carry-On Checker: Our Mission</h2>
-                <p style="max-width: 500px; margin: 0 auto 25px; line-height: 1.6; font-size: 1.05rem; color: #4a5568;">
-                    Traveling should be exciting, not stressful. Our mission is to provide <strong>instant, clear, and accurate information</strong>.
-                </p>
-                <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee;">
-                    <p style="font-weight: 600; color: #667eea;">Select an item from the search bar or categories to get started →</p>
+                <h2>Airport Carry-On Checker</h2>
+                
+                <div style="text-align: left; max-width: 650px; margin: 0 auto; color: #4a5568; font-size: 0.95rem; line-height: 1.7;">
+                    <p style="margin-bottom: 15px;">
+                        Welcome to the ultimate tool for air travel preparation. Security regulations vary significantly by country (TSA, EASA, CAAC) and airline. This tool helps you instantly verify if an item is allowed in your <strong>Carry-On (Cabin Bag)</strong> or must be packed in your <strong>Checked Luggage</strong>.
+                    </p>
+
+                    <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">🛑 The "No-Go" Items (Universal Rules)</h3>
+                    <p style="margin-bottom: 15px;">
+                        Across almost all airports globally, the following items are strictly prohibited in the cabin:
+                    </p>
+                    <ul style="list-style-type: disc; padding-left: 20px; margin-bottom: 15px;">
+                        <li><strong>Liquids over 100ml (3.4oz):</strong> Unless they are medically necessary or for a baby.</li>
+                        <li><strong>Sharp Objects:</strong> Knives, box cutters, and scissors with blades longer than 4 inches (6cm in EU/Asia).</li>
+                        <li><strong>Self-Defense Items:</strong> Pepper spray, tasers, and martial arts weapons are never allowed in the cabin.</li>
+                    </ul>
+
+                    <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">🔋 The Lithium Battery Danger</h3>
+                    <p style="margin-bottom: 15px;">
+                        This is the most common mistake travelers make. <strong>Loose Lithium-Ion batteries and Power Banks are PROHIBITED in checked luggage</strong> due to fire risks. You MUST carry them with you in the cabin.
+                    </p>
+
+                    <div style="background: #eef2ff; border-left: 4px solid #667eea; padding: 15px; margin-top: 20px; border-radius: 4px;">
+                        <strong>How to use this tool:</strong> Use the search bar above or browse the categories to find specific rules for over 200+ common travel items.
+                    </div>
                 </div>
             </div>
-            <section style="padding: 20px 0; max-width: 700px; margin: 0 auto;">
-                <h2 style="font-size: 1.6rem; color: #2d3748; border-bottom: 2px solid #ddd; padding-bottom: 10px; margin-bottom: 25px;">
-                    <i class="fa-solid fa-fire-extinguisher" style="color: #e53935; margin-right: 10px;"></i> Guide: Lithium Batteries & Safety
-                </h2>
-                <p style="line-height: 1.7;">
-                    The most common cause of confusion is **Lithium-Ion batteries**. The rule is simple: **Loose lithium batteries and power banks are strictly forbidden in checked luggage** and must be in your carry-on.
-                </p>
-            </section>
+            
             <div style="margin-top: 30px; min-height: 600px; background: #f8f9fa; border: 1px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
                  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
             </div>

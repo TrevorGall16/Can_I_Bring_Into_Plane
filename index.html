@@ -192,18 +192,6 @@
                 </p>
             </section>
 
-            <div class="ad-container" style="margin-top: 25px; text-align: center; min-height: 250px; background: #f8f9fa; border-radius: 8px; border: 1px dashed #e2e8f0; padding: 10px;">
-                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8732422930809097" crossorigin="anonymous"></script>
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-8732422930809097"
-                     data-ad-slot="1429129130"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-            </div>
             
         </div>
 
@@ -218,35 +206,54 @@
             <div id="categoryItemsList" class="category-items-list"></div>
         </div>
 
-        <div class="right-panel" id="rightPanel">
-            <div id="welcomeMessage" class="welcome-message">
-                <div class="welcome-icon"><i class="fa-solid fa-plane-circle-check"></i></div>
-                <h2>Airport Carry-On Checker</h2>
-                <p style="max-width: 400px; margin: 0 auto; line-height: 1.6;">
-                    Instantly check if an item is allowed in your carry-on or checked luggage. 
-                    <br><br>
-                    <strong>⚠️ Important:</strong> Security rules vary by country and airline and can change constantly. Always double-check with your specific airline before travel.
-                </p>
-                <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee;">
-                    <p style="font-weight: 600; color: #667eea;">Select an item from the list to see details</p>
-                </div>
-            </div>
-            <div id="resultCard" class="result-card hidden">
-                </div>
+<div class="right-panel" id="rightPanel">
+    
+    <div id="welcomeMessage" class="welcome-message">
+        <div class="welcome-icon"><i class="fa-solid fa-plane-circle-check"></i></div>
+        <h2>Airport Carry-On Checker</h2>
+        
+        <div style="text-align: left; max-width: 650px; margin: 0 auto; color: #4a5568; font-size: 0.95rem; line-height: 1.7;">
+            <p style="margin-bottom: 15px;">
+                Welcome to the ultimate tool for air travel preparation. Security regulations vary significantly by country (TSA, EASA, CAAC) and airline. This tool helps you instantly verify if an item is allowed in your <strong>Carry-On (Cabin Bag)</strong> or must be packed in your <strong>Checked Luggage</strong>.
+            </p>
 
-            <div id="categoryResults" class="category-results hidden">
-                </div>
+            <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">🛑 The "No-Go" Items (Universal Rules)</h3>
+            <p style="margin-bottom: 15px;">
+                Across almost all airports globally, the following items are strictly prohibited in the cabin:
+            </p>
+            <ul style="list-style-type: disc; padding-left: 20px; margin-bottom: 15px;">
+                <li><strong>Liquids over 100ml (3.4oz):</strong> Unless they are medically necessary or for a baby.</li>
+                <li><strong>Sharp Objects:</strong> Knives, box cutters, and scissors with blades longer than 4 inches (6cm in EU/Asia).</li>
+                <li><strong>Self-Defense Items:</strong> Pepper spray, tasers, and martial arts weapons are never allowed in the cabin.</li>
+            </ul>
 
-            <div id="countryRulesSection" class="country-rules-section hidden">
-                </div>
+            <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">🔋 The Lithium Battery Danger</h3>
+            <p style="margin-bottom: 15px;">
+                This is the most common mistake travelers make. <strong>Loose Lithium-Ion batteries and Power Banks are PROHIBITED in checked luggage</strong> due to fire risks. You MUST carry them with you in the cabin. If you pack them in your checked bag, security will likely remove them, and you will lose your item.
+            </p>
 
-            <div id="resultAd" class="ad-inline hidden">
-                <div class="ad-container">
-                    <div id="ad-inline-slot" class="ad-slot"></div>
-                </div>
+            <div style="background: #eef2ff; border-left: 4px solid #667eea; padding: 15px; margin-top: 20px; border-radius: 4px;">
+                <strong>How to use this tool:</strong> Use the search bar above or browse the categories to find specific rules for over 200+ common travel items.
             </div>
         </div>
     </div>
+
+    <div id="resultCard" class="result-card hidden">
+    </div>
+
+    <div id="categoryResults" class="category-results hidden">
+    </div>
+
+    <div id="countryRulesSection" class="country-rules-section hidden">
+    </div>
+
+    <div id="resultAd" class="ad-inline hidden">
+        <div class="ad-container">
+            <div id="ad-inline-slot" class="ad-slot"></div>
+        </div>
+    </div>
+
+</div>
 
     <button class="bag-fab" id="bagFAB" title="My Carry-On Bag">
         <i class="fa-solid fa-suitcase-rolling fab-icon"></i>

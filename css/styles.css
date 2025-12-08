@@ -349,3 +349,35 @@ footer a:hover { color: #60a5fa; }
     border-color: #0061ff;     /* Your Theme Blue */
     box-shadow: 0 0 0 3px rgba(0, 97, 255, 0.1); /* Blue Glow */
 }
+/* =================================================================
+   FIX: PREVENT STATUS BADGE FROM BEING CUT OFF
+   ================================================================= */
+
+/* 1. Update the Main Card Container */
+.category-item-card {
+    /* Ensure we keep the flex layout but add a gap */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px; /* Adds safe space between Name and Status */
+}
+
+/* 2. Control the Name Text */
+.category-item-name {
+    flex: 1; /* Takes up all available space... */
+    min-width: 0; /* ...but allows it to shrink if needed */
+    
+    /* Option A: Wrap text to next line (Recommended) */
+    white-space: normal; 
+    word-break: break-word;
+    line-height: 1.3;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+/* 3. Protect the Status Badge */
+.category-item-status {
+    flex-shrink: 0; /* CRITICAL: This forbids the badge from shrinking! */
+    white-space: nowrap; /* Keeps the badge text on one line */
+    text-align: right;
+}
