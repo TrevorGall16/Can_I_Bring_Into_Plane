@@ -162,6 +162,9 @@ window.addEventListener('popstate', (event) => {
         } else if (event.state.category) {
             displayCategoryResults(event.state.category, true);
         } else if (event.state.home) {
+            // Reset canonical to homepage
+let canonical = document.querySelector('link[rel="canonical"]');
+if (canonical) canonical.setAttribute('href', 'https://www.canibringonplane.com/');
             resetToHome();
         }
     } else {
@@ -179,10 +182,14 @@ function resetToHome() {
     // CRITICAL: SHOW HOME PANEL ON MOBILE
     toggleMobileView(false); 
 
-    // Desktop Welcome Message Logic - UPDATED TO MATCH HTML
+    // --- SEO FIX: Reset canonical to homepage ---
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) canonical.setAttribute('href', 'https://www.canibringonplane.com/');
+
+    // Desktop Welcome Message Logic
     if(window.innerWidth >= 1024) {
          const rightPanel = document.getElementById('rightPanel');
-         rightPanel.classList.remove('hidden'); // Ensure it is visible on desktop
+         rightPanel.classList.remove('hidden'); 
          rightPanel.innerHTML = `
             <div class="welcome-message" id="welcomeMessage">
                 <div class="welcome-icon"><i class="fa-solid fa-plane-circle-check"></i></div>
@@ -746,11 +753,28 @@ function injectSchema(item) {
 
 function updateSocialMeta(item) {
     document.title = `Can I bring ${item.name} on a plane? | Carry-On Checker`;
+    
+    // Helper to update or create meta tag
     const setMeta = (prop, content) => {
         let el = document.querySelector(`meta[property="${prop}"]`) || document.querySelector(`meta[name="${prop}"]`);
-        if (!el) { el = document.createElement('meta'); el.setAttribute(prop.startsWith('og:') ? 'property' : 'name', prop); document.head.appendChild(el); }
+        if (!el) {
+            el = document.createElement('meta');
+            el.setAttribute(prop.startsWith('og:') ? 'property' : 'name', prop);
+            document.head.appendChild(el);
+        }
         el.setAttribute('content', content);
     };
+    
     setMeta('og:title', `Can I bring ${item.name} on a plane?`);
-    setMeta('description', `Check TSA rules for ${item.name}. Carry-on: ${item.carryOn}.`);
+    setMeta('description', `Check TSA rules for ${item.name}. Carry-on: ${item.carryOn.toUpperCase()}. ${item.note.substring(0, 100)}...`);
+
+    // --- NEW: Update Canonical URL dynamically ---
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.setAttribute('rel', 'canonical');
+        document.head.appendChild(canonical);
+    }
+    // Point to the specific item URL
+    canonical.setAttribute('href', `https://www.canibringonplane.com/?item=${item.id}`);
 }
