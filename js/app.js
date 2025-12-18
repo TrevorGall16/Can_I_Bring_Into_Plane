@@ -3,7 +3,31 @@ let itemsData = (typeof ITEMS_DATA !== 'undefined') ? ITEMS_DATA : [];
 let autocompleteTimeout = null;
 let currentCountry = 'USA';
 let currentCategory = null;
+let searchIndex = new Map();
 
+/**
+ * Builds a fast lookup index for items
+ * Requirement: BEST_PRACTICES_GUIDELINES Section 4
+ */
+function buildSearchIndex() {
+    searchIndex.clear();
+    itemsData.forEach(item => {
+        // Index by name
+        searchIndex.set(item.name.toLowerCase(), item);
+        // Index by keywords
+        if (item.keywords) {
+            item.keywords.forEach(kw => searchIndex.set(kw.toLowerCase(), item));
+        }
+    });
+}
+
+// Call this inside your DOMContentLoaded listener
+document.addEventListener('DOMContentLoaded', () => {
+    buildSearchIndex(); // <--- ADD THIS
+    initializeEventListeners();
+    updateBagCounter(); 
+    navManager.loadFromURL();
+});
 // --- HELPER: Mobile Scroll Locking ----
 // We don't need complex locking anymore because we are hiding the background!
 function toggleMobileView(showResult) {
@@ -21,9 +45,13 @@ function toggleMobileView(showResult) {
 // --- HELPER: Convert Name to URL Slug ---
 function toSlug(text) {
     return text.toString().toLowerCase()
-        .trim().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '').replace(/\-\-+/g, '-');
+        .replace(/[()]/g, '')
+        .replace(/\//g, '-')
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim();
 }
-
 // Setup Set for Saved Items (My Bag)
 let savedItems = new Set(); 
 if (localStorage.getItem('myBag')) {
@@ -97,11 +125,13 @@ class NavigationManager {
             setTimeout(() => { rightPanel.scrollTop = this.scrollPositions.get(key); }, 50);
         }
     }
-    pushState(itemId, itemName) {
+ pushState(itemId, itemName) {
         try {
             const url = new URL(window.location);
+            const item = itemsData.find(i => i.id === itemId);
             url.searchParams.delete('category'); 
-            url.searchParams.set('item', toSlug(itemName));
+            // Use the pre-generated slug from Phase 1
+            url.searchParams.set('item', item.slug || toSlug(itemName)); 
             window.history.pushState({ itemId, itemName }, '', url);
         } catch (e) {}
     }
@@ -182,7 +212,7 @@ function resetToHome() {
     // CRITICAL: SHOW HOME PANEL ON MOBILE
     toggleMobileView(false); 
 
-    // --- SEO FIX: Reset canonical to homepage ---
+document.title = "Airport Carry-On Checker - Can I Bring This On A Plane?";
     let canonical = document.querySelector('link[rel="canonical"]');
     if (canonical) canonical.setAttribute('href', 'https://www.canibringonplane.com/');
 
@@ -254,10 +284,14 @@ function initializeEventListeners() {
         }
     });
 
-    searchInput.addEventListener('input', (e) => {
-        clearTimeout(autocompleteTimeout);
-        autocompleteTimeout = setTimeout(() => { handleSearch(e.target.value); }, 300);
-    });
+// Replacement for the current searchInput listener
+searchInput.addEventListener('input', (e) => {
+    clearTimeout(autocompleteTimeout);
+    // 300ms wait period before executing search
+    autocompleteTimeout = setTimeout(() => { 
+        handleSearch(e.target.value); 
+    }, 300);
+});
 
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
@@ -299,16 +333,16 @@ function handleSearch(query) {
 
 function searchItems(query) {
     const lowerQuery = query.toLowerCase();
+    // Return items where the name or a keyword contains the query
     return itemsData.filter(item => {
-        if (item.name.toLowerCase().includes(lowerQuery)) return true;
-        if (item.keywords && item.keywords.some(k => k.toLowerCase().includes(lowerQuery))) return true;
-        return false;
+        const nameMatch = item.name.toLowerCase().includes(lowerQuery);
+        const keywordMatch = item.keywords && item.keywords.some(k => k.toLowerCase().includes(lowerQuery));
+        return nameMatch || keywordMatch;
     }).sort((a, b) => {
-        const aMatch = a.name.toLowerCase().startsWith(lowerQuery);
-        const bMatch = b.name.toLowerCase().startsWith(lowerQuery);
-        if (aMatch && !bMatch) return -1;
-        if (!aMatch && bMatch) return 1;
-        return 0;
+        // Prioritize exact matches at the start of the word
+        const aStart = a.name.toLowerCase().startsWith(lowerQuery);
+        const bStart = b.name.toLowerCase().startsWith(lowerQuery);
+        return (aStart === bStart) ? 0 : aStart ? -1 : 1;
     });
 }
 
@@ -360,6 +394,11 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     const scrollKey = `item-${item.id}`;
     navManager.saveScrollPosition(scrollKey);
     if (!skipHistoryPush) navManager.pushState(item.id, item.name);
+    // PHASE 2 FIX: Update SEO Tags and Canonical URL
+    updateSEOTags(item);
+    
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) canonical.setAttribute('href', `https://www.canibringonplane.com/?item=${item.slug}`);
 
     document.getElementById('welcomeMessage')?.classList.add('hidden');
     document.getElementById('countryRulesSection')?.classList.add('hidden');
@@ -743,7 +782,22 @@ window.showMyBagModal = showMyBagModal;
 function injectSchema(item) {
     const existing = document.getElementById('dynamic-schema');
     if (existing) existing.remove();
-    const schemaData = { "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{ "@type": "Question", "name": `Can I bring ${item.name} on a plane?`, "acceptedAnswer": { "@type": "Answer", "text": `Carry-on: ${item.carryOn}. Checked: ${item.checked}.` } }] };
+
+    const cleanNote = item.note.replace(/[✅❌⚠️💡]/g, '').trim();
+    
+    const schemaData = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [{
+            "@type": "Question",
+            "name": `Is ${item.name} allowed on a plane?`,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": `In carry-on luggage, ${item.name} is ${item.carryOn}. In checked bags, it is ${item.checked}. ${cleanNote}`
+            }
+        }]
+    };
+
     const script = document.createElement('script');
     script.id = 'dynamic-schema';
     script.type = 'application/ld+json';
@@ -751,30 +805,40 @@ function injectSchema(item) {
     document.head.appendChild(script);
 }
 
-function updateSocialMeta(item) {
-    document.title = `Can I bring ${item.name} on a plane? | Carry-On Checker`;
+/**
+ * PHASE 2: Comprehensive SEO Tag Management
+ * Updates document title, meta description, and Social Graph tags
+ * Requirement: ADS_AND_INDEXING_GUIDELINES Section 5.3
+ */
+function updateSEOTags(item) {
+    const title = `Can I bring ${item.name} on a plane? - Airport Checker`;
+    const description = `Find out if ${item.name} is allowed in carry-on or checked luggage. ${item.note.replace(/[✅❌⚠️💡]/g, '').substring(0, 150)}...`;
     
-    // Helper to update or create meta tag
-    const setMeta = (prop, content) => {
-        let el = document.querySelector(`meta[property="${prop}"]`) || document.querySelector(`meta[name="${prop}"]`);
+    document.title = title;
+    
+    // Helper to update or create meta tags
+    const setMeta = (name, content, isProperty = false) => {
+        const attr = isProperty ? 'property' : 'name';
+        let el = document.querySelector(`meta[${attr}="${name}"]`);
         if (!el) {
             el = document.createElement('meta');
-            el.setAttribute(prop.startsWith('og:') ? 'property' : 'name', prop);
+            el.setAttribute(attr, name);
             document.head.appendChild(el);
         }
         el.setAttribute('content', content);
     };
     
-    setMeta('og:title', `Can I bring ${item.name} on a plane?`);
-    setMeta('description', `Check TSA rules for ${item.name}. Carry-on: ${item.carryOn.toUpperCase()}. ${item.note.substring(0, 100)}...`);
+    setMeta('description', description);
+    setMeta('og:title', title, true);
+    setMeta('og:description', description, true);
+setMeta('og:url', `https://www.canibringonplane.com/?item=${item.slug}`, true);
 
-    // --- NEW: Update Canonical URL dynamically ---
+    // Update Canonical URL dynamically
     let canonical = document.querySelector('link[rel="canonical"]');
     if (!canonical) {
         canonical = document.createElement('link');
         canonical.setAttribute('rel', 'canonical');
         document.head.appendChild(canonical);
     }
-    // Point to the specific item URL
-    canonical.setAttribute('href', `https://www.canibringonplane.com/?item=${item.id}`);
+    canonical.setAttribute('href', `https://www.canibringonplane.com/?item=${item.slug}`);
 }

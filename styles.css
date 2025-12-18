@@ -388,3 +388,43 @@ footer a:hover { color: #60a5fa; }
     white-space: nowrap; /* Keeps the badge text on one line */
     text-align: right;
 }
+/* =========================================================
+   PHASE 4: SEO & PERFORMANCE (CLS PREVENTION)
+   ========================================================= */
+
+/* 1. Reserve space for results to prevent the layout from jumping */
+#rightPanel, #middlePanel {
+    min-height: 500px;
+    contain: layout;
+}
+
+/* 2. AdSense Compliance: Reserve space for ad slots to avoid layout shifts */
+.ad-slot, .ad-inline, .ad-container {
+    min-height: 250px;
+    background: #fdfdfd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+/* 3. Smooth fade-in for item cards and results to improve User Experience */
+.category-item-card, .result-card {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* 4. Ensure the Search results container doesn't collapse when empty */
+#autocompleteResults {
+    min-height: 50px;
+}

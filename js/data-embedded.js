@@ -1002,6 +1002,19 @@ const ITEMS_DATA = [
         "note": "✅ Pods and Powder are allowed. Powders over 12oz (350ml) may require extra screening. (Source: TSA)", 
         "category": ["household", "cleaning"], 
         "keywords": ["detergent", "pods", "powder", "tide pods"]
+} // This is the end of your last item
+]; // <--- This bracket closes the ITEMS_DATA array
+
+// NOW you run the logic outside the array
+ITEMS_DATA.forEach(item => {
+    if (!item.slug) {
+        item.slug = item.name
+            .toLowerCase()
+            .replace(/[()]/g, '') // Remove parentheses
+            .replace(/\//g, '-')  // Replace slashes with hyphens
+            .replace(/[^\w\s-]/g, '') // Remove special characters
+            .replace(/\s+/g, '-') // Replace spaces with hyphens
+            .replace(/-+/g, '-')  // Remove duplicate hyphens
+            .trim();
     }
-    
-];
+});
