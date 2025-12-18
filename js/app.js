@@ -4,7 +4,7 @@ let autocompleteTimeout = null;
 let currentCountry = 'USA';
 let currentCategory = null;
 
-// --- HELPER: Mobile Scroll Locking ---
+// --- HELPER: Mobile Scroll Locking ----
 // We don't need complex locking anymore because we are hiding the background!
 function toggleMobileView(showResult) {
     if (window.innerWidth < 1024) {
