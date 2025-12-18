@@ -1,209 +1,1007 @@
-// Embedded items data - no server required!
+// Embedded items data - Fully Updated & Verified
+// Sources: TSA.gov, CATSA, EASA, USDA, Australian Border Force, China Customs
 const ITEMS_DATA = [
-    {"id": 1, "name": "Water Bottle (Empty)", "carryOn": "allowed", "checked": "allowed", "note": "✅ Must be COMPLETELY EMPTY through security checkpoint. Can refill after security. Bottle size doesn't matter when empty. ⚠️ VERIFY: Some airports may still inspect empty bottles.", "category": ["liquids", "containers"], "keywords": ["water", "bottle", "container", "flask", "hydration"], "amazon_link": "https://www.amazon.com/s?k=tsa+approved+reusable+water+bottle&tag=YOUR_TAG_HERE"},
-    {"id": 2, "name": "Water Bottle (Full - 100ml or less)", "carryOn": "allowed", "checked": "allowed", "note": "✅ ONLY if container is 100ml (3.4oz) or smaller. Must fit in 1 quart-sized (20x20cm) clear resealable plastic bag. One bag per passenger. ⚠️ IMPORTANT: Container size matters, not liquid amount - a 500ml bottle half-full is NOT allowed.", "category": ["liquids"], "keywords": ["water", "drink", "beverage", "liquid", "full", "100ml"]},
-    {"id": 121, "name": "Water Bottle (Full - Over 100ml)", "carryOn": "prohibited", "checked": "allowed", "note": "❌ NOT ALLOWED in carry-on if container is larger than 100ml (3.4oz), even if partially filled. Will be confiscated. ✅ Allowed in checked luggage (any size). ⚠️ TIP: Empty it before security and refill after!", "category": ["liquids"], "keywords": ["water", "drink", "beverage", "liquid", "full", "large", "500ml"]},
-    {"id": 3, "name": "Laptop", "carryOn": "allowed", "checked": "allowed", "note": "✅ Allowed in carry-on and checked. ⚠️ SECURITY: Must be removed from bag and placed in separate bin at checkpoint. Internal lithium battery usually under 100Wh (allowed). 💡 RECOMMENDATION: Carry in carry-on to prevent damage/theft. Some countries may require powering on to prove it works.", "category": ["electronics"], "keywords": ["laptop", "computer", "macbook", "notebook", "pc"]},
-    {"id": 4, "name": "Power Bank", "carryOn": "allowed", "checked": "prohibited", "note": "✅ CARRY-ON ONLY (never in checked bags - fire risk). ⚠️ CAPACITY LIMITS: (1) Under 100Wh (27,000mAh): Allowed, no approval needed; (2) 100-160Wh: Requires airline approval in advance; (3) Over 160Wh: PROHIBITED. ⚠️ CRITICAL: Power bank MUST have capacity clearly marked in Wh or mAh. Unmarked power banks may be confiscated (strictly enforced in China). 📞 VERIFY: Check airline policy for 100-160Wh approval process. Maximum 2 spare power banks per person typically.", "category": ["electronics", "batteries"], "keywords": ["power bank", "battery", "charger", "portable charger"], "amazon_link": "https://www.amazon.com/s?k=tsa+approved+power+bank+portable+charger&tag=YOUR_TAG_HERE"},
-    {"id": 5, "name": "Scissors (under 4 inches)", "carryOn": "allowed", "checked": "allowed", "note": "✅ CARRY-ON: Allowed if blade is LESS than 4 inches (10cm) measured from pivot point to tip. Includes small craft scissors, nail scissors, travel scissors. ✅ CHECKED: Any size allowed. ⚠️ MEASUREMENT: TSA measures from the pivot/screw, not total length. 💡 TIP: Bring measuring tape if unsure - TSA has final say.", "category": ["tools", "sharp objects"], "keywords": ["scissors", "cutting", "blade"], "amazon_link": "https://www.amazon.com/s?k=tsa+approved+travel+scissors&tag=YOUR_TAG_HERE"},
-    {"id": 6, "name": "Scissors (over 4 inches)", "carryOn": "prohibited", "checked": "allowed", "note": "❌ CARRY-ON: PROHIBITED if blade is 4 inches (10cm) or longer from pivot point. Will be confiscated. ✅ CHECKED: Any size allowed. Common scissors in this category: kitchen scissors, fabric shears, haircutting scissors. ⚠️ INTERNATIONAL: Some countries (EU, UK) use 6cm limit instead - check destination rules.", "category": ["tools", "sharp objects"], "keywords": ["scissors", "cutting", "blade", "large"]},
-    {"id": 7, "name": "Pocket Knife", "carryOn": "prohibited", "checked": "allowed", "note": "❌ CARRY-ON: ALL knives PROHIBITED regardless of blade size (even 1-inch blades). Includes: Swiss Army knives, pocket knives, multi-tools with blades, butter knives. Will be confiscated. ✅ CHECKED: Any size allowed. Wrap sharp blades to protect baggage handlers. ⚠️ EXCEPTION: Plastic or round-ended butter knives may be allowed at TSA discretion.", "category": ["tools", "sharp objects"], "keywords": ["knife", "blade", "pocket knife", "swiss army"]},
-    {"id": 8, "name": "Toothpaste", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Maximum 100ml (3.4 oz) container size. Must fit in 1 quart-sized (20x20cm) clear resealable plastic bag with all other liquids. One bag per passenger. ✅ CHECKED: Any size allowed. ⚠️ IMPORTANT: Container size matters, not amount used - a half-empty 150ml tube is NOT allowed in carry-on.", "category": ["liquids", "toiletries"], "keywords": ["toothpaste", "dental", "hygiene"], "amazon_link": "https://www.amazon.com/s?k=travel+size+toothpaste+tsa+approved&tag=YOUR_TAG_HERE"},
-    {"id": 9, "name": "Shampoo", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Maximum 100ml (3.4 oz) container size. Must fit in 1 quart-sized (20x20cm) clear resealable plastic bag with all other liquids/gels. ✅ CHECKED: Any size allowed. 💡 TIP: Buy travel-sized bottles (50ml, 100ml) or transfer to TSA-approved containers. Hotel-sized bottles work perfectly.", "category": ["liquids", "toiletries"], "keywords": ["shampoo", "hair", "soap", "wash"], "amazon_link": "https://www.amazon.com/s?k=travel+size+shampoo+tsa+approved&tag=YOUR_TAG_HERE"},
-    {"id": 10, "name": "Deodorant (Solid)", "carryOn": "allowed", "checked": "allowed", "note": "Solid deodorants have no size restrictions.", "category": ["toiletries"], "keywords": ["deodorant", "antiperspirant", "solid"]},
-    {"id": 11, "name": "Deodorant (Spray/Gel)", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Maximum 100ml (3.4 oz) container. Must fit in quart-sized clear plastic bag. Aerosol and gel types count as liquids. ✅ Solid stick deodorants have NO size limit (see Deodorant Solid). ✅ CHECKED: Any size allowed.", "category": ["liquids", "toiletries"], "keywords": ["deodorant", "spray", "gel", "liquid"]},
-    {"id": 12, "name": "Razor (Disposable)", "carryOn": "allowed", "checked": "allowed", "note": "✅ CARRY-ON & CHECKED: Disposable razors (Gillette, Bic, etc.) and cartridge razors (replaceable blades) ALLOWED. Electric razors ALLOWED. ✅ SAFETY RAZORS: Allowed if blade cartridge is enclosed. ❌ NOT ALLOWED: Safety razor with removable/exposed blade must be checked (blade must be removed or checked separately). ⚠️ INTERNATIONAL: Some countries stricter on razor blades.", "category": ["toiletries", "sharp objects"], "keywords": ["razor", "shaving", "blade"]},
-    {"id": 13, "name": "Razor (Straight)", "carryOn": "prohibited", "checked": "allowed", "note": "❌ CARRY-ON: Straight razors (cut-throat razors) PROHIBITED. Will be confiscated. ✅ CHECKED: Allowed. Wrap blade securely to prevent injury to baggage handlers. Also applies to: shavettes, professional barber razors, safety razors with exposed blades.", "category": ["sharp objects", "toiletries"], "keywords": ["razor", "straight razor", "shaving"]},
-    {"id": 14, "name": "Medications (Prescription)", "carryOn": "allowed", "checked": "allowed", "note": "✅ Allowed in original prescription containers with pharmacy label showing your name. ⚠️ CRITICAL: Bring doctor's letter on letterhead with medication names, dosages, purpose, and your name. Liquid medications EXEMPT from 100ml rule but MUST be declared at security. 🚨 WARNING: Some countries BAN certain medications (e.g., Adderall banned in Japan, codeine restricted in UAE). 📞 VERIFY: Call destination country's embassy/consulate AND your airline at least 2 weeks before travel. Carry in carry-on (not checked) in case luggage is lost.", "category": ["medication", "medical"], "keywords": ["medicine", "medication", "pills", "prescription", "drugs"]},
-    {"id": 15, "name": "Medications (Over-the-counter)", "carryOn": "allowed", "checked": "allowed", "note": "✅ Pills and capsules allowed in any amount (no size limit). Keep in original packaging if possible. ⚠️ IMPORTANT: Even OTC medications like Benadryl, Sudafed, or sleeping pills may be restricted in some countries. Bring only what you need for the trip. 📞 VERIFY: For international travel, check if your specific OTC medication is allowed in destination country.", "category": ["medication"], "keywords": ["medicine", "medication", "pills", "tylenol", "advil"]},
-    {"id": 16, "name": "Insulin and Syringes", "carryOn": "allowed", "checked": "allowed", "note": "✅ Allowed with prescription label. 🚨 CRITICAL REQUIREMENTS: (1) Bring doctor's letter stating you are diabetic and need insulin/syringes; (2) Insulin must have pharmaceutical label; (3) Syringes must be accompanied by insulin; (4) Carry insulin in carry-on (temperature-sensitive, can freeze in checked bags); (5) Notify TSA officer at security checkpoint. ⚠️ International: Some countries require advance notification. Ice packs for cooling must be completely frozen. 📞 VERIFY: Call airline 48-72 hours before flight AND check destination country requirements. Carry extra supplies in case of delays.", "category": ["medication", "medical"], "keywords": ["insulin", "diabetes", "needles", "syringes", "injection"]},
-    {"id": 17, "name": "Phone Charger", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions on charging cables and wall adapters.", "category": ["electronics"], "keywords": ["charger", "cable", "usb", "phone charger", "adapter"]},
-    {"id": 18, "name": "Lighter (1)", "carryOn": "allowed", "checked": "prohibited", "note": "✅ CARRY-ON: ONE disposable lighter (Bic, etc.) or ONE Zippo allowed in carry-on only. ❌ CHECKED: PROHIBITED (fire hazard). ❌ NEVER ALLOWED: Torch lighters, arc lighters, plasma lighters. ⚠️ WARNING: Rules vary by country - China PROHIBITS all lighters in carry-on AND checked. 📞 VERIFY: Check destination country rules.", "category": ["fire", "other"], "keywords": ["lighter", "fire", "bic"]},
-    {"id": 19, "name": "Matches", "carryOn": "restricted", "checked": "prohibited", "note": "✅ CARRY-ON: ONE book of safety matches (non-strike-anywhere) allowed on person only (not in carry-on bag). ❌ CHECKED: ALL matches PROHIBITED. ❌ NEVER ALLOWED: Strike-anywhere matches, waterproof matches PROHIBITED everywhere. ⚠️ WARNING: Many countries (including China) prohibit ALL matches. 📞 VERIFY: Check airline and destination rules.", "category": ["fire", "other"], "keywords": ["matches", "fire"]},
-    {"id": 20, "name": "E-Cigarette / Vape", "carryOn": "allowed", "checked": "prohibited", "note": "✅ CARRY-ON ONLY (❌ NEVER in checked bags - lithium battery fire risk). Includes: Juul, vape pens, e-cigarettes, vape mods. ❌ USAGE: Cannot be used, charged, or vaped anywhere on aircraft. ⚠️ BATTERY RULES: Spare vape batteries follow lithium battery rules (see Lithium Batteries). E-liquid follows liquid rules (100ml max per bottle in quart bag). 📞 VERIFY: Some countries ban vapes entirely (Thailand, Singapore have heavy penalties).", "category": ["electronics", "other"], "keywords": ["vape", "e-cigarette", "juul", "vaping"]},
-    {"id": 21, "name": "Snacks (Solid)", "carryOn": "allowed", "checked": "allowed", "note": "✅ Solid foods allowed with no restrictions. Includes: chips, cookies, crackers, granola bars, candy, pretzels. TSA may inspect. 💡 TIP: Avoid liquids/gels (salsa, dips, hummus - these follow 100ml rule). ⚠️ INTERNATIONAL: Declare all food at customs. Some countries restrict meat, dairy products.", "category": ["food"], "keywords": ["snacks", "food", "chips", "cookies", "crackers"]},
-    {"id": 22, "name": "Sandwich", "carryOn": "allowed", "checked": "allowed", "note": "✅ Solid sandwiches allowed (bread, meat, cheese, veggies). May be inspected by TSA. ⚠️ SPREADS: Peanut butter, mayo, mustard count as liquids if separate (100ml limit). If on sandwich, generally OK. ⚠️ INTERNATIONAL: Fresh meat/dairy sandwiches may be restricted entering some countries (Australia, NZ, USA). 📞 VERIFY: Check destination biosecurity rules.", "category": ["food"], "keywords": ["sandwich", "food", "meal", "bread"]},
-    {"id": 23, "name": "Yogurt / Pudding", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Maximum 100ml (3.4 oz) container. Counts as liquid - must fit in quart-sized clear bag. ✅ CHECKED: Any size allowed. 💡 TIP: Freeze it solid before security - if completely frozen, it's not counted as liquid. Once it thaws after security, you can eat it.", "category": ["liquids", "food"], "keywords": ["yogurt", "pudding", "liquid food"]},
-    {"id": 24, "name": "Peanut Butter", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: TSA considers peanut butter a LIQUID. Maximum 100ml (3.4 oz) jar. Must fit in quart-sized clear bag. Also applies to: Nutella, almond butter, jam, jelly, honey. ✅ CHECKED: Any size allowed. 💡 TIP: Individual packets often under 100ml.", "category": ["liquids", "food"], "keywords": ["peanut butter", "spread", "food"]},
-    {"id": 25, "name": "Baby Formula", "carryOn": "allowed", "checked": "allowed", "note": "✅ EXEMPT from 100ml rule! Reasonable quantities allowed for trip duration. ⚠️ MUST: (1) Declare to TSA officer at checkpoint; (2) Remove from bag for separate screening; (3) May require additional testing (TSA may ask to open or test); (4) Traveling with infant not required. Powder, liquid, and ready-to-feed all allowed. 📞 VERIFY: International flights may have different rules.", "category": ["liquids", "food", "baby"], "keywords": ["formula", "baby", "infant", "milk"]},
-    {"id": 26, "name": "Breast Milk", "carryOn": "allowed", "checked": "allowed", "note": "✅ EXEMPT from 100ml rule! Reasonable quantities allowed even without infant present. ⚠️ MUST: (1) Declare at security checkpoint; (2) Separate from other liquids for screening; (3) Can bring ice packs (must be frozen solid). Consider insulated bag. TSA may test but won't require you to taste it. 💡 TIP: Label bottles with date/time. Bring extra bags in case of leaks. 📞 VERIFY: Some international airports may have stricter rules.", "category": ["liquids", "medical", "baby"], "keywords": ["breast milk", "milk", "baby", "nursing"]},
-    {"id": 27, "name": "Ice Packs (Frozen)", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED if COMPLETELY FROZEN SOLID at checkpoint (no liquid/gel visible). Used to keep medications, breast milk, or food cold. ⚠️ WARNING: If partially thawed or slushy, subject to 100ml liquid limit and will likely be confiscated. ✅ CHECKED: Any state (frozen or gel) allowed. 💡 TIP: Freeze overnight before travel.", "category": ["medical", "other"], "keywords": ["ice pack", "frozen", "cooler"]},
-    {"id": 28, "name": "Ice Packs (Gel)", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: If gel or partially frozen/slushy, maximum 100ml (3.4 oz) - same as liquid rule. Must be in quart-sized bag. If completely frozen solid, no size limit (see Ice Packs Frozen). ✅ CHECKED: Any size, any state allowed.", "category": ["liquids", "medical"], "keywords": ["ice pack", "gel", "cooler"]},
-    {"id": 29, "name": "Nail Clippers", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions.", "category": ["tools", "toiletries"], "keywords": ["nail clipper", "clippers", "grooming"]},
-    {"id": 30, "name": "Tweezers", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions.", "category": ["tools", "toiletries"], "keywords": ["tweezers", "grooming"]},
-    {"id": 31, "name": "Umbrella", "carryOn": "allowed", "checked": "allowed", "note": "Standard umbrellas allowed. Subject to size restrictions.", "category": ["other"], "keywords": ["umbrella", "rain"]},
-    {"id": 32, "name": "Camera", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions. Recommend carry-on for protection.", "category": ["electronics"], "keywords": ["camera", "dslr", "photography"]},
-    {"id": 33, "name": "Tripod", "carryOn": "allowed", "checked": "allowed", "note": "May need to be checked if too large for overhead bin.", "category": ["other"], "keywords": ["tripod", "camera", "stand"]},
-    {"id": 34, "name": "Bluetooth Speaker", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions. Cannot be used during flight.", "category": ["electronics"], "keywords": ["speaker", "bluetooth", "audio"]},
-    {"id": 35, "name": "Headphones", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions.", "category": ["electronics"], "keywords": ["headphones", "earbuds", "airpods", "audio"]},
-    {"id": 36, "name": "Tablet / iPad", "carryOn": "allowed", "checked": "allowed", "note": "May need to be removed at security.", "category": ["electronics"], "keywords": ["tablet", "ipad", "device"]},
-    {"id": 37, "name": "E-Reader / Kindle", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions.", "category": ["electronics"], "keywords": ["kindle", "e-reader", "ebook", "reader"]},
-    {"id": 38, "name": "Books", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions.", "category": ["other"], "keywords": ["books", "reading", "novel"]},
-    {"id": 39, "name": "Lithium Batteries (Spare)", "carryOn": "allowed", "checked": "prohibited", "note": "✅ CARRY-ON ONLY (❌ NEVER in checked bags - fire hazard). ⚠️ CAPACITY LIMITS: (1) Under 100Wh: Allowed; (2) 100-160Wh: Max 2 batteries with airline approval; (3) Over 160Wh: PROHIBITED. ⚠️ PROTECTION REQUIRED: Terminals must be protected from short circuit - keep in original packaging or tape exposed terminals, or place in separate plastic bags. Applies to: 18650, CR123A, camera batteries, laptop spare batteries. 📞 VERIFY: Some airlines limit quantity (typically max 2-4 spare batteries).", "category": ["electronics", "batteries"], "keywords": ["battery", "lithium", "spare", "aa", "aaa"]},
-    {"id": 40, "name": "AA/AAA Batteries", "carryOn": "allowed", "checked": "allowed", "note": "✅ Alkaline batteries (Duracell, Energizer): No restrictions, carry-on or checked. ✅ Lithium AA/AAA (Energizer Ultimate): Allowed but if loose/spare, keep in carry-on and protect terminals (tape or original packaging). Batteries installed in devices are fine in either.", "category": ["batteries"], "keywords": ["battery", "aa", "aaa", "batteries"]},
-    {"id": 41, "name": "Sunscreen (Lotion)", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Maximum 100ml (3.4 oz) container. Must fit in 1 quart-sized (20x20cm) clear plastic bag with all liquids. ✅ CHECKED: Any size allowed. 💡 TIP: Spray sunscreen also follows same liquid rules. Solid sunscreen sticks have no size limit.", "category": ["liquids", "toiletries"], "keywords": ["sunscreen", "sunblock", "lotion", "spf"]},
-    {"id": 42, "name": "Hand Sanitizer", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Maximum 350ml (12 oz) per container allowed (temporary COVID-19 policy, subject to change). Standard 3-1-1 rule may apply again - check current TSA rules. Must be removed from bag for screening. ✅ CHECKED: Any size allowed. 📞 VERIFY: Check current TSA policy as rules may revert to 100ml limit.", "category": ["liquids", "toiletries"], "keywords": ["hand sanitizer", "alcohol", "purell", "sanitizer"]},
-    {"id": 43, "name": "Makeup", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON LIQUIDS/CREAMS: Foundation, concealer, mascara, lip gloss, cream blush - maximum 100ml (3.4 oz) each, must fit in quart-sized bag. ✅ CARRY-ON SOLIDS/POWDERS: Eyeshadow, powder foundation, lipstick, pressed powder - NO size limit, not counted as liquids. ✅ CHECKED: Any size, any type allowed.", "category": ["liquids", "toiletries"], "keywords": ["makeup", "cosmetics", "foundation", "lipstick"]},
-    {"id": 44, "name": "Perfume / Cologne", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Maximum 100ml (3.4 oz) per bottle. Must fit in quart-sized clear bag. Can bring multiple small bottles if they all fit in one bag. ✅ CHECKED: Any size allowed, but total liquids in checked limited to 2kg (70 oz) per person. Bottles must have secure lids.", "category": ["liquids", "toiletries"], "keywords": ["perfume", "cologne", "fragrance", "scent"]},
-    {"id": 45, "name": "Hair Spray", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Maximum 100ml (3.4 oz) aerosol can. Must fit in quart-sized clear bag. ✅ CHECKED: Allowed, but total aerosols/liquids limited to 2kg (70 oz) per person. Aerosol release mechanism must be protected by cap to prevent accidental discharge.", "category": ["liquids", "toiletries"], "keywords": ["hair spray", "hairspray", "styling"]},
-    {"id": 46, "name": "Contact Lens Solution", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Maximum 100ml (3.4 oz) container. Must fit in quart-sized bag with other liquids. ✅ MEDICALLY NECESSARY: If you need larger amounts due to extended travel, can bring reasonable quantities but MUST declare at security and may require additional screening. ✅ CHECKED: Any size allowed.", "category": ["liquids", "medical"], "keywords": ["contact", "lens", "solution", "saline"]},
-    {"id": 47, "name": "Eye Drops", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Maximum 100ml (3.4 oz) bottle. Must fit in quart-sized bag. ✅ MEDICALLY NECESSARY: Prescription eye drops may be exempt from size limits but must be declared. Bring prescription if possible. ✅ CHECKED: Any size allowed.", "category": ["liquids", "medical"], "keywords": ["eye drops", "drops", "eyes"]},
-    {"id": 48, "name": "Aerosol (Spray)", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Maximum 100ml (3.4 oz) can size. Must fit in quart-sized clear bag. Includes deodorant spray, hair spray, shaving foam, etc. ✅ CHECKED: Allowed, but total aerosols cannot exceed 2kg (70 oz) per person. Aerosol valves must be protected by caps to prevent accidental release. ❌ PROHIBITED: Spray paint, insecticides, flammable aerosols.", "category": ["liquids"], "keywords": ["aerosol", "spray", "can"]},
-    {"id": 49, "name": "Screwdriver (under 7 inches)", "carryOn": "allowed", "checked": "allowed", "note": "✅ CARRY-ON: Screwdrivers UNDER 7 inches (18cm) in length (measured from end to end, including handle) are allowed. Includes flathead, Phillips, hex/Allen keys under 7 inches. ✅ CHECKED: Any size allowed. ⚠️ TSA DISCRETION: Security officer has final say.", "category": ["tools"], "keywords": ["screwdriver", "tool"]},
-    {"id": 50, "name": "Screwdriver (over 7 inches)", "carryOn": "prohibited", "checked": "allowed", "note": "❌ CARRY-ON: Screwdrivers 7 inches (18cm) or LONGER are PROHIBITED. Will be confiscated. ✅ CHECKED: Any size allowed. ⚠️ MEASUREMENT: Total length including handle. 💡 TIP: Bring compact multi-tool screwdriver sets (under 7 inches) for carry-on.", "category": ["tools"], "keywords": ["screwdriver", "tool", "large"]},
-    {"id": 51, "name": "Wrench / Pliers", "carryOn": "restricted", "checked": "allowed", "note": "✅ CARRY-ON: Wrenches and pliers UNDER 7 inches (18cm) are generally allowed but subject to TSA officer discretion. ❌ CARRY-ON: Over 7 inches PROHIBITED. ✅ CHECKED: Any size allowed. Includes: adjustable wrenches, needle-nose pliers, combination pliers, channel locks.", "category": ["tools"], "keywords": ["wrench", "pliers", "tool"]},
-    {"id": 52, "name": "Hammer", "carryOn": "prohibited", "checked": "allowed", "note": "❌ CARRY-ON: ALL hammers PROHIBITED regardless of size (considered a weapon). Will be confiscated. ✅ CHECKED: Any size/type allowed. Also applies to: mallets, sledgehammers, claw hammers, ball-peen hammers.", "category": ["tools"], "keywords": ["hammer", "tool"]},
-    {"id": 53, "name": "Baseball Bat", "carryOn": "prohibited", "checked": "allowed", "note": "Sports equipment must be checked.", "category": ["sports", "other"], "keywords": ["baseball bat", "bat", "sports"]},
-    {"id": 54, "name": "Golf Clubs", "carryOn": "prohibited", "checked": "allowed", "note": "Must be checked. May incur fees.", "category": ["sports"], "keywords": ["golf", "clubs", "sports"]},
-    {"id": 55, "name": "Tennis Racket", "carryOn": "allowed", "checked": "allowed", "note": "Subject to size restrictions for overhead bin.", "category": ["sports"], "keywords": ["tennis", "racket", "sports"]},
-    {"id": 56, "name": "Ski Poles", "carryOn": "prohibited", "checked": "allowed", "note": "Must be checked.", "category": ["sports"], "keywords": ["ski", "poles", "skiing", "sports"]},
-    {"id": 57, "name": "Walking Cane", "carryOn": "allowed", "checked": "allowed", "note": "Medical canes allowed. Subject to inspection.", "category": ["medical", "other"], "keywords": ["cane", "walking stick", "medical"]},
-    {"id": 58, "name": "Crutches", "carryOn": "allowed", "checked": "allowed", "note": "Medical devices allowed.", "category": ["medical"], "keywords": ["crutches", "medical", "mobility"]},
-    {"id": 59, "name": "Wheelchair", "carryOn": "allowed", "checked": "allowed", "note": "Allowed as medical device. Battery type matters.", "category": ["medical"], "keywords": ["wheelchair", "mobility", "medical"]},
-    {"id": 60, "name": "CPAP Machine", "carryOn": "allowed", "checked": "allowed", "note": "✅ CARRY-ON & CHECKED: Allowed. ⚠️ IMPORTANT: (1) Does NOT count toward carry-on bag limit (medical exemption); (2) Remove from bag for separate X-ray screening; (3) Notify TSA officer; (4) Bring doctor's note for international travel. 💡 TIP: Keep in carry-on to ensure you have it at destination. Distilled water for CPAP follows liquid rules (100ml in carry-on or buy after security).", "category": ["medical"], "keywords": ["cpap", "sleep apnea", "medical", "breathing"]},
-    {"id": 61, "name": "Portable Oxygen", "carryOn": "restricted", "checked": "prohibited", "note": "⚠️ CARRY-ON ONLY (❌ never in checked). ⚠️ CRITICAL REQUIREMENTS: (1) MUST be FAA-approved POC (Portable Oxygen Concentrator) - check manufacturer's FAA approval; (2) Notify airline at least 48 hours before flight; (3) Bring doctor's note stating medical necessity; (4) Must have enough battery for 150% of flight duration; (5) Spare batteries follow lithium battery rules. ❌ Compressed oxygen tanks PROHIBITED. 📞 VERIFY: Call airline for specific model approval and required documentation.", "category": ["medical"], "keywords": ["oxygen", "medical", "breathing"]},
-    {"id": 62, "name": "Toy Guns (Realistic)", "carryOn": "prohibited", "checked": "allowed", "note": "Realistic replicas must be checked.", "category": ["toys", "weapons"], "keywords": ["toy gun", "replica", "toy"]},
-    {"id": 63, "name": "Nerf Guns", "carryOn": "allowed", "checked": "allowed", "note": "Clearly toy guns generally allowed.", "category": ["toys"], "keywords": ["nerf", "toy", "gun"]},
-    {"id": 64, "name": "Action Figures", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions.", "category": ["toys"], "keywords": ["toys", "action figure", "figurine"]},
-    {"id": 65, "name": "Playing Cards", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions.", "category": ["other"], "keywords": ["cards", "playing cards", "deck"]},
-    {"id": 66, "name": "Board Games", "carryOn": "allowed", "checked": "allowed", "note": "Subject to size restrictions.", "category": ["other"], "keywords": ["board game", "game", "cards"]},
-    {"id": 67, "name": "Musical Instrument (Small)", "carryOn": "allowed", "checked": "allowed", "note": "Small instruments like ukuleles generally allowed.", "category": ["other"], "keywords": ["instrument", "music", "ukulele", "violin"]},
-    {"id": 68, "name": "Guitar", "carryOn": "restricted", "checked": "allowed", "note": "May be allowed as carry-on if space available.", "category": ["other"], "keywords": ["guitar", "instrument", "music"]},
-    {"id": 69, "name": "Drone", "carryOn": "allowed", "checked": "allowed", "note": "Batteries must follow lithium battery rules.", "category": ["electronics"], "keywords": ["drone", "quadcopter", "uav"]},
-    {"id": 70, "name": "GoPro Camera", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions.", "category": ["electronics"], "keywords": ["gopro", "camera", "action camera"]},
-    {"id": 71, "name": "Selfie Stick", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions.", "category": ["other"], "keywords": ["selfie stick", "camera", "monopod"]},
-    {"id": 72, "name": "Portable Fan", "carryOn": "allowed", "checked": "allowed", "note": "Battery-powered fans allowed.", "category": ["electronics", "other"], "keywords": ["fan", "portable fan", "cooling"]},
-    {"id": 73, "name": "Hair Dryer", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions.", "category": ["electronics", "toiletries"], "keywords": ["hair dryer", "blow dryer", "dryer"]},
-    {"id": 74, "name": "Hair Straightener / Curling Iron", "carryOn": "allowed", "checked": "allowed", "note": "Cordless with butane cartridge must be in checked with cap.", "category": ["electronics", "toiletries"], "keywords": ["straightener", "curling iron", "hair", "flat iron"]},
-    {"id": 75, "name": "Electric Toothbrush", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions.", "category": ["electronics", "toiletries"], "keywords": ["toothbrush", "electric", "dental"]},
-    {"id": 76, "name": "Shaving Cream", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Maximum 100ml (3.4 oz) container (foam, gel, or cream). Must fit in quart-sized clear bag. ✅ CHECKED: Any size allowed. 💡 TIP: Travel-sized shaving cream cans or switch to solid shaving soap for no restrictions.", "category": ["liquids", "toiletries"], "keywords": ["shaving cream", "shave", "foam"]},
-    {"id": 77, "name": "Mouthwash", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Maximum 100ml (3.4 oz) bottle. Must fit in quart-sized clear bag with other liquids. ✅ CHECKED: Any size allowed. 💡 TIP: Buy small travel bottles or use mouthwash tablets (solid, no restrictions).", "category": ["liquids", "toiletries"], "keywords": ["mouthwash", "listerine", "dental"]},
-    {"id": 78, "name": "Nail Polish", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Maximum 100ml (3.4 oz) bottle. Must fit in quart-sized clear bag. ✅ CHECKED: Allowed, but limited to 2kg (70 oz) total flammable liquids per person. Bottles must be tightly sealed.", "category": ["liquids", "toiletries"], "keywords": ["nail polish", "polish", "nails"]},
-    {"id": 79, "name": "Nail Polish Remover", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Maximum 100ml (3.4 oz) bottle. Must fit in quart-sized clear bag. ⚠️ CHECKED: Allowed but limited quantity (acetone is flammable). Total flammable liquids cannot exceed 2kg (70 oz) per person. Use leak-proof containers.", "category": ["liquids", "toiletries"], "keywords": ["nail polish remover", "acetone", "remover"]},
-    {"id": 80, "name": "Hand Lotion", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Maximum 100ml (3.4 oz) bottle/tube. Must fit in quart-sized clear bag. ✅ CHECKED: Any size allowed. 💡 TIP: Solid lotion bars have no size restrictions and don't count toward liquid limit.", "category": ["liquids", "toiletries"], "keywords": ["lotion", "hand cream", "moisturizer"]},
-    {"id": 81, "name": "Lip Balm / Chapstick", "carryOn": "allowed", "checked": "allowed", "note": "Solid lip balms unrestricted. Liquid/gel follow 3-1-1 rule.", "category": ["toiletries"], "keywords": ["chapstick", "lip balm", "lips"]},
-    {"id": 82, "name": "Baby Wipes", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions on wet wipes.", "category": ["baby", "toiletries"], "keywords": ["wipes", "baby wipes", "wet wipes"]},
-    {"id": 83, "name": "Disinfecting Wipes", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions.", "category": ["toiletries"], "keywords": ["wipes", "disinfecting", "cleaning", "clorox"]},
-    {"id": 84, "name": "Tissues", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions.", "category": ["other"], "keywords": ["tissues", "kleenex"]},
-    {"id": 85, "name": "Tampons / Pads", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions.", "category": ["toiletries"], "keywords": ["tampons", "pads", "feminine", "period"]},
-    {"id": 86, "name": "Thermometer", "carryOn": "restricted", "checked": "restricted", "note": "❌ Mercury thermometers PROHIBITED (hazardous material). ✅ Digital thermometers allowed in carry-on and checked. Battery-operated preferred. No restrictions on digital types.", "category": ["medical"], "keywords": ["thermometer", "temperature", "medical"]},
-    {"id": 87, "name": "First Aid Kit", "carryOn": "allowed", "checked": "allowed", "note": "✅ Allowed. ⚠️ IMPORTANT: (1) Scissors must be under 4 inches (10cm) from pivot point; (2) Liquid items (antiseptic, ointment) must be 100ml (3.4oz) or less each and fit in 1 quart-sized clear bag; (3) Sharp items like tweezers are allowed. Consider pre-assembled TSA-approved kits. 📞 VERIFY: For international travel with medications in kit, check destination rules.", "category": ["medical"], "keywords": ["first aid", "bandages", "medical kit"]},
-    {"id": 88, "name": "Band-Aids / Bandages", "carryOn": "allowed", "checked": "allowed", "note": "✅ No restrictions. Adhesive bandages and gauze allowed in any amount.", "category": ["medical"], "keywords": ["bandages", "band-aid", "bandaid"]},
-    {"id": 89, "name": "Vitamins / Supplements", "carryOn": "allowed", "checked": "allowed", "note": "✅ Pills, tablets, and capsules allowed in any amount. Keep in original packaging if possible. ⚠️ International: Some supplements (melatonin, certain herbs) may be restricted in some countries. Powder supplements over 350ml (12 oz) may require additional screening. 📞 VERIFY: For large quantities or international travel, check destination country regulations.", "category": ["medication"], "keywords": ["vitamins", "supplements", "pills"]},
-    {"id": 90, "name": "Protein Powder", "carryOn": "allowed", "checked": "allowed", "note": "✅ CARRY-ON & CHECKED: Allowed. ⚠️ POWDER RULE: Containers over 350ml (12 oz) may require additional screening - TSA may open and test. Place in separate bin at security. 💡 TIP: Keep in original labeled container. Smaller containers (under 350ml) have fewer restrictions. 📞 VERIFY: International flights may have stricter powder rules.", "category": ["food"], "keywords": ["protein", "powder", "supplement"]},
-    {"id": 91, "name": "Coffee (Ground/Beans)", "carryOn": "allowed", "checked": "allowed", "note": "✅ CARRY-ON & CHECKED: Allowed. ⚠️ POWDER RULE: Ground coffee over 350ml (12 oz) requires additional screening. Coffee beans (whole) have no size restrictions. 💡 TIP: Vacuum-sealed packages work best. ⚠️ INTERNATIONAL: Some countries (New Zealand, Australia) may inspect or restrict due to biosecurity.", "category": ["food"], "keywords": ["coffee", "beans", "ground", "espresso"]},
-    {"id": 92, "name": "Tea Bags", "carryOn": "allowed", "checked": "allowed", "note": "✅ No restrictions. Tea bags, loose leaf tea, and tea powder all allowed in carry-on and checked. 💡 TIP: Keep in original packaging for faster screening. ⚠️ INTERNATIONAL: Herbal teas may be inspected in countries with strict biosecurity (Australia, New Zealand).", "category": ["food"], "keywords": ["tea", "tea bags"]},
-    {"id": 93, "name": "Chocolate", "carryOn": "allowed", "checked": "allowed", "note": "✅ CARRY-ON & CHECKED: Solid chocolate (bars, truffles) allowed with no restrictions. ⚠️ LIQUID CHOCOLATE: Chocolate sauce, chocolate spread, Nutella count as liquids - maximum 100ml (3.4 oz) in carry-on. 💡 TIP: Chocolate may melt in checked bags or hot weather.", "category": ["food"], "keywords": ["chocolate", "candy", "sweets"]},
-    {"id": 94, "name": "Nuts", "carryOn": "allowed", "checked": "allowed", "note": "✅ No restrictions on solid nuts (roasted, salted, etc.). ⚠️ INTERNATIONAL BIOSECURITY: Some countries (Australia, New Zealand, China) may restrict or inspect nuts, especially raw/unprocessed nuts. Declare all food items. 💡 TIP: Commercially packaged nuts are safer than bulk/loose nuts for international travel.", "category": ["food"], "keywords": ["nuts", "peanuts", "almonds", "snacks"]},
-    {"id": 95, "name": "Dried Fruit", "carryOn": "allowed", "checked": "allowed", "note": "✅ CARRY-ON & CHECKED: Allowed. ⚠️ INTERNATIONAL: Countries with strict biosecurity (Australia, New Zealand) may inspect or restrict dried fruit. Always declare at customs. Commercial packaging recommended. 💡 TIP: Keep in original sealed packaging when possible.", "category": ["food"], "keywords": ["dried fruit", "raisins", "fruit", "snacks"]},
-    {"id": 96, "name": "Fresh Fruit", "carryOn": "allowed", "checked": "allowed", "note": "✅ DOMESTIC FLIGHTS (within same country): Generally allowed. ⚠️ INTERNATIONAL FLIGHTS: HEAVY RESTRICTIONS. 🚨 AUSTRALIA/NEW ZEALAND: Fresh fruit, vegetables, plants PROHIBITED - fines up to $10,000 AUD for non-declaration. 🚨 USA ENTRY: Most fresh fruit from abroad restricted. 🚨 CHINA/JAPAN: Strict quarantine on produce. 📞 VERIFY: Check destination country biosecurity/quarantine rules. ALWAYS declare all food items on customs forms.", "category": ["food"], "keywords": ["fruit", "apple", "banana", "orange", "fresh"]},
-    {"id": 97, "name": "Alcohol (Under 140 proof)", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Mini bottles maximum 100ml (3.4 oz) each, must fit in quart-sized bag. Cannot drink on plane. ✅ CHECKED: Alcohol 24-70% ABV (48-140 proof): Up to 5 liters per person. ✅ CHECKED: Beer/wine under 24% ABV: No limit (subject to airline baggage weight). ⚠️ MUST BE: Retail packaged with secure lids. 📞 VERIFY: International customs may have import limits (typically 1-2 liters duty-free).", "category": ["liquids", "alcohol"], "keywords": ["alcohol", "liquor", "wine", "beer", "spirits"]},
-    {"id": 98, "name": "Alcohol (Over 140 proof)", "carryOn": "prohibited", "checked": "prohibited", "note": "❌ PROHIBITED: Alcohol over 70% ABV (140 proof) BANNED in both carry-on and checked luggage. Too flammable. Examples: Everclear 190-proof, Spirytus, strong absinthe. Will be confiscated if discovered. ⚠️ Check ABV % on bottle before packing.", "category": ["liquids", "alcohol"], "keywords": ["alcohol", "liquor", "high proof", "everclear"]},
-    {"id": 99, "name": "Duty-Free Alcohol", "carryOn": "allowed", "checked": "allowed", "note": "✅ CARRY-ON: Allowed if in sealed TAMPER-EVIDENT BAG (STEB) from duty-free shop with receipt visible. Bag must remain sealed until final destination. Size limit exempt from 100ml rule. ⚠️ CONNECTING FLIGHTS: May not be allowed through security at connecting airports - check airline policy. ✅ CHECKED: Always allowed. 📞 VERIFY: Connecting through different country may require re-screening.", "category": ["liquids", "alcohol"], "keywords": ["duty free", "alcohol", "liquor"]},
-    {"id": 100, "name": "Cigarettes", "carryOn": "allowed", "checked": "allowed", "note": "No restrictions. Cannot smoke on plane.", "category": ["other"], "keywords": ["cigarettes", "tobacco", "smoking"]},
-    {"id": 101, "name": "Pepper Spray", "carryOn": "prohibited", "checked": "restricted", "note": "One 4 oz container in checked if has safety mechanism.", "category": ["weapons", "self-defense"], "keywords": ["pepper spray", "mace", "self defense"]},
-    {"id": 102, "name": "Taser / Stun Gun", "carryOn": "prohibited", "checked": "restricted", "note": "Must be in checked luggage. May have airline restrictions.", "category": ["weapons", "self-defense"], "keywords": ["taser", "stun gun", "self defense"]},
-    {"id": 103, "name": "Martial Arts Equipment", "carryOn": "prohibited", "checked": "allowed", "note": "Nunchucks, brass knuckles, etc. must be checked.", "category": ["weapons", "sports"], "keywords": ["martial arts", "nunchucks", "weapon"]},
-    {"id": 104, "name": "Ammunition", "carryOn": "prohibited", "checked": "restricted", "note": "Must be in original packaging. Declare at check-in.", "category": ["weapons"], "keywords": ["ammunition", "bullets", "ammo"]},
-    {"id": 105, "name": "Flares", "carryOn": "prohibited", "checked": "prohibited", "note": "Flares not allowed on aircraft.", "category": ["fire", "other"], "keywords": ["flare", "signal"]},
-    {"id": 106, "name": "Bleach", "carryOn": "prohibited", "checked": "prohibited", "note": "Household bleach prohibited on aircraft.", "category": ["liquids", "hazardous"], "keywords": ["bleach", "cleaning", "chlorine"]},
-    {"id": 107, "name": "Paint", "carryOn": "prohibited", "checked": "prohibited", "note": "Most paints prohibited due to flammability.", "category": ["liquids", "hazardous"], "keywords": ["paint", "art supplies"]},
-    {"id": 108, "name": "Compressed Gas", "carryOn": "prohibited", "checked": "prohibited", "note": "Pressurized containers generally prohibited.", "category": ["hazardous"], "keywords": ["gas", "compressed", "cylinder"]},
-    {"id": 109, "name": "Pet (Small)", "carryOn": "allowed", "checked": "restricted", "note": "✅ CARRY-ON: Small dogs/cats in airline-approved carriers that fit under seat. ⚠️ CRITICAL REQUIREMENTS: (1) Advance airline approval required (call at least 1 week before - limited spots per flight); (2) Carrier max dimensions typically 18\"x11\"x11\" (46x28x28cm) - varies by airline; (3) Pet + carrier counts as personal item or carry-on; (4) Pet must stay in carrier entire flight; (5) Fee applies ($125-200 USD typically). ✅ CHECKED: Larger pets as cargo (not all airlines allow). 📞 VERIFY: Call airline for breed restrictions, health certificates, international requirements.", "category": ["pets"], "keywords": ["pet", "dog", "cat", "animal", "carrier"]},
-    {"id": 110, "name": "Service Animal", "carryOn": "allowed", "checked": "allowed", "note": "✅ Trained service animals (dogs) allowed in cabin at no charge. ⚠️ REQUIREMENTS: (1) Advance notification to airline (48-72 hours); (2) Must submit DOT Service Animal Air Transportation Form; (3) Animal must be harnessed/leashed and behave appropriately; (4) Must fit at owner's feet or lap without blocking aisle. ⚠️ INTERNATIONAL: May require health certificates, vaccinations, quarantine. Emotional support animals NO LONGER qualify as service animals for air travel (as of 2021). 📞 VERIFY: Call airline for specific documentation requirements.", "category": ["pets", "medical"], "keywords": ["service dog", "service animal", "assistance"]},
-    {"id": 111, "name": "Fishing Rod", "carryOn": "allowed", "checked": "allowed", "note": "May be allowed as carry-on if fits in overhead bin.", "category": ["sports"], "keywords": ["fishing", "rod", "pole"]},
-    {"id": 112, "name": "Fishing Hooks", "carryOn": "restricted", "checked": "allowed", "note": "Must be sheathed or securely wrapped.", "category": ["sports", "sharp objects"], "keywords": ["fishing", "hooks", "tackle"]},
-    {"id": 113, "name": "Hiking Poles", "carryOn": "prohibited", "checked": "allowed", "note": "Must be checked.", "category": ["sports"], "keywords": ["hiking", "trekking poles", "walking poles"]},
-    {"id": 114, "name": "Ice Skates", "carryOn": "prohibited", "checked": "allowed", "note": "Blades must be checked.", "category": ["sports", "sharp objects"], "keywords": ["ice skates", "skating", "blades"]},
-    {"id": 115, "name": "Snow Globes", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Allowed ONLY if: (1) Globe fits in the palm of your hand (tennis ball size or smaller - approximately 6cm diameter); (2) Liquid inside is 100ml (3.4 oz) or less; (3) Must fit in quart-sized bag with other liquids. Larger ones will be confiscated. ✅ CHECKED: Any size allowed. 💡 TIP: Most souvenir snow globes are too large for carry-on - pack in checked bag.", "category": ["liquids", "other"], "keywords": ["snow globe", "souvenir"]},
-    {"id": 116, "name": "Candles", "carryOn": "allowed", "checked": "allowed", "note": "✅ SOLID WAX CANDLES: Allowed in carry-on and checked. No size restrictions. ❌ GEL CANDLES: PROHIBITED in carry-on (count as gels/liquids over 100ml). Can go in checked bags. ✅ CHECKED: All candle types allowed. 💡 TIP: Wrap candles well to prevent breakage.", "category": ["other"], "keywords": ["candle", "wax"]},
-    {"id": 117, "name": "Dry Ice", "carryOn": "restricted", "checked": "restricted", "note": "⚠️ ALLOWED with RESTRICTIONS: Maximum 2.5 kg (5.5 lbs) per passenger for refrigerating perishables. ⚠️ CRITICAL REQUIREMENTS: (1) Package must be VENTILATED (cannot be airtight - asphyxiation risk); (2) MUST notify airline at least 24 hours before flight; (3) Must be visible or package marked \"DRY ICE\" or \"CARBON DIOXIDE SOLID\" with weight; (4) Airline may have stricter limits. 📞 VERIFY: Call airline - many ban dry ice entirely. Consider gel ice packs instead.", "category": ["other"], "keywords": ["dry ice", "ice", "frozen"]},
-    {"id": 118, "name": "Cast Iron Cookware", "carryOn": "allowed", "checked": "allowed", "note": "Allowed but may trigger additional screening.", "category": ["other"], "keywords": ["cast iron", "pan", "skillet", "cookware"]},
-    {"id": 119, "name": "Knitting Needles", "carryOn": "allowed", "checked": "allowed", "note": "Generally allowed. Recommend travel-sized circular needles.", "category": ["tools", "other"], "keywords": ["knitting", "needles", "yarn"]},
-    {"id": 120, "name": "Crochet Hooks", "carryOn": "allowed", "checked": "allowed", "note": "Allowed in carry-on.", "category": ["tools", "other"], "keywords": ["crochet", "hook", "yarn"]},
+    // --- LIQUIDS & DRINKS ---
+    {
+        "id": 1, 
+        "name": "Water Bottle (Empty)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Must be COMPLETELY EMPTY through security. Can refill at fountains after checkpoint. (Source: TSA.gov)", 
+        "category": ["liquids", "containers"], 
+        "keywords": ["water", "bottle", "flask", "hydroflask", "yeti"]
+    },
+    {
+        "id": 2, 
+        "name": "Water Bottle (Full - under 100ml)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed if container is 100ml (3.4oz) or less. Must fit in quart-sized bag. (Source: TSA 3-1-1 Rule)", 
+        "category": ["liquids"], 
+        "keywords": ["water", "drink", "juice", "small bottle"]
+    },
+    {
+"id": 121, 
+        "name": "Water Bottle (Full - over 100ml)", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ Liquids that exceed the 100ml (3.4 oz) limit are the most common item confiscated at security. The volume is based on the container size, not the liquid level inside. You MUST empty this before entering the checkpoint, or it will be seized. Refill fountains are usually available after security. (Source: TSA 3-1-1 Rule)", 
+        "category": ["liquids"], 
+        "keywords": ["water", "drink", "soda", "coke", "large bottle"]
+    },
+    {
+"id": 97, 
+        "name": "Alcohol (Liquor/Wine)", 
+        "carryOn": "restricted", 
+        "checked": "allowed", 
+        "note": "⚠️ CARRY-ON: Liquids (including alcohol) must be in containers of 100ml (3.4oz) or less and fit in your quart-sized bag. ✅ CHECKED: Allowed (up to 5 liters per person if between 24–70% alcohol by volume). ❌ Alcohol over 70% ABV (140 proof) is strictly PROHIBITED in both carry-on and checked luggage due to fire risk. (Source: FAA/TSA)", 
+        "category": ["liquids", "alcohol"], 
+        "keywords": ["alcohol", "wine", "beer", "vodka", "whiskey"]
+    },
 
-    // Additional verified TSA items
-    {"id": 121, "name": "Makeup (Liquid Foundation, Mascara)", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Liquid makeup must follow 3-1-1 rule - containers 3.4 oz (100ml) or less, in single quart-sized clear plastic bag. ✅ Examples: liquid foundation, mascara, lip gloss, liquid eyeliner. ✅ Powder makeup, solid lipstick, makeup wipes have NO restrictions. ✅ CHECKED: Any size allowed. 💡 TIP: Transfer liquids to travel-size containers or buy powder versions for easier travel.", "category": ["toiletries", "liquids"], "keywords": ["makeup", "foundation", "mascara", "cosmetics", "beauty"]},
-    {"id": 122, "name": "Hairspray (Aerosol)", "carryOn": "restricted", "checked": "restricted", "note": "⚠️ CARRY-ON: Must be 3.4 oz (100ml) or less per container, packed in quart-sized bag. ✅ CHECKED: Allowed in checked luggage with restrictions - total of all aerosols cannot exceed 68 oz (2 liters) per passenger, and each container max 18 oz (500ml). ⚠️ WARNING: Must have protective cap to prevent accidental release. 📞 VERIFY: Some international flights ban all aerosols.", "category": ["toiletries", "liquids"], "keywords": ["hairspray", "aerosol", "hair", "spray"]},
-    {"id": 123, "name": "Perfume / Cologne", "carryOn": "restricted", "checked": "restricted", "note": "⚠️ CARRY-ON: Must be 3.4 oz (100ml) or less per bottle, packed in quart-sized liquids bag. ✅ CHECKED: Allowed up to 68 oz (2 liters) total for all liquids/aerosols, max 18 oz (500ml) per bottle. 💡 TIP: Buy duty-free perfume after security - can bring on plane in sealed tamper-evident bag with receipt.", "category": ["toiletries", "liquids"], "keywords": ["perfume", "cologne", "fragrance", "scent"]},
-    {"id": 124, "name": "Deodorant (Gel, Spray, Roll-On)", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Gel, spray, and roll-on deodorants must be 3.4 oz (100ml) or less and packed in quart-sized bag. ✅ Solid stick deodorants have NO size restrictions. ✅ CHECKED: Any size allowed. 💡 TIP: Switch to solid stick deodorant for hassle-free travel.", "category": ["toiletries", "liquids"], "keywords": ["deodorant", "antiperspirant", "spray", "gel", "roll-on"]},
-    {"id": 125, "name": "Deodorant (Solid Stick)", "carryOn": "allowed", "checked": "allowed", "note": "✅ Solid stick deodorants are NOT subject to liquids rule - any size allowed in carry-on. No need to pack in quart-sized bag. ✅ CHECKED: Any size allowed. 💡 This includes solid crystal deodorants.", "category": ["toiletries"], "keywords": ["deodorant", "stick", "solid", "antiperspirant"]},
-    {"id": 126, "name": "Sunscreen (Lotion, Spray)", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Sunscreen lotions and sprays must be 3.4 oz (100ml) or less and packed in quart-sized liquids bag. ✅ Sunscreen sticks are solids - NO size restrictions. ✅ CHECKED: Any size allowed. 💡 TIP: Buy large bottles for checked bag, keep small TSA-approved size in carry-on for reapplication during flight/layovers.", "category": ["toiletries", "liquids"], "keywords": ["sunscreen", "sunblock", "lotion", "spray", "SPF"]},
-    {"id": 127, "name": "Sunscreen (Stick)", "carryOn": "allowed", "checked": "allowed", "note": "✅ Sunscreen sticks are solids - NOT subject to 3-1-1 liquids rule. Any size allowed in carry-on without restrictions. ✅ CHECKED: Any size allowed. 💡 Perfect for hassle-free travel - no need to pack in liquids bag.", "category": ["toiletries"], "keywords": ["sunscreen", "stick", "solid", "SPF"]},
-    {"id": 128, "name": "Cheese (Hard Cheese)", "carryOn": "allowed", "checked": "allowed", "note": "✅ Hard cheeses (cheddar, parmesan, swiss, etc.) are solid foods - allowed in carry-on and checked with no restrictions. ⚠️ Soft/creamy cheeses (cream cheese, brie, ricotta, etc.) count as liquids/gels - must follow 3-1-1 rule in carry-on. ✅ CHECKED: All cheese types allowed. 🧀 INTERNATIONAL: Check quarantine rules - Australia, New Zealand have strict food import restrictions.", "category": ["food"], "keywords": ["cheese", "food", "dairy"]},
-    {"id": 129, "name": "Yogurt", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Yogurt is considered a liquid/gel - must be 3.4 oz (100ml) or less and packed in quart-sized bag. Includes Greek yogurt, regular yogurt, yogurt drinks. ✅ CHECKED: Any size allowed. ⚠️ Frozen yogurt or ice cream may be allowed if completely frozen solid at checkpoint, but will likely melt.", "category": ["food", "liquids"], "keywords": ["yogurt", "dairy", "food"]},
-    {"id": 130, "name": "Jam / Jelly / Preserves", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Jars of jam, jelly, preserves count as liquids - must be 3.4 oz (100ml) or less and in quart-sized bag. ✅ Sandwiches CONTAINING jam/jelly are allowed even though they contain spreads. ✅ CHECKED: Any size allowed. 💡 TIP: Pack jars in checked bag, or buy small travel packets for carry-on.", "category": ["food", "liquids"], "keywords": ["jam", "jelly", "preserves", "spread"]},
-    {"id": 131, "name": "Sandwich (PB&J, Deli, etc.)", "carryOn": "allowed", "checked": "allowed", "note": "✅ Sandwiches are allowed in carry-on even if they contain items that would normally be restricted (peanut butter, jam, mayo, mustard, hummus, egg salad, cream cheese). ⚠️ WARNING: Sandwich must not be overly soggy or dripping. ✅ CHECKED: Allowed. 💡 TIP: Wrap securely to prevent spills. Good way to save money at airport.", "category": ["food"], "keywords": ["sandwich", "food", "PBJ", "peanut butter", "deli"]},
-    {"id": 132, "name": "E-Cigarette / Vape Device", "carryOn": "allowed", "checked": "prohibited", "note": "✅ CARRY-ON ONLY: E-cigarettes, vape pens, and all electronic smoking devices MUST be in carry-on or on your person. ❌ CHECKED: PROHIBITED - banned by FAA in 2016 after fires in cargo holds. ⚠️ CRITICAL: (1) Remove batteries if possible and protect terminals; (2) Cannot use/charge on aircraft; (3) E-liquid follows 3-1-1 rule (100ml or less per bottle). 📞 VERIFY: Some countries ban e-cigarettes entirely (Thailand, Singapore).", "category": ["electronics", "smoking"], "keywords": ["vape", "e-cigarette", "electronic cigarette", "vaping", "juul"]},
-    {"id": 133, "name": "Lighter (Disposable / Zippo)", "carryOn": "restricted", "checked": "prohibited", "note": "⚠️ CARRY-ON: ONE disposable or Zippo lighter allowed in carry-on or on your person. ❌ CHECKED: Lighters with fuel are PROHIBITED in checked bags. ⚠️ EXCEPTION: Lighters without fuel may be in checked bags, OR up to 2 fueled lighters if in DOT-approved case. ❌ PROHIBITED: Torch lighters, arc lighters, plasma lighters not allowed anywhere on aircraft. 🚨 INTERNATIONAL: China, many Asian countries ban lighters in carry-on and checked. 📞 VERIFY airline rules.", "category": ["smoking", "fire"], "keywords": ["lighter", "zippo", "disposable lighter", "cigarette lighter"]},
-    {"id": 134, "name": "Matches (Safety Matches)", "carryOn": "restricted", "checked": "prohibited", "note": "⚠️ CARRY-ON: ONE book of safety (non-strike anywhere) matches allowed in carry-on or on person. ❌ CHECKED: ALL matches PROHIBITED in checked baggage. ❌ Strike-anywhere matches prohibited everywhere. 💡 Safety matches have striking surface on the matchbook cover only.", "category": ["smoking", "fire"], "keywords": ["matches", "safety matches"]},
-    {"id": 135, "name": "Cigarettes / Tobacco", "carryOn": "allowed", "checked": "allowed", "note": "✅ Cigarettes, cigars, pipe tobacco, and other tobacco products allowed in carry-on and checked luggage. ✅ Can also carry on your person (pocket, purse). ⚠️ Cannot smoke on aircraft - federal offense with heavy fines. ⚠️ INTERNATIONAL: Many countries have quantity limits for tobacco (often 200 cigarettes duty-free). Exceeding limits = customs fees. 📞 VERIFY: Some countries (Bhutan) ban tobacco entirely.", "category": ["smoking"], "keywords": ["cigarettes", "tobacco", "cigars", "smoking"]},
-    {"id": 136, "name": "Golf Clubs", "carryOn": "prohibited", "checked": "allowed", "note": "❌ CARRY-ON: Golf clubs PROHIBITED - considered potential weapons/bludgeons. ✅ CHECKED: Allowed in checked baggage. 💡 TIPS: (1) Use hard-sided travel case or padded bag; (2) Remove club heads if possible; (3) Airlines may charge oversized baggage fees; (4) Consider shipping clubs separately for international travel. 📞 VERIFY airline size and weight limits - fees vary widely ($30-150 USD).", "category": ["sports"], "keywords": ["golf", "clubs", "golf clubs", "sports equipment"]},
-    {"id": 137, "name": "Tennis Racket", "carryOn": "allowed", "checked": "allowed", "note": "✅ CARRY-ON: Tennis rackets allowed through TSA checkpoint. ⚠️ REQUIREMENTS: (1) Must fit in overhead bin or under seat; (2) Check airline size restrictions - typically counts as carry-on item; (3) TSA officer can refuse if deemed security concern. ✅ CHECKED: Allowed. 💡 TIP: Remove or secure strings to prevent damage. Carry-on safer to avoid damage in checked baggage.", "category": ["sports"], "keywords": ["tennis", "racket", "racquet", "sports"]},
-    {"id": 138, "name": "Baseball Bat", "carryOn": "prohibited", "checked": "allowed", "note": "❌ CARRY-ON: Baseball bats PROHIBITED - considered potential weapons/bludgeons. ✅ CHECKED: Allowed in checked baggage. 💡 Also applies to softball bats, cricket bats. ⚠️ Souvenir mini bats (under 6 inches) may be allowed - TSA officer's discretion.", "category": ["sports"], "keywords": ["baseball", "bat", "softball", "sports"]},
-    {"id": 139, "name": "Skateboard", "carryOn": "allowed", "checked": "allowed", "note": "✅ CARRY-ON: Skateboards allowed through TSA checkpoint. ⚠️ REQUIREMENTS: (1) Must fit in overhead bin or under seat; (2) Check airline size restrictions - usually counts as carry-on item; (3) Remove trucks/wheels to save space (optional). ✅ CHECKED: Allowed. 💡 TIP: Airlines vary - Southwest usually more lenient, budget airlines may charge fees. Carry-on safer to prevent damage.", "category": ["sports"], "keywords": ["skateboard", "skate", "longboard", "sports"]},
-    {"id": 140, "name": "Gel Packs / Ice Packs", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Frozen gel packs/ice packs allowed IF completely frozen solid at security checkpoint. If partially melted = subject to 3-1-1 liquids rule. ✅ Gel packs for medical use (insulin, medications) allowed even if not frozen - inform TSA officer. ✅ CHECKED: Any state allowed. 💡 ALTERNATIVE: Ask for ice/bags of ice after security, or use dry ice with airline approval.", "category": ["other"], "keywords": ["gel pack", "ice pack", "frozen", "cooling"]},
-    {"id": 141, "name": "Protein Powder", "carryOn": "allowed", "checked": "allowed", "note": "✅ Protein powder is allowed in carry-on and checked baggage. ⚠️ WARNING: Powders 12 oz (350ml) or larger may trigger additional screening. TSA recommends placing in checked bag if possible. ⚠️ Pack in original labeled container to avoid suspicion. 💡 INTERNATIONAL: Some countries restrict unidentified powders - keep original packaging and receipts.", "category": ["food"], "keywords": ["protein", "powder", "supplement", "whey"]},
-    {"id": 142, "name": "Coffee (Ground / Beans)", "carryOn": "allowed", "checked": "allowed", "note": "✅ Ground coffee and coffee beans allowed in carry-on and checked baggage. ⚠️ WARNING: Powders over 12 oz (350ml) may require additional screening. ✅ Vacuum-sealed packages recommended. ⚠️ INTERNATIONAL: Declare at customs - some countries restrict agricultural products.", "category": ["food"], "keywords": ["coffee", "beans", "ground coffee", "food"]},
-    {"id": 143, "name": "Tea Bags", "carryOn": "allowed", "checked": "allowed", "note": "✅ Tea bags allowed in carry-on and checked with no restrictions. ✅ Loose leaf tea also allowed. 💡 Great for international travel - familiar tea flavors on the go.", "category": ["food"], "keywords": ["tea", "tea bags", "loose leaf", "food"]},
-    {"id": 144, "name": "Chocolate / Candy", "carryOn": "allowed", "checked": "allowed", "note": "✅ Solid chocolate and candy allowed in carry-on and checked. ⚠️ Chocolate spreads (Nutella) count as liquids - must follow 3-1-1 rule in carry-on. 💡 TIP: Chocolate may melt in checked baggage hold or during long flights. Pack in insulated bag or carry-on where temperature is controlled.", "category": ["food"], "keywords": ["chocolate", "candy", "sweets", "food"]},
-    {"id": 145, "name": "Vitamins / Supplements (Pills)", "carryOn": "allowed", "checked": "allowed", "note": "✅ Vitamin pills, supplement capsules, and tablets allowed in carry-on and checked with no restrictions. ✅ No need to declare or place in liquids bag. ✅ Liquid vitamins must follow 3-1-1 rule. 💡 TIP: Keep in original labeled bottles to avoid questions, especially internationally.", "category": ["medication"], "keywords": ["vitamins", "supplements", "pills", "medication"]},
-    {"id": 146, "name": "Conditioner (Liquid)", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Liquid conditioner must be 3.4 oz (100ml) or less and packed in quart-sized liquids bag. ✅ Solid conditioner bars have NO restrictions. ✅ CHECKED: Any size allowed. 💡 TIP: Switch to solid bars or buy travel-size bottles.", "category": ["toiletries", "liquids"], "keywords": ["conditioner", "hair conditioner", "hair care"]},
-    {"id": 147, "name": "Dry Shampoo (Aerosol)", "carryOn": "restricted", "checked": "restricted", "note": "⚠️ CARRY-ON: Must be 3.4 oz (100ml) or less and in quart-sized bag. ✅ CHECKED: Aerosols allowed up to 18 oz (500ml) per container, 68 oz (2L) total. ⚠️ Must have cap to prevent accidental release. 💡 Powder dry shampoo (non-aerosol) has fewer restrictions but may trigger screening if over 12 oz.", "category": ["toiletries", "liquids"], "keywords": ["dry shampoo", "aerosol", "hair", "shampoo"]},
-    {"id": 148, "name": "Contact Lens Solution", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Must be 3.4 oz (100ml) or less and in quart-sized liquids bag. ⚠️ EXCEPTION: Medically necessary solutions MAY be allowed in larger quantities - inform TSA officer and expect additional screening. ✅ CHECKED: Any size allowed. 💡 TIP: Buy after security or pack large bottle in checked bag.", "category": ["toiletries", "liquids", "medical"], "keywords": ["contact lens", "solution", "eye care", "saline"]},
-    {"id": 149, "name": "Lip Balm (Solid Stick)", "carryOn": "allowed", "checked": "allowed", "note": "✅ Solid lip balm sticks (ChapStick, Burt's Bees, etc.) are NOT subject to liquids rule - any size allowed in carry-on. ⚠️ Liquid lip gloss must follow 3-1-1 rule. ✅ CHECKED: All allowed.", "category": ["toiletries"], "keywords": ["lip balm", "chapstick", "lips"]},
-    {"id": 150, "name": "Nail Clippers", "carryOn": "allowed", "checked": "allowed", "note": "✅ Nail clippers allowed in carry-on and checked. ✅ Nail files (under 4 inches) also allowed. ⚠️ Metal nail files may trigger additional screening but usually allowed. 💡 TSA-friendly personal grooming item.", "category": ["toiletries", "tools"], "keywords": ["nail clippers", "clippers", "grooming", "nails"]},
+    // --- FRESH FOOD (FRUIT/VEG) ---
+    {
+        "id": 96, 
+        "name": "Fresh Fruit (General)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ SECURITY: Allowed through checkpoint. 🚨 CUSTOMS: BANNED entering many countries (China, Aus, NZ, US, Japan) due to pests. Eat it on the plane or discard before landing. (Source: USDA/Biosecurity)", 
+        "category": ["food", "customs"], 
+        "keywords": ["fruit", "snack", "produce"],
+        "customs_restricted": ["China", "Australia", "New Zealand", "Japan", "USA", "EU", "Canada", "UK"]
+    },
+    {
+        "id": 200, 
+        "name": "Apple", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ SECURITY: Allowed. 🚨 CUSTOMS: BANNED entering China, USA, Australia, NZ. Fruit flies hide inside apples. Fines apply ($300+). Discard before customs. (Source: USDA/Customs)", 
+        "category": ["food", "customs"], 
+        "keywords": ["apple", "fruit", "granny smith", "red delicious"],
+        "customs_restricted": ["China", "Australia", "New Zealand", "Japan", "USA", "EU", "Canada", "UK"]
+    },
+    {
+        "id": 201, 
+        "name": "Banana", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ SECURITY: Allowed. 🚨 CUSTOMS: BANNED entering most countries. High risk for Panama disease/pests. Discard before landing. (Source: Biosecurity)", 
+        "category": ["food", "customs"], 
+        "keywords": ["banana", "fruit", "plantain"],
+        "customs_restricted": ["China", "Australia", "New Zealand", "Japan", "USA", "EU", "Canada", "UK"]
+    },
+    {
+        "id": 202, 
+        "name": "Orange / Citrus", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ SECURITY: Allowed. 🚨 CUSTOMS: STRICTLY BANNED. Citrus carries invasive pests. High fines in USA and Australia. (Source: USDA APHIS)", 
+        "category": ["food", "customs"], 
+        "keywords": ["orange", "lemon", "lime", "citrus", "fruit"],
+        "customs_restricted": ["China", "Australia", "New Zealand", "Japan", "USA", "EU", "Canada", "UK"]
+    },
+    {
+        "id": 174, 
+        "name": "Fresh Vegetables", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ SECURITY: Allowed. 🚨 CUSTOMS: BANNED in most international travel. Soil on potatoes/carrots is a major biosecurity risk. (Source: Customs)", 
+        "category": ["food", "customs"], 
+        "keywords": ["vegetables", "carrot", "potato", "lettuce", "salad"],
+        "customs_restricted": ["China", "Australia", "New Zealand", "Japan", "USA", "EU"]
+    },
 
-    // Additional items with international sources and traveler tips
-    {"id": 151, "name": "Rice Cooker / Instant Pot", "carryOn": "allowed", "checked": "allowed", "note": "✅ CARRY-ON: Kitchen appliances like rice cookers, Instant Pots, coffee makers allowed. ⚠️ REQUIREMENTS: (1) Will be removed for TSA screening; (2) Must fit airline size limits; (3) May trigger additional questions as pressure cookers can be used as weapons. ✅ CHECKED: Allowed but wrap carefully - baggage handlers not gentle. 💡 TRAVELER TIP: Wrap in bubble wrap and clothes, stuff belongings inside pot to save space. Sources: TSA.gov, FlyerTalk forums. 🌐 Popular with international students and travelers moving.", "category": ["other"], "keywords": ["rice cooker", "instant pot", "pressure cooker", "appliance"]},
-    {"id": 152, "name": "Live Lobster", "carryOn": "allowed", "checked": "allowed", "note": "✅ Surprisingly ALLOWED: Live lobsters permitted in clear, spill-proof containers in carry-on. ⚠️ REQUIREMENTS: Container must be clear plastic and completely spill-proof. ✅ CHECKED: Also allowed. 💡 TRAVELER TIP: TSA has confirmed this multiple times on social media - travelers flying from Maine/New England commonly bring lobsters. Sources: TSA.gov, Yahoo Lifestyle 'Surprising TSA Items'. 🦞 Great for bringing fresh seafood home!", "category": ["food"], "keywords": ["lobster", "live lobster", "seafood"]},
-    {"id": 153, "name": "Microwave Oven", "carryOn": "allowed", "checked": "allowed", "note": "✅ CARRY-ON: Microwaves allowed if they fit airline size restrictions. ⚠️ Will trigger additional screening - remove from bag at checkpoint. ✅ CHECKED: Allowed. 💡 TRAVELER TIP: Small dorm-size microwaves popular with students. Wrap well in checked bags to prevent damage. Sources: SlashGear 'Weird Things You Can Bring', TSA.gov.", "category": ["other"], "keywords": ["microwave", "appliance"]},
-    {"id": 154, "name": "Human Skeleton / Bones", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED: Human remains, including skeletons and bones, permitted if properly packaged, labeled, and declared to airline. ⚠️ CRITICAL REQUIREMENTS: (1) MUST notify airline in advance; (2) Must be in leak-proof container; (3) Requires documentation (medical, legal, or archaeological). 💡 TRAVELER STORY: Woman who had foot amputated due to cancer brought bones with her on travels with surprisingly little hassle. Sources: SlashGear 'Weird TSA Items'. ⚠️ International travel may require additional permits.", "category": ["other"], "keywords": ["skeleton", "bones", "human remains"]},
-    {"id": 155, "name": "Parachute", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED: Parachutes can be packed, checked, or carried on. ⚠️ CRITICAL: Has strictest requirements of any item. TSA officers may ask to inspect, and you can request private screening. ✅ Both main and reserve parachutes allowed. 💡 Skydivers travel with equipment regularly. Sources: Yahoo Lifestyle 'Unexpected TSA Items', TSA.gov.", "category": ["sports"], "keywords": ["parachute", "skydiving"]},
-    {"id": 156, "name": "Cowboy Spurs", "carryOn": "allowed", "checked": "allowed", "note": "✅ Cowboy spurs can be packed, checked, or even worn on flights. ⚠️ Sharp rowels may trigger additional screening. 💡 Popular with rodeo competitors and Western travelers. Sources: Yahoo Lifestyle 'Unexpected TSA Items'.", "category": ["other"], "keywords": ["spurs", "cowboy", "rodeo"]},
-    {"id": 157, "name": "Live Fish / Pet Fish", "carryOn": "allowed", "checked": "restricted", "note": "✅ CARRY-ON: Pet fish allowed in clear spill-proof vessels. ⚠️ Container can exceed 3.4oz liquid limit if fish inside. ⚠️ CHECK AIRLINE: Not all airlines allow live animals in cabin. ✅ CHECKED: Generally not recommended - temperature/pressure changes dangerous for fish. 💡 Sources: TSA.gov, Yahoo Lifestyle. Popular with aquarium hobbyists moving rare fish.", "category": ["pets"], "keywords": ["fish", "pet fish", "aquarium"]},
-    {"id": 158, "name": "Butter / Butter Knife", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Solid butter allowed. Butter knives have mixed results - TSA may confiscate knives but allow sharp forks. 💡 ANECDOTAL: Reddit traveler reported TSA confiscated butter knife but allowed very sharp metal fork - enforcement inconsistent. Stick butter NOT subject to 3-1-1 rule. ✅ CHECKED: All allowed. Sources: Reddit TSA experiences, The Mirror US.", "category": ["food", "tools"], "keywords": ["butter", "knife", "butter knife"]},
-    {"id": 159, "name": "Potato / Fresh Produce", "carryOn": "allowed", "checked": "allowed", "note": "✅ Fresh fruits and vegetables allowed domestically. 💡 ANECDOTAL: Reddit traveler had TSA 'get real weird about a potato' - supervisor laughed and said 'we'll let you get away with it this time' even though totally allowed. ❌ INTERNATIONAL: Many countries PROHIBIT fresh produce (Australia, New Zealand strict quarantine). Declare all agricultural items. Sources: Reddit TSA stories, The Mirror US.", "category": ["food"], "keywords": ["potato", "produce", "vegetables", "fruits"]},
-    {"id": 160, "name": "Gummy Candy / Gummy Worms", "carryOn": "allowed", "checked": "allowed", "note": "✅ Gummy candy allowed in carry-on and checked. 💡 ANECDOTAL: Reddit traveler had gummy worms confiscated because TSA 'thought it looked like bomb wires' and wiped bag for chemicals. Enforcement varies. Generally allowed without issue. Sources: The Mirror US TSA stories.", "category": ["food"], "keywords": ["gummy", "candy", "gummy worms", "sweets"]},
-    {"id": 161, "name": "Baby Wipes", "carryOn": "allowed", "checked": "allowed", "note": "✅ Baby wipes are solids - NOT subject to liquids rule. Any quantity allowed. 💡 ANECDOTAL: Reddit travelers report baby wipes 'consistently trigger inspections' even though allowed. Pack in easy-to-access location. ✅ CHECKED: Allowed. Sources: Reddit TSA experiences.", "category": ["baby", "toiletries"], "keywords": ["baby wipes", "wipes"]},
-    {"id": 162, "name": "Books (Many Books)", "carryOn": "allowed", "checked": "allowed", "note": "✅ Books allowed in any quantity. ⚠️ ANECDOTAL: Packing too many books may trigger inspection - dense material can obscure X-ray screening. TSA may ask to inspect bag. ✅ E-readers like Kindle avoid this issue. Sources: TheTravel.com 'Items Triggering TSA Inspections'.", "category": ["other"], "keywords": ["books", "reading"]},
-    {"id": 163, "name": "Hoverboard / Self-Balancing Scooter", "carryOn": "prohibited", "checked": "prohibited", "note": "❌ PROHIBITED: Hoverboards, self-balancing devices, electric skateboards, balance boards, and gravity boards BANNED on aircraft due to fire risk from lithium batteries. ❌ Both carry-on and checked. 💡 Airlines started banning after battery fires. Sources: Air France prohibited items, FAA regulations.", "category": ["electronics", "sports"], "keywords": ["hoverboard", "self balancing", "electric skateboard"]},
-    {"id": 164, "name": "Filled Water Bottle (After Sept 2024)", "carryOn": "prohibited", "checked": "allowed", "note": "❌ CARRY-ON: As of September 1, 2024, KLM and many European airlines NO LONGER permit filled bottles (water or beverages) through security. Must empty before checkpoint. ✅ Can refill after security at water fountains. ✅ CHECKED: Allowed. 🌐 INTERNATIONAL: Europe strictly enforces. Sources: KLM prohibited items 2024.", "category": ["liquids"], "keywords": ["water bottle", "filled bottle", "beverages"]},
-    {"id": 165, "name": "Pepper Spray / Mace", "carryOn": "prohibited", "checked": "restricted", "note": "❌ CARRY-ON: PROHIBITED. Chemical and toxic substances including disabling sprays like mace, pepper spray, tear gas banned from cabin. ✅ CHECKED: May be allowed in limited quantities (check airline). 🌐 INTERNATIONAL: KLM, Air France, Asian airlines ban entirely. Sources: KLM restricted items, CAAC regulations.", "category": ["weapons", "hazardous"], "keywords": ["pepper spray", "mace", "tear gas", "spray"]},
-    {"id": 166, "name": "Spare Lithium Batteries (15+ devices)", "carryOn": "restricted", "checked": "prohibited", "note": "⚠️ CARRY-ON: ANA/JAL allow 15 electronic devices with lithium batteries up to 100Wh + 20 spare batteries up to 100Wh. ❌ Batteries over 160Wh NEVER allowed. ❌ CHECKED: Spare batteries PROHIBITED. ⚠️ Battery terminals must be protected. 🌐 Limits vary by airline - check before packing multiple devices. Sources: ANA baggage rules, JAL international restrictions.", "category": ["electronics"], "keywords": ["lithium battery", "spare battery", "power bank"]},
-    {"id": 167, "name": "Hand Sanitizer (Large Bottle)", "carryOn": "restricted", "checked": "allowed", "note": "⚠️ CARRY-ON: Typically limited to 3.4 oz (100ml). ⚠️ EXCEPTION: ANA/JAL allow up to 350ml hand sanitizer per container for health reasons (COVID-era policy). ⚠️ When connecting to international flights, 100ml rule applies. ✅ CHECKED: Any size. 🌐 Policies vary by airline and country. Sources: ANA LAG rules, JAL liquid restrictions.", "category": ["toiletries", "liquids"], "keywords": ["hand sanitizer", "sanitizer", "alcohol gel"]},
-    {"id": 168, "name": "Duty-Free Liquids (Sealed Bag)", "carryOn": "allowed", "checked": "allowed", "note": "✅ CARRY-ON: Liquids purchased duty-free after security allowed if: (1) Kept in sealed tamper-evident bag (ICAO specification); (2) Receipt inside bag; (3) Bag NOT opened. ⚠️ CRITICAL: If connecting through another country, local rules apply - may be confiscated. ✅ CHECKED: Can pack anytime. 🌐 ICAO standard across most airlines. Sources: ANA duty-free rules, JAL LAG regulations.", "category": ["liquids"], "keywords": ["duty free", "alcohol", "perfume", "liquor"]},
-    {"id": 169, "name": "Cosmetic Spray (over 100ml)", "carryOn": "restricted", "checked": "restricted", "note": "⚠️ CARRY-ON: Cosmetic sprays (hairspray, antiperspirant) limited to 100ml per container. ✅ CHECKED: ANA/JAL allow 2kg or 2L total per person in containers up to 0.5kg or 0.5L each. ⚠️ Must exclude flammable and poisonous gases. ⚠️ Different from US TSA limits. 🌐 Sources: ANA aerosol rules, JAL spray restrictions.", "category": ["toiletries", "liquids"], "keywords": ["spray", "aerosol", "cosmetic"]},
-    {"id": 170, "name": "Ice Skates (with sharp blades)", "carryOn": "prohibited", "checked": "allowed", "note": "❌ CARRY-ON: Ice skate blades considered sharp objects - PROHIBITED in cabin. ✅ CHECKED: Allowed in checked baggage. 💡 Same applies to roller blades with sharp components. Wrap blades to prevent damage and injury. Sources: TSA sharp objects, common airline policies.", "category": ["sports", "sharp objects"], "keywords": ["ice skates", "blades", "skating"]},
+    // --- MEAT & DAIRY (HIGH BIOSECURITY RISK) ---
+    {
+        "id": 171, 
+        "name": "Beef Jerky / Dried Meat", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ SECURITY: Allowed. 🚨 CUSTOMS: BANNED in China, Aus, NZ, EU. Pork products especially restricted (Swine Fever risk). Declare or discard. (Source: Customs)", 
+        "category": ["food", "customs"], 
+        "keywords": ["jerky", "meat", "beef", "pork", "snack"],
+        "customs_restricted": ["China", "Australia", "New Zealand", "Japan", "EU"]
+    },
+    {
+        "id": 172, 
+        "name": "Fresh Meat / Seafood", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ SECURITY: Allowed with ice packs (frozen solid). 🚨 CUSTOMS: PROHIBITED internationally. Cannot bring fresh meat across borders. (Source: USDA/Customs)", 
+        "category": ["food", "customs"], 
+        "keywords": ["meat", "steak", "chicken", "fish", "pork", "raw"],
+        "customs_restricted": ["China", "Australia", "New Zealand", "Japan", "USA", "EU", "Canada", "UK"]
+    },
+    {
+        "id": 177, 
+        "name": "Kinder Surprise Eggs", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed worldwide EXCEPT USA. 🚨 USA WARNING: Banned by FDA (choking hazard). Fines up to $2,500 per egg. 'Kinder Joy' (separate toy) is legal.", 
+        "category": ["food", "customs"], 
+        "keywords": ["kinder", "chocolate", "egg", "candy"],
+        "customs_restricted": ["USA"] 
+    },
+    {
+        "id": 190, 
+        "name": "Chewing Gum", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed generally. 🚨 SINGAPORE WARNING: Import of gum is banned (unless for medical use). Large quantities may be confiscated.", 
+        "category": ["food", "customs"], 
+        "keywords": ["gum", "chewing gum", "bubble gum"],
+        "customs_restricted": ["Singapore"] 
+    },
+    {
+        "id": 128, 
+        "name": "Cheese (Hard)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Cheddar, Parmesan, Swiss allowed. No restrictions. (Source: TSA)", 
+        "category": ["food"], 
+        "keywords": ["cheese", "cheddar", "block cheese"]
+    },
+    {
+        "id": 129, 
+        "name": "Cheese (Soft/Creamy)", 
+        "carryOn": "restricted", 
+        "checked": "allowed", 
+        "note": "⚠️ Considered a LIQUID/PASTE. Max 100ml in carry-on. Includes Brie, Camembert, Cream Cheese. (Source: TSA)", 
+        "category": ["food", "liquids"], 
+        "keywords": ["cheese", "brie", "cream cheese", "spread"]
+    },
 
-    // CRITICAL BIOSECURITY ITEMS - Can bring ON plane but may be BANNED entering country
-    {"id": 171, "name": "Beef Jerky / Meat Products", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED on plane (TSA permits dried/cured meat in carry-on and checked). 🚨 CUSTOMS WARNING: ❌ STRICTLY PROHIBITED entering China, Taiwan, Japan, Australia, New Zealand, EU countries. Fines: $300-$10,000 USD depending on country. ⚠️ CRITICAL: You can bring it ON the plane, but MUST discard before customs or declare and surrender. Includes: beef jerky, bak kwa (Chinese BBQ pork), pepperoni, salami, prosciutto, chorizo. 💡 TRAVELER STORY (Reddit): Traveler fined $1,800 AUD in Australia for undeclared beef jerky - customs dogs detected it. Sources: USDA APHIS, Australia Department of Agriculture, Taiwan CDC.", "category": ["food", "customs"], "keywords": ["jerky", "beef jerky", "meat", "dried meat", "bak kwa", "salami", "pepperoni"], "customs_restricted": ["CN", "TW", "JP", "AU", "NZ", "EU"]},
+    // --- ELECTRONICS & BATTERIES (FIRE SAFETY) ---
+    {
+"id": 3, 
+        "name": "Laptop", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ CARRY-ON IS HIGHLY RECOMMENDED for expensive electronics to prevent damage and theft. Most passengers must remove their laptop from their bag at the security checkpoint for separate X-ray screening. Failure to remove it will result in your bag being pulled for inspection, slowing down the whole process. Always be prepared to power it on. (Source: TSA)", 
+        "category": ["electronics"], 
+        "keywords": ["laptop", "computer", "macbook", "dell", "pc"]
+    },
+    {
+"id": 4, 
+        "name": "Power Bank / Portable Charger", 
+        "carryOn": "allowed", 
+        "checked": "prohibited", 
+        "note": "✅ CARRY-ON ONLY. This is a non-negotiable FAA safety rule because lithium batteries pose a significant fire risk (thermal runaway) in the cargo hold, where fires are difficult to extinguish. Power banks must be under 100 watt-hours (Wh). 🚨 CHINA WARNING: Security often confiscates chargers if the capacity label is missing or rubbed off. (Source: FAA/IATA)", 
+        "category": ["electronics", "batteries"], 
+        "keywords": ["power bank", "charger", "battery pack", "portable charger"]
+    },
+    {
+"id": 39, 
+        "name": "Spare Lithium Batteries", 
+        "carryOn": "allowed", 
+        "checked": "prohibited", 
+        "note": "✅ CARRY-ON ONLY. Loose batteries are forbidden in checked baggage due to the extreme fire risk they pose in the cargo hold. You must protect the terminals from short circuits—use electrical tape or place each battery in its own protective case or plastic bag. Maximum individual capacity is 100Wh. (Source: FAA)", 
+        "category": ["electronics", "batteries"], 
+        "keywords": ["batteries", "lithium", "AA", "camera battery", "drone battery"]
+    },
+    {
+"id": 20, 
+        "name": "E-Cigarette / Vape", 
+        "carryOn": "allowed", 
+        "checked": "prohibited", 
+        "note": "✅ CARRY-ON ONLY. This device contains a lithium battery and must be carried in the cabin, not checked. ❌ DO NOT USE ON PLANE. 🚨 CUSTOMS WARNING: Vaping is strictly ILLEGAL in many destinations (e.g., Thailand, Singapore, Mexico). Possession alone can lead to severe fines or ARREST. Always check local laws before traveling. (Source: FAA/Gov)", 
+        "category": ["electronics", "smoking", "customs"], 
+        "keywords": ["vape", "juul", "e-cig", "puff bar", "smoking"],
+        "customs_restricted": ["Thailand", "Singapore", "Mexico", "Taiwan",]
+    },
 
-    {"id": 172, "name": "Fresh Meat (Raw, Cooked, Frozen)", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED on plane (TSA permits - may need ice packs). 🚨 CUSTOMS WARNING: ❌ PROHIBITED entering virtually ALL countries (China, Taiwan, Japan, Australia, NZ, EU, USA, Canada, UK). Fines: $500-$10,000+ USD. ⚠️ CRITICAL: Meat = highest biosecurity risk (foot-and-mouth disease, African swine fever). Even cooked/canned meat banned in many countries. 💡 ANECDOTAL: Traveler entering USA with sausage faced $300 fine + 5-year ban from Global Entry. Sources: CDC Travelers Health, Australia Biosecurity, USDA.", "category": ["food", "customs"], "keywords": ["meat", "raw meat", "chicken", "pork", "beef", "sausage", "bacon"], "customs_restricted": ["CN", "TW", "JP", "AU", "NZ", "EU", "USA", "CA", "UK"]},
+    // --- TOILETRIES ---
+    {
+        "id": 8, 
+        "name": "Toothpaste", 
+        "carryOn": "restricted", 
+        "checked": "allowed", 
+        "note": "⚠️ Liquid rule applies: Max 100ml (3.4oz). Large tubes prohibited in carry-on even if half empty. (Source: TSA)", 
+        "category": ["toiletries", "liquids"], 
+        "keywords": ["toothpaste", "colgate", "crest", "teeth"]
+    },
+    {
+        "id": 10, 
+        "name": "Deodorant (Solid Stick)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Solid sticks have NO size limit. Allowed in any quantity. (Source: TSA)", 
+        "category": ["toiletries"], 
+        "keywords": ["deodorant", "stick", "old spice", "dove"]
+    },
+    {
+        "id": 11, 
+        "name": "Deodorant (Spray/Gel)", 
+        "carryOn": "restricted", 
+        "checked": "allowed", 
+        "note": "⚠️ Liquid rule applies: Max 100ml (3.4oz) in carry-on. (Source: TSA)", 
+        "category": ["toiletries", "liquids"], 
+        "keywords": ["deodorant", "spray", "axe", "gel"]
+    },
+    {
+        "id": 5, 
+        "name": "Scissors (Small)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed if blades are less than 4 inches (10cm) from the pivot point. (Source: TSA)", 
+        "category": ["tools", "toiletries"], 
+        "keywords": ["scissors", "cutters", "nail scissors"]
+    },
+    {
+        "id": 6, 
+        "name": "Scissors (Large)", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ Blades longer than 4 inches (10cm) must be checked. (Source: TSA)", 
+        "category": ["tools"], 
+        "keywords": ["scissors", "shears", "office scissors"]
+    },
+    {
+"id": 7, 
+        "name": "Pocket Knife / Swiss Army", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ PROHIBITED. Security has a zero-tolerance policy for all knives, regardless of blade length or size. Do not attempt to bring small or novelty knives in your carry-on; they will be confiscated. This item MUST be packed securely in your checked luggage. (Source: TSA)", 
+        "category": ["tools", "weapons"], 
+        "keywords": ["knife", "blade", "swiss army", "leatherman"]
+    },
+    {
+        "id": 12, 
+        "name": "Razor (Disposable/Cartridge)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed in carry-on. (Source: TSA)", 
+        "category": ["toiletries"], 
+        "keywords": ["razor", "gillette", "shaving", "bic"]
+    },
+    {
+        "id": 13, 
+        "name": "Razor (Safety/Straight)", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ Safety razors with removable blades are BANNED in carry-on (unless blade is removed). Straight razors always banned. (Source: TSA)", 
+        "category": ["toiletries", "weapons"], 
+        "keywords": ["razor", "safety razor", "straight razor", "blade"]
+    },
 
-    {"id": 173, "name": "Fresh Fruit (Apples, Oranges, Bananas)", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED on plane (TSA permits for domestic flights). 🚨 CUSTOMS WARNING: ❌ PROHIBITED or RESTRICTED entering Australia, New Zealand, China, Japan, Taiwan, EU, USA. Fines: $300-$10,000 AUD/USD. ⚠️ CRITICAL: Fresh fruit = biosecurity threat (fruit flies, diseases). Even one apple can result in fine. 💡 TRAVELER TIP: Eat fruit before landing or discard on plane. Declare ALL fruit at customs if unsure. 📞 VERIFY: Some countries allow certain fruits with permits. Sources: Australia Department of Agriculture, USDA APHIS, New Zealand MPI.", "category": ["food", "customs"], "keywords": ["fruit", "apple", "orange", "banana", "fresh fruit", "produce"], "customs_restricted": ["AU", "NZ", "CN", "JP", "TW", "EU"]},
+    // --- OTHER COMMON ITEMS ---
+    {
+     "id": 18, 
+        "name": "Lighter (Disposable)", 
+        "carryOn": "allowed", 
+        "checked": "prohibited", 
+        "note": "✅ USA/EU: One allowed on person. ❌ CHINA/JAPAN: All lighters/matches are STRICTLY BANNED in both carry-on and checked. (Source: CAAC)", 
+        "category": ["fire", "smoking"], 
+        "keywords": ["lighter", "bic", "fire"],
+        "customs_restricted": ["China", "Thailand"]
+    },
+    {
+        "id": 91, 
+        "name": "Coffee (Ground or Beans)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Powders over 350ml (12oz) may require extra screening. 🚨 CUSTOMS: Australia/NZ restrict unroasted beans. (Source: TSA)", 
+        "category": ["food"], 
+        "keywords": ["coffee", "beans", "ground", "espresso"],
+        "customs_restricted": ["Australia", "New Zealand"]
+    },
+    {
+"id": 14, 
+        "name": "Prescription Medication (General)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. It is highly recommended to keep all medication in its original packaging and bring a copy of the prescription or a doctor's note, especially when traveling internationally. Liquids (e.g., insulin) that are medically necessary are EXEMPT from the 100ml rule. 🚨 JAPAN/UAE WARNING: Certain common narcotics and stimulants (like Adderall or codeine) are ILLEGAL narcotics without special permits. Check embassy lists BEFORE travel. (Source: TSA/Gov)", 
+        "category": ["medication", "customs"], 
+        "keywords": ["medicine", "pills", "drugs", "adderall", "ritalin", "codeine"],
+        "customs_restricted": ["Japan", "UAE"]
+    },
+    {
+        "id": 26, 
+        "name": "Breast Milk / Formula", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ EXEMPT from 100ml rule. Allowed in reasonable quantities. Inform officer at start of screening. (Source: TSA)", 
+        "category": ["baby", "liquids"], 
+        "keywords": ["milk", "formula", "baby", "nursing"]
+    },
+    {
+        "id": 150, 
+        "name": "Nail Clippers", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. (Source: TSA)", 
+        "category": ["toiletries"], 
+        "keywords": ["clippers", "nails", "grooming"]
+    },
+    {
+        "id": 82, 
+        "name": "Baby Wipes / Wet Wipes", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Not considered a liquid. (Source: TSA)", 
+        "category": ["toiletries", "baby"], 
+        "keywords": ["wipes", "wet wipes", "baby"]
+    },
+    // --- RESTORED COMMON ITEMS (You were missing these!) ---
+    {
+        "id": 9, "name": "Shampoo / Conditioner", "carryOn": "restricted", "checked": "allowed", 
+        "note": "⚠️ Liquid rule applies: Max 100ml (3.4oz) per bottle. Unlimited in checked bags. (Source: TSA)", 
+        "category": ["toiletries", "liquids"], "keywords": ["shampoo", "soap", "hair", "conditioner"]
+    },
+    {
+        "id": 41, "name": "Sunscreen (Lotion/Spray)", "carryOn": "restricted", "checked": "allowed", 
+        "note": "⚠️ Liquid rule applies: Max 100ml (3.4oz). Full-size bottles must be checked. (Source: TSA)", 
+        "category": ["toiletries", "liquids"], "keywords": ["sunscreen", "sunblock", "spf"]
+    },
+    {
+        "id": 43, "name": "Makeup (Liquid/Cream)", "carryOn": "restricted", "checked": "allowed", 
+        "note": "⚠️ Mascara, liquid foundation, and creams must be under 100ml. Powder makeup is unrestricted. (Source: TSA)", 
+        "category": ["toiletries", "liquids"], "keywords": ["makeup", "mascara", "foundation", "lipstick"]
+    },
+    {
+        "id": 35, "name": "Headphones / Earbuds", "carryOn": "allowed", "checked": "allowed", 
+        "note": "✅ Allowed. (Source: TSA)", 
+        "category": ["electronics"], "keywords": ["headphones", "earbuds", "airpods", "beats"]
+    },
+    {
+        "id": 36, "name": "Tablet / iPad", "carryOn": "allowed", "checked": "allowed", 
+        "note": "✅ Allowed. Must be removed from bag at security in most airports. (Source: TSA)", 
+        "category": ["electronics"], "keywords": ["tablet", "ipad", "kindle"]
+    },
+    {
+        "id": 32, "name": "Camera (DSLR/Mirrorless)", "carryOn": "allowed", "checked": "allowed", 
+        "note": "✅ Allowed. Recommended in carry-on to prevent theft/damage. (Source: TSA)", 
+        "category": ["electronics"], "keywords": ["camera", "dslr", "lens", "photography"]
+    },
+    {
+        "id": 25, "name": "Baby Formula (Powder/Liquid)", "carryOn": "allowed", "checked": "allowed", 
+        "note": "✅ EXEMPT from liquid rule. You can bring more than 100ml. Tell the TSA officer. (Source: TSA)", 
+        "category": ["baby", "liquids", "food"], "keywords": ["formula", "baby", "milk", "similac"]
+    },
+    {
+        "id": 21, "name": "Snacks (Chips/Cookies)", "carryOn": "allowed", "checked": "allowed", 
+        "note": "✅ Solid foods are allowed. (Source: TSA)", 
+        "category": ["food"], "keywords": ["chips", "cookies", "snacks", "food"]
+    },
+    {
+        "id": 22, "name": "Sandwich / Burger", "carryOn": "allowed", "checked": "allowed", 
+        "note": "✅ Allowed. If it has a lot of sauce/mayo, it might get flagged. (Source: TSA)", 
+        "category": ["food"], "keywords": ["sandwich", "burger", "lunch", "meal"]
+    },
+    {
+        "id": 75, "name": "Electric Toothbrush", "carryOn": "allowed", "checked": "allowed", 
+        "note": "✅ Allowed. (Source: TSA)", 
+        "category": ["toiletries", "electronics"], "keywords": ["toothbrush", "electric"]
+    },
+    {
+        "id": 484, "name": "Knitting Needles", "carryOn": "allowed", "checked": "allowed", 
+        "note": "✅ Allowed. Circular needles recommended. (Source: TSA)", 
+        "category": ["art", "hobbies", "tools"], "keywords": ["knitting", "needles", "yarn"] 
+        // ^^^ ADDED "art" tag so it shows up in your new button
+    },
+    // --- SPORTS EQUIPMENT ---
+    {
+"id": 300, 
+        "name": "Baseball / Cricket Bat", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ BANNED in the cabin. The security rule views this as a potential blunt force weapon. It MUST be placed in checked luggage. Note that most airlines charge an oversize fee for specialized sports equipment. Always declare it during check-in. (Source: TSA)", 
+        "category": ["sports", "weapons"], 
+        "keywords": ["bat", "baseball", "cricket", "softball", "club"]
+    },
+    {
+        "id": 301, 
+        "name": "Golf Clubs", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ BANNED in cabin. Must be checked. Clean clubs to avoid soil/customs issues internationally. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["golf", "clubs", "driver", "putter"]
+    },
+    {
+        "id": 302, 
+        "name": "Tennis / Badminton Racket", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed, but check airline size limits for overhead bins. If it doesn't fit, it must be checked. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["tennis", "racket", "racquet", "badminton", "squash"]
+    },
+    {
+        "id": 303, 
+        "name": "Ice Skates", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed by TSA in carry-on. ⚠️ Warning: Some international airlines (and UK/EU airports) may reject them as 'blades'. Check local rules. (Source: TSA)", 
+        "category": ["sports", "sharp objects"], 
+        "keywords": ["skates", "ice skates", "hockey", "blades"]
+    },
+    {
+        "id": 304, 
+        "name": "Roller Skates / Blades", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed in carry-on and checked bags. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["skates", "rollerblades", "roller"]
+    },
+    {
+        "id": 305, 
+        "name": "Skateboard", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed if it fits under the seat or in overhead bin. Some budget airlines forced check-in. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["skateboard", "skating", "penny board", "longboard"]
+    },
+    {
+        "id": 306, 
+        "name": "Fishing Rod / Pole", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed if it fits airline size limits. ⚠️ Hooks must be securely sheathed/covered. Large tackle must be checked. (Source: TSA)", 
+        "category": ["sports", "sharp objects"], 
+        "keywords": ["fishing", "rod", "pole", "fish"]
+    },
+    {
+        "id": 307, 
+        "name": "Bowling Ball", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed in carry-on. Be careful taking it out of overhead bins! (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["bowling", "ball"]
+    },
+    {
+        "id": 308, 
+        "name": "Yoga Mat", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Counts as your carry-on or personal item depending on airline. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["yoga", "mat", "pilates", "exercise"]
+    },
+    {
+        "id": 309, 
+        "name": "Ski / Hiking Poles", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ BANNED in cabin (sharp points). Must be checked. (Source: TSA)", 
+        "category": ["sports", "sharp objects"], 
+        "keywords": ["ski", "poles", "hiking", "trekking", "walking stick"]
+    },
+    {
+        "id": 310, 
+        "name": "Boxing Gloves", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["boxing", "gloves", "fighting", "mma"]
+    },
+    {
+        "id": 311, 
+        "name": "Helmet (Bike/Sports)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Often clipped to outside of backpack. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["helmet", "bike", "motorcycle", "protection"]
+    },
+    {
+        "id": 312, 
+        "name": "Inflatable Balls (Soccer/Basketball)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. ⚠️ TIP: Deflate partially (to 50%) to prevent bursting/warping due to cabin pressure changes. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["ball", "soccer", "basketball", "football", "volleyball"]
+    },
+    {
+        "id": 313, 
+        "name": "Tent Spikes / Poles", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ Spikes and poles are BANNED in carry-on. The tent fabric can go in carry-on, but metal parts must be checked. (Source: TSA)", 
+        "category": ["sports", "camping"], 
+        "keywords": ["tent", "camping", "stakes", "spikes", "poles"]
+    },
+    {
+        "id": 314, 
+        "name": "Parachute", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Must be packed separately from other luggage. Security may open to inspect. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["parachute", "skydive", "rig"]
+    },
+    {
+        "id": 315, 
+        "name": "Dumbbells / Weights", 
+        "carryOn": "restricted", 
+        "checked": "allowed", 
+        "note": "⚠️ Generally allowed, but security may reject heavy weights as 'blunt force weapons'. Best to check them. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["weights", "dumbbells", "gym", "workout"]
+    },
+    {
+        "id": 316, 
+        "name": "Billiards / Pool Cue", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ BANNED in cabin. Must be checked. (Source: TSA)", 
+        "category": ["sports"], 
+        "keywords": ["pool", "cue", "billiards", "snooker"]
+    },
+    {
+        "id": 317, 
+        "name": "Surfboard", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ Too large for cabin. Must be checked (Oversize fees usually apply). Remove fins/wax. (Source: Airline Policies)", 
+        "category": ["sports"], 
+        "keywords": ["surf", "surfboard", "board"]
+    },
+    // --- TOOLS & HOME IMPROVEMENT ---
+    {
+        "id": 400, 
+        "name": "Power Drill", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ Power tools are BANNED in the cabin. Must be checked. Spare lithium batteries for the drill must go in CARRY-ON. (Source: TSA)", 
+        "category": ["tools", "electronics"], 
+        "keywords": ["drill", "power tool", "driver"]
+    },
+    {
+        "id": 401, 
+        "name": "Drill Bits", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed in carry-on (surprisingly!). But keeping them with the drill in checked bags is safer to avoid delays. (Source: TSA)", 
+        "category": ["tools"], 
+        "keywords": ["drill bits", "bit", "tool"]
+    },
+    {
+        "id": 402, 
+        "name": "Hammer", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ Bludgeoning tools are BANNED in cabin. Must be checked. (Source: TSA)", 
+        "category": ["tools"], 
+        "keywords": ["hammer", "mallet", "tool"]
+    },
+    {
+        "id": 403, 
+        "name": "Screwdriver (< 7 inches)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed if overall length is UNDER 7 inches (18cm). (Source: TSA)", 
+        "category": ["tools"], 
+        "keywords": ["screwdriver", "tool", "flathead", "phillips"]
+    },
+    {
+        "id": 404, 
+        "name": "Screwdriver (> 7 inches)", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ Tools longer than 7 inches (18cm) must be checked. (Source: TSA)", 
+        "category": ["tools"], 
+        "keywords": ["screwdriver", "tool", "large tool"]
+    },
+    {
+        "id": 405, 
+        "name": "Wrenches / Pliers", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed if UNDER 7 inches (18cm). Larger ones must be checked. (Source: TSA)", 
+        "category": ["tools"], 
+        "keywords": ["wrench", "pliers", "tool", "spanner"]
+    },
+    {
+        "id": 406, 
+        "name": "Saw / Saw Blades", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ All saws and blades are BANNED in cabin. Must be checked. (Source: TSA)", 
+        "category": ["tools", "sharp objects"], 
+        "keywords": ["saw", "blade", "hacksaw", "chain saw"]
+    },
+    {
+        "id": 407, 
+        "name": "Tape Measure", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. (Source: TSA)", 
+        "category": ["tools"], 
+        "keywords": ["tape measure", "measuring tape"]
+    },
+    {
+        "id": 408, 
+        "name": "Multitool (Leatherman)", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ If it has a blade (almost all do), it must be checked. TSA will confiscate these! (Source: TSA)", 
+        "category": ["tools", "sharp objects"], 
+        "keywords": ["multitool", "leatherman", "swiss army", "utility"]
+    },
+    {
+        "id": 409, 
+        "name": "Crowbar", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ BANNED in cabin. Must be checked. (Source: TSA)", 
+        "category": ["tools"], 
+        "keywords": ["crowbar", "pry bar"]
+    },
 
-    {"id": 174, "name": "Fresh Vegetables", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED on plane (TSA permits). 🚨 CUSTOMS WARNING: ❌ PROHIBITED entering Australia, New Zealand, China, Taiwan, Japan. Fines: $300-$10,000. ⚠️ Includes: carrots, lettuce, tomatoes, potatoes with soil, peppers. 💡 ANECDOTAL: Reddit traveler reported $420 NZD fine for undeclared apple and carrot sticks. Sources: New Zealand MPI, Australia Biosecurity.", "category": ["food", "customs"], "keywords": ["vegetables", "produce", "carrots", "lettuce", "tomatoes"], "customs_restricted": ["AU", "NZ", "CN", "TW", "JP"]},
+    // --- CAMPING & OUTDOOR ---
+    {
+        "id": 420, 
+        "name": "Camping Stove (Used)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed ONLY if completely empty and cleaned of all fuel vapors. If it smells like gas, TSA will seize it. (Source: TSA)", 
+        "category": ["camping", "fire"], 
+        "keywords": ["stove", "camping", "burner", "jetboil"]
+    },
+    {
+        "id": 421, 
+        "name": "Fuel Canister (Gas)", 
+        "carryOn": "prohibited", 
+        "checked": "prohibited", 
+        "note": "❌ FLAMMABLE GAS BANNED everywhere. Do not bring. Buy fuel at destination. (Source: FAA/TSA)", 
+        "category": ["camping", "fire", "hazardous"], 
+        "keywords": ["fuel", "gas", "propane", "butane", "isopro"]
+    },
+    {
+        "id": 422, 
+        "name": "Tent Spikes / Poles", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ Metal spikes are considered potential weapons. Tent fabric can be carry-on, but poles/stakes must be checked. (Source: TSA)", 
+        "category": ["camping"], 
+        "keywords": ["tent", "spikes", "stakes", "poles"]
+    },
+    {
+        "id": 423, 
+        "name": "Bear Spray", 
+        "carryOn": "prohibited", 
+        "checked": "prohibited", 
+        "note": "❌ BANNED. It exceeds the 4oz limit for self-defense sprays and is considered a hazardous material. (Source: TSA/FAA)", 
+        "category": ["camping", "weapons", "hazardous"], 
+        "keywords": ["bear spray", "pepper spray", "mace"]
+    },
+    {
+        "id": 424, 
+        "name": "Cast Iron Skillet", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. It's just heavy! (Source: TSA)", 
+        "category": ["camping", "cooking"], 
+        "keywords": ["skillet", "pan", "cast iron", "cookware"]
+    },
+    {
+        "id": 425, 
+        "name": "Cooler (Empty)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. If bringing ice packs, they must be FROZEN SOLID at security. Slushy ice packs will be confiscated. (Source: TSA)", 
+        "category": ["camping", "food"], 
+        "keywords": ["cooler", "ice chest", "yeti"]
+    },
 
-    {"id": 175, "name": "Seeds (Garden Seeds, Planting)", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED on plane (TSA permits packaged seeds). 🚨 CUSTOMS WARNING: ❌ STRICTLY PROHIBITED entering Australia, New Zealand, China, EU, USA without permits. Fines: $300-$66,000 AUD. ⚠️ CRITICAL: Seeds = extreme biosecurity risk (invasive species, pests). Even commercial seed packets require phytosanitary certificates. 💡 TRAVELER WARNING: Australian fines for undeclared seeds can exceed $10,000 AUD. Sources: Australia Department of Agriculture, USDA APHIS, NZ MPI.", "category": ["other", "customs"], "keywords": ["seeds", "garden seeds", "planting", "agriculture"], "customs_restricted": ["AU", "NZ", "CN", "EU", "USA"]},
+    // --- FLAMMABLES & DANGEROUS GOODS ---
+    {
+        "id": 440, 
+        "name": "Matches (Safety)", 
+        "carryOn": "allowed", 
+        "checked": "prohibited", 
+        "note": "✅ ONE book of safety matches allowed on your person. ❌ Banned in checked bags. (Source: FAA)", 
+        "category": ["fire"], 
+        "keywords": ["matches", "safety matches"]
+    },
+    {
+        "id": 441, 
+        "name": "Matches (Strike-Anywhere)", 
+        "carryOn": "prohibited", 
+        "checked": "prohibited", 
+        "note": "❌ BANNED completely. They can ignite by friction. (Source: FAA)", 
+        "category": ["fire", "hazardous"], 
+        "keywords": ["matches", "strike anywhere"]
+    },
+    {
+        "id": 442, 
+        "name": "Fireworks / Sparklers", 
+        "carryOn": "prohibited", 
+        "checked": "prohibited", 
+        "note": "❌ EXPLOSIVES BANNED everywhere. Don't even try. (Source: TSA/FAA)", 
+        "category": ["hazardous", "fire"], 
+        "keywords": ["fireworks", "sparklers", "crackers", "explosive"]
+    },
+    {
+        "id": 443, 
+        "name": "Spray Paint", 
+        "carryOn": "prohibited", 
+        "checked": "prohibited", 
+        "note": "❌ BANNED. Aerosol paint is flammable and explosive. (Source: TSA)", 
+        "category": ["art", "hazardous"], 
+        "keywords": ["paint", "spray paint", "aerosol", "graffiti"]
+    },
+    {
+        "id": 444, 
+        "name": "Bleach / Chlorine", 
+        "carryOn": "prohibited", 
+        "checked": "prohibited", 
+        "note": "❌ BANNED. Hazardous chemical. (Source: TSA)", 
+        "category": ["cleaning", "hazardous"], 
+        "keywords": ["bleach", "chlorine", "pool chemicals"]
+    },
 
-    {"id": 176, "name": "Soil / Dirt (on Shoes, Boots, Camping Gear)", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED on plane (TSA doesn't restrict dirty shoes). 🚨 CUSTOMS WARNING: ❌ STRICTLY PROHIBITED entering Australia, New Zealand, China. MUST clean hiking boots, golf shoes, camping equipment. Fines: $340-$6,600 AUD. ⚠️ CRITICAL: Soil carries pests, diseases, seeds. Australia biosecurity inspects shoes - dirty boots = instant fine or forced cleaning at traveler's expense. 💡 TRAVELER TIP: Clean shoes thoroughly before travel, especially tread. Sources: Australia Biosecurity, NZ MPI.", "category": ["other", "customs"], "keywords": ["soil", "dirt", "shoes", "boots", "hiking", "camping"], "customs_restricted": ["AU", "NZ", "CN"]},
+    // --- SELF DEFENSE (TRICKY!) ---
+    {
+"id": 460, 
+        "name": "Pepper Spray / Mace", 
+        "carryOn": "prohibited", 
+        "checked": "restricted", 
+        "note": "⚠️ CHECKED ONLY (USA). One 4oz container allowed. 🚨 ILLEGAL in UK, China, Singapore, and many EU countries. (Source: TSA)", 
+        "category": ["weapons", "self-defense"], 
+        "keywords": ["pepper spray", "mace", "spray"],
+        "customs_restricted": ["UK", "China", "Singapore", "Japan", "Thailand", "EU"]
+    },
+    {
+        "id": 461, 
+        "name": "Brass Knuckles", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ BANNED in cabin. Allowed in checked bags, but verify local laws at destination (illegal in many states/countries). (Source: TSA)", 
+        "category": ["weapons"], 
+        "keywords": ["brass knuckles", "knuckles", "weapon"]
+    },
+    {
+        "id": 462, 
+        "name": "Taser / Stun Gun", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "⚠️ CHECKED ONLY. Battery must be removed or rendered inoperable. 🚨 Illegal in many countries. (Source: TSA)", 
+        "category": ["weapons", "electronics"], 
+        "keywords": ["taser", "stun gun", "shock"]
+    },
+    {
+        "id": 463, 
+        "name": "Pocket Knife", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ All knives are BANNED in cabin. Must be checked. (Source: TSA)", 
+        "category": ["weapons", "tools"], 
+        "keywords": ["knife", "blade", "pen knife"]
+    },
 
-    {"id": 177, "name": "Kinder Surprise Eggs", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED on plane (TSA permits chocolate). 🚨 USA CUSTOMS WARNING: ❌ PROHIBITED entering USA (banned since 1938 - non-edible object inside food = choking hazard). CBP will confiscate. Fines: $300-$2,500 per egg. ⚠️ CRITICAL: Even one egg can trigger fine. Legal in EU, Canada, everywhere except USA. ⚠️ Kinder Joy (different product with toy beside chocolate) IS legal in USA. 💡 Sources: CBP prohibited items, FDA regulations, news reports of confiscations.", "category": ["food", "customs"], "keywords": ["kinder surprise", "kinder egg", "chocolate", "candy"], "customs_restricted": ["USA"]},
-
-    {"id": 178, "name": "Dairy Products (Milk, Cheese, Yogurt)", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED on plane (TSA permits - liquids follow 3-1-1 rule). 🚨 CUSTOMS WARNING: ❌ PROHIBITED or RESTRICTED entering USA, Australia, New Zealand, EU. ⚠️ USA: Milk, soft cheese PROHIBITED from most countries. Hard aged cheese (Parmesan, Cheddar) MAY be allowed from certain countries. ⚠️ Australia/NZ: Dairy products require permits. Fines: $300-$10,000. 💡 Sources: USDA APHIS, Australia Biosecurity, CBP.", "category": ["food", "customs"], "keywords": ["dairy", "milk", "cheese", "yogurt"], "customs_restricted": ["USA", "AU", "NZ", "EU"]},
-
-    {"id": 179, "name": "Honey & Bee Products", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED on plane (TSA permits honey - liquids rule applies). 🚨 CUSTOMS WARNING: ⚠️ RESTRICTED entering USA, Australia, New Zealand, China. ⚠️ USA: Honey allowed from some countries, banned from others (disease risk). ⚠️ Australia: Must declare, may require inspection. Fines for non-declaration. 💡 Commercial packaged honey safer than raw/bulk. Sources: USDA APHIS, Australia Biosecurity.", "category": ["food", "customs"], "keywords": ["honey", "bee products", "honeycomb"], "customs_restricted": ["USA", "AU", "NZ", "CN"]},
-
-    {"id": 180, "name": "Traditional Medicine / Herbal Remedies (TCM)", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED on plane (TSA permits pills/powders). 🚨 CUSTOMS WARNING: ⚠️ HEAVILY RESTRICTED entering USA, Australia, New Zealand, EU, China. ⚠️ USA: Many TCM herbs contain animal/plant products PROHIBITED (bear bile, rhinoceros horn, certain plants). ⚠️ Australia: Herbal medicines require permits. Fines: $300-$66,000 AUD. 📞 CRITICAL: Declare ALL traditional medicines. Some may be legal with documentation. Sources: USDA APHIS, Australia Biosecurity, CBP.", "category": ["medication", "customs"], "keywords": ["traditional medicine", "herbal", "TCM", "Chinese medicine"], "customs_restricted": ["USA", "AU", "NZ", "EU", "CN"]},
-
-    {"id": 181, "name": "Eggs (Fresh, Raw)", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED on plane (TSA permits solid food). 🚨 CUSTOMS WARNING: ❌ PROHIBITED entering USA, Australia, New Zealand, EU, China. Fines: $300-$10,000. ⚠️ CRITICAL: Raw eggs = avian flu risk. Even hard-boiled eggs may be restricted. 💡 Commercial packaged foods CONTAINING eggs usually OK. Fresh eggs in shell = instant confiscation. Sources: USDA APHIS, Australia Biosecurity.", "category": ["food", "customs"], "keywords": ["eggs", "raw eggs", "fresh eggs"], "customs_restricted": ["USA", "AU", "NZ", "EU", "CN"]},
-
-    {"id": 182, "name": "Live Plants / Cuttings", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED on plane (TSA permits plants). 🚨 CUSTOMS WARNING: ❌ STRICTLY PROHIBITED entering Australia, New Zealand, China, EU, USA without phytosanitary certificates and permits. Fines: $500-$66,000 AUD. ⚠️ CRITICAL: Plants = extreme biosecurity threat (pests, diseases). Even small cuttings require extensive paperwork. 📞 VERIFY: Contact destination country agriculture department WEEKS before travel. Sources: Australia Biosecurity, USDA APHIS, NZ MPI.", "category": ["other", "customs"], "keywords": ["plants", "cuttings", "flowers", "seeds"], "customs_restricted": ["AU", "NZ", "CN", "EU", "USA"]},
-
-    {"id": 183, "name": "Nuts (In Shell - Unprocessed)", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED on plane (TSA permits). 🚨 CUSTOMS WARNING: ⚠️ RESTRICTED entering Australia, New Zealand, China. ⚠️ Roasted/processed nuts usually OK. Raw nuts in shell = biosecurity risk (pests). ⚠️ Australia: Must declare ALL nuts. May be inspected or confiscated. 💡 TRAVELER TIP: Commercial packaged roasted nuts safer than raw bulk nuts. Sources: Australia Biosecurity, NZ MPI.", "category": ["food", "customs"], "keywords": ["nuts", "raw nuts", "unprocessed", "peanuts", "almonds"], "customs_restricted": ["AU", "NZ", "CN"]},
-
-    {"id": 184, "name": "Pet Food (Meat-Based)", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED on plane (TSA permits - sealed packages). 🚨 CUSTOMS WARNING: ❌ PROHIBITED entering Australia, New Zealand, China. ⚠️ Meat-based pet food (jerky treats, canned food with meat) = same biosecurity risk as meat products. Fines: $300-$10,000. 💡 Vegetarian pet treats and food usually allowed. Declare all pet food. Sources: Australia Biosecurity, NZ MPI.", "category": ["food", "pets", "customs"], "keywords": ["pet food", "dog food", "cat food", "treats"], "customs_restricted": ["AU", "NZ", "CN"]},
-
-    {"id": 185, "name": "Mooncakes (with Egg Yolk)", "carryOn": "allowed", "checked": "allowed", "note": "✅ ALLOWED on plane (TSA permits baked goods). 🚨 USA CUSTOMS WARNING: ❌ PROHIBITED entering USA if mooncake contains egg yolk or meat. CBP will confiscate. ⚠️ CRITICAL: Traditional mooncakes with salted egg yolk BANNED (egg product from China = avian flu risk). Mooncakes with only lotus seed paste, red bean, or fruit filling usually OK. 💡 Popular issue during Mid-Autumn Festival - many travelers unknowingly bring banned mooncakes. Sources: USDA APHIS, CBP alerts.", "category": ["food", "customs"], "keywords": ["mooncake", "moon cake", "egg yolk", "Chinese pastry"], "customs_restricted": ["USA"]}
+    // --- MISCELLANEOUS / HOUSEHOLD ---
+    {
+        "id": 480, 
+        "name": "Cremated Remains (Ashes)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Must pass through X-ray. Container must be wood/plastic (not metal/lead) so X-ray can see inside. TSA will NOT open the container. (Source: TSA)", 
+        "category": ["other"], 
+        "keywords": ["ashes", "cremation", "remains", "urn"]
+    },
+    {
+        "id": 481, 
+        "name": "Snow Globe", 
+        "carryOn": "restricted", 
+        "checked": "allowed", 
+        "note": "⚠️ Liquid rule applies! Only allowed in carry-on if smaller than a tennis ball. Larger ones must be checked. (Source: TSA)", 
+        "category": ["liquids", "other"], 
+        "keywords": ["snow globe", "souvenir", "gift"]
+    },
+    {
+        "id": 482, 
+        "name": "Dry Ice", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Max 5.5 lbs (2.5 kg). Package must be vented (not airtight) to let gas escape. Airline approval usually required. (Source: FAA)", 
+        "category": ["other", "hazardous"], 
+        "keywords": ["dry ice", "ice", "frozen"]
+    },
+    {
+        "id": 483, 
+        "name": "Christmas Crackers", 
+        "carryOn": "prohibited", 
+        "checked": "prohibited", 
+        "note": "❌ BANNED by most airlines (Delta, American, United, etc.) because they contain tiny explosives. (Source: Airline Policies)", 
+        "category": ["other", "holiday"], 
+        "keywords": ["crackers", "christmas", "party poppers"]
+    },
+    {
+        "id": 484, 
+        "name": "Knitting Needles", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Circular needles recommended. Thread cutter blades must be covered. (Source: TSA)", 
+        "category": ["hobbies", "tools"], 
+        "keywords": ["knitting", "needles", "yarn", "crochet"]
+    },
+    {
+        "id": 485, 
+        "name": "Paint (Artist - Acrylic/Water)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Non-flammable paints allowed. Liquid rule (100ml) applies for carry-on. (Source: TSA)", 
+        "category": ["art", "liquids"], 
+        "keywords": ["paint", "acrylic", "watercolor", "art"]
+    },
+    {
+        "id": 486, 
+        "name": "Paint (Oil Based)", 
+        "carryOn": "prohibited", 
+        "checked": "prohibited", 
+        "note": "❌ Often BANNED if flammable (check label for 'Flammable' symbol). Solvents like Turpentine are 100% prohibited. (Source: TSA)", 
+        "category": ["art", "hazardous"], 
+        "keywords": ["oil paint", "solvent", "turpentine"]
+    },
+    // --- HOUSEHOLD & KITCHEN ---
+    {
+        "id": 500, 
+        "name": "Blender", 
+        "carryOn": "restricted", 
+        "checked": "allowed", 
+        "note": "⚠️ CARRY-ON: Allowed ONLY if the blade is removed. ❌ If the blade is attached, it must be checked. (Source: TSA)", 
+        "category": ["household", "electronics", "sharp objects"], 
+        "keywords": ["blender", "vitamix", "nutribullet", "smoothie"]
+    },
+    {
+        "id": 501, 
+        "name": "Coffee Maker / Espresso Machine", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Please wrap the glass pot carefully if checking it! (Source: TSA)", 
+        "category": ["household", "electronics"], 
+        "keywords": ["coffee maker", "espresso", "keurig", "nespresso"]
+    },
+    {
+        "id": 502, 
+        "name": "Pots and Pans", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed in both. Cast iron skillets are also allowed but may require additional screening due to density. (Source: TSA)", 
+        "category": ["household", "cooking"], 
+        "keywords": ["pot", "pan", "skillet", "wok", "cooking"]
+    },
+    {
+ "id": 503, 
+        "name": "Kitchen Knives", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ All knives, whether a small paring knife or a large chef's knife, are BANNED in the cabin. This rule is non-negotiable. They MUST be packed securely in checked baggage. Wrap the sharp edges safely (e.g., in cardboard or a sheath) to prevent injury to baggage handlers and TSA screeners. (Source: TSA)", 
+        "category": ["household", "sharp objects", "weapons"], 
+        "keywords": ["knife", "chef knife", "steak knife", "cutlery"]
+    },
+    {
+        "id": 504, 
+        "name": "Forks and Spoons", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Metal and plastic forks/spoons are allowed. (Source: TSA)", 
+        "category": ["household", "cooking"], 
+        "keywords": ["fork", "spoon", "silverware", "cutlery"]
+    },
+    {
+        "id": 505, 
+        "name": "Corkscrew (No Blade)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed if it does NOT have a small foil-cutting blade attached. (Source: TSA)", 
+        "category": ["household", "tools"], 
+        "keywords": ["corkscrew", "wine opener"]
+    },
+    {
+        "id": 506, 
+        "name": "Corkscrew (With Blade)", 
+        "carryOn": "prohibited", 
+        "checked": "allowed", 
+        "note": "❌ If it has a small knife/blade for foil, it must be checked. (Source: TSA)", 
+        "category": ["household", "sharp objects"], 
+        "keywords": ["corkscrew", "wine opener", "waiter's friend"]
+    },
+    {
+        "id": 507, 
+        "name": "Clothes Iron / Steamer", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Empty all water before packing to avoid leaks and liquid rule issues. (Source: TSA)", 
+        "category": ["household", "electronics"], 
+        "keywords": ["iron", "steamer", "clothes"]
+    },
+    {
+        "id": 508, 
+        "name": "Microwave / Small Appliances", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed if it fits in the overhead bin (good luck!). Checked is recommended. (Source: TSA)", 
+        "category": ["household", "electronics"], 
+        "keywords": ["microwave", "toaster", "appliance"]
+    },
+    {
+        "id": 509, 
+        "name": "Light Bulbs", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed (LED, CFL, Incandescent). Pack carefully! (Source: TSA)", 
+        "category": ["household"], 
+        "keywords": ["light bulb", "lamp", "lights"]
+    },
+    {
+        "id": 510, 
+        "name": "Extension Cord / Power Strip", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. (Source: TSA)", 
+        "category": ["household", "electronics"], 
+        "keywords": ["extension cord", "power strip", "surge protector"]
+    },
+    {
+        "id": 511, 
+        "name": "Flashlight", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. If it's a large 'tactical' flashlight (over 7 inches), it might be considered a bludgeon (weapon) and require checking. (Source: TSA)", 
+        "category": ["household", "tools", "camping"], 
+        "keywords": ["flashlight", "torch", "light"]
+    },
+    {
+        "id": 512, 
+        "name": "Sewing Kit", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed if scissors are smaller than 4 inches. Needles are allowed. (Source: TSA)", 
+        "category": ["household", "tools"], 
+        "keywords": ["sewing", "needle", "thread"]
+    },
+    {
+        "id": 513, 
+        "name": "Glass Vase / Ceramics", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. Carry-on is safer to prevent breakage. (Source: TSA)", 
+        "category": ["household"], 
+        "keywords": ["vase", "glass", "ceramic", "pottery"]
+    },
+    {
+        "id": 514, 
+        "name": "Christmas Lights", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. (Source: TSA)", 
+        "category": ["household", "holiday"], 
+        "keywords": ["lights", "christmas", "holiday", "decorations"]
+    },
+    {
+        "id": 515, 
+        "name": "Vacuum Robot (Roomba)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Allowed. ⚠️ Lithium battery rules apply! If checking the robot, you usually must REMOVE the battery and take it in the cabin. (Source: FAA)", 
+        "category": ["household", "electronics", "batteries"], 
+        "keywords": ["vacuum", "roomba", "cleaning"]
+    },
+    {
+        "id": 516, 
+        "name": "Detergent (Liquid)", 
+        "carryOn": "restricted", 
+        "checked": "allowed", 
+        "note": "⚠️ Liquid rule applies: Max 3.4oz (100ml) in carry-on. Unlimited in checked bags. (Source: TSA)", 
+        "category": ["household", "liquids", "cleaning"], 
+        "keywords": ["detergent", "soap", "washing liquid"]
+    },
+    {
+        "id": 517, 
+        "name": "Detergent (Pods/Powder)", 
+        "carryOn": "allowed", 
+        "checked": "allowed", 
+        "note": "✅ Pods and Powder are allowed. Powders over 12oz (350ml) may require extra screening. (Source: TSA)", 
+        "category": ["household", "cleaning"], 
+        "keywords": ["detergent", "pods", "powder", "tide pods"]
+    }
+    
 ];

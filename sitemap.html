@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sitemap - All Items | Airport Carry-On Checker</title>
+    <link rel="stylesheet" href="css/styles.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body style="background: #f8f9fa; min-height: 100vh; display: flex; flex-direction: column;">
+
+    <header>
+        <h1><a href="index.html" style="text-decoration:none; color:inherit;">Airport Carry-On Checker</a></h1>
+        <p class="tagline">Full Item Index (A-Z)</p>
+    </header>
+
+    <div style="flex: 1; max-width: 1000px; margin: 30px auto; padding: 20px; width: 100%;">
+        <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <h2 style="margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">All Items</h2>
+            
+            <ul id="itemList" style="
+                list-style: none; 
+                padding: 0; 
+                margin: 0; 
+                display: grid; 
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+                gap: 15px;
+            "></ul>
+        </div>
+        
+        <div style="margin-top: 30px; text-align: center;">
+            <a href="index.html" class="action-btn" style="display: inline-block; max-width: 200px; text-decoration: none;">&larr; Back to Search</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Airport Carry-On Checker | 
+        <a href="privacy.html">Privacy Policy</a> | 
+        <a href="about.html">About Us</a> | 
+        <a href="contact.html">Contact</a>
+        </p>
+    </footer>
+
+    <script src="js/data-embedded.js"></script>
+    
+    <script>
+        // Use the exact same slug function as your main app to ensure links work
+        function toSlug(text) {
+            return text.toString().toLowerCase()
+                .trim()
+                .replace(/\s+/g, '-')     // Replace spaces with -
+                .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+                .replace(/\-\-+/g, '-');  // Replace multiple - with single -
+        }
+
+        const list = document.getElementById('itemList');
+        
+        // Sort items alphabetically
+        if (typeof ITEMS_DATA !== 'undefined') {
+            ITEMS_DATA.sort((a, b) => a.name.localeCompare(b.name));
+            
+            ITEMS_DATA.forEach(item => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                
+                // Create the link to the specific result
+                a.href = `index.html?item=${toSlug(item.name)}`;
+                a.textContent = item.name;
+                
+                // Styling
+                a.style.textDecoration = 'none';
+                a.style.color = '#333';
+                a.style.display = 'block';
+                a.style.padding = '8px 12px';
+                a.style.background = '#f8f9fa';
+                a.style.borderRadius = '6px';
+                a.style.border = '1px solid #eee';
+                a.style.fontSize = '0.9rem';
+                a.style.transition = 'all 0.2s';
+                
+                // Hover effect logic
+                a.onmouseover = function() {
+                    this.style.background = '#e8ecff';
+                    this.style.borderColor = '#667eea';
+                    this.style.color = '#667eea';
+                };
+                a.onmouseout = function() {
+                    this.style.background = '#f8f9fa';
+                    this.style.borderColor = '#eee';
+                    this.style.color = '#333';
+                };
+
+                li.appendChild(a);
+                list.appendChild(li);
+            });
+        } else {
+            list.innerHTML = '<p>Error loading data. Please try again.</p>';
+        }
+    </script>
+</body>
+</html>

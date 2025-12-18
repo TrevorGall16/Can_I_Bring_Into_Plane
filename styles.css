@@ -245,6 +245,13 @@ footer a:hover { color: #60a5fa; }
    2. DESKTOP STYLES (1024px+)
    ================================================================= */
 @media (min-width: 1024px) {
+    /* ADD THIS BLOCK: Aggressively push the disclaimer to the bottom right */
+    .disclaimer-banner {
+        right: 200px !important; /* Lock 20px from the right edge */
+        left: auto !important; /* Override the default 20px left lock */
+        bottom: 20px !important; 
+        max-width: 350px !important; /* Ensure it stays compact and doesn't interfere */
+    }
     .three-column-container { 
         display: grid; 
         
