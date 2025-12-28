@@ -7,14 +7,11 @@ let searchIndex = new Map();
 
 /**
  * Builds a fast lookup index for items
- * Requirement: BEST_PRACTICES_GUIDELINES Section 4
  */
 function buildSearchIndex() {
     searchIndex.clear();
     itemsData.forEach(item => {
-        // Index by name
         searchIndex.set(item.name.toLowerCase(), item);
-        // Index by keywords
         if (item.keywords) {
             item.keywords.forEach(kw => searchIndex.set(kw.toLowerCase(), item));
         }
@@ -23,13 +20,13 @@ function buildSearchIndex() {
 
 // Call this inside your DOMContentLoaded listener
 document.addEventListener('DOMContentLoaded', () => {
-    buildSearchIndex(); // <--- ADD THIS
+    buildSearchIndex();
     initializeEventListeners();
     updateBagCounter(); 
     navManager.loadFromURL();
 });
-// --- HELPER: Mobile Scroll Locking ----
-// We don't need complex locking anymore because we are hiding the background!
+
+// --- HELPER: Mobile Scroll Locking ---
 function toggleMobileView(showResult) {
     if (window.innerWidth < 1024) {
         const leftPanel = document.querySelector('.left-panel');
@@ -52,6 +49,7 @@ function toSlug(text) {
         .replace(/-+/g, '-')
         .trim();
 }
+
 // Setup Set for Saved Items (My Bag)
 let savedItems = new Set(); 
 if (localStorage.getItem('myBag')) {
@@ -125,12 +123,11 @@ class NavigationManager {
             setTimeout(() => { rightPanel.scrollTop = this.scrollPositions.get(key); }, 50);
         }
     }
- pushState(itemId, itemName) {
+    pushState(itemId, itemName) {
         try {
             const url = new URL(window.location);
             const item = itemsData.find(i => i.id === itemId);
             url.searchParams.delete('category'); 
-            // Use the pre-generated slug from Phase 1
             url.searchParams.set('item', item.slug || toSlug(itemName)); 
             window.history.pushState({ itemId, itemName }, '', url);
         } catch (e) {}
@@ -156,6 +153,11 @@ class NavigationManager {
                 return true;
             }
         } catch (e) {}
+        
+        // If nothing loaded and on desktop, show welcome
+        if (window.innerWidth >= 1024) {
+             resetToHome();
+        }
         return false;
     }
 }
@@ -176,14 +178,8 @@ const countryRules = {
 };
 
 // ---------------------------------------------------------
-// INITIALIZATION
+// EVENT LISTENERS
 // ---------------------------------------------------------
-document.addEventListener('DOMContentLoaded', () => {
-    initializeEventListeners();
-    updateBagCounter(); 
-    navManager.loadFromURL();
-});
-
 window.addEventListener('popstate', (event) => {
     if (event.state) {
         if (event.state.itemId) {
@@ -192,9 +188,6 @@ window.addEventListener('popstate', (event) => {
         } else if (event.state.category) {
             displayCategoryResults(event.state.category, true);
         } else if (event.state.home) {
-            // Reset canonical to homepage
-let canonical = document.querySelector('link[rel="canonical"]');
-if (canonical) canonical.setAttribute('href', 'https://www.canibringonplane.com/');
             resetToHome();
         }
     } else {
@@ -212,7 +205,9 @@ function resetToHome() {
     // CRITICAL: SHOW HOME PANEL ON MOBILE
     toggleMobileView(false); 
 
-document.title = "Airport Carry-On Checker - Can I Bring This On A Plane?";
+    document.title = "Airport Carry-On Checker - Can I Bring This On A Plane?";
+    
+    // SEO FIX: Reset canonical to homepage
     let canonical = document.querySelector('link[rel="canonical"]');
     if (canonical) canonical.setAttribute('href', 'https://www.canibringonplane.com/');
 
@@ -284,14 +279,14 @@ function initializeEventListeners() {
         }
     });
 
-// Replacement for the current searchInput listener
-searchInput.addEventListener('input', (e) => {
-    clearTimeout(autocompleteTimeout);
-    // 300ms wait period before executing search
-    autocompleteTimeout = setTimeout(() => { 
-        handleSearch(e.target.value); 
-    }, 300);
-});
+    // Replacement for the current searchInput listener
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(autocompleteTimeout);
+        // 300ms wait period before executing search
+        autocompleteTimeout = setTimeout(() => { 
+            handleSearch(e.target.value); 
+        }, 300);
+    });
 
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
@@ -384,22 +379,17 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
         'Canada': { name: 'CATSA', url: 'https://www.catsa-acsta.gc.ca/en/search/site' },
         'Australia': { name: 'Home Affairs', url: 'https://www.abf.gov.au/entering-and-leaving-australia/can-you-bring-it-in' },
         'Japan': { name: 'Narita/Gov', url: 'https://www.narita-airport.jp/en/security/restricted/' },
-        'International': { name: 'ICAO', url: 'https://www.icao.int/Security/SFP/Pages/Passenger-Bag-Security.aspx' },
-        'Thailand': { name: 'Thai Customs', url: 'https://www.customs.go.th/list_strc_simple_neted.php?ini_content=individual_160526_01&lang=en' },
-        'Singapore': { name: 'ICA Singapore', url: 'https://www.ica.gov.sg/enter-transit-depart/entering-singapore/what-you-can-bring' },
-        'Mexico': { name: 'Government of Mexico', url: 'https://www.gob.mx/aduanas' },
-        'UAE': { name: 'UAE Government', url: 'https://u.ae/en/information-and-services/health-and-fitness/drugs-and-controlled-medicines' },
+        'International': { name: 'ICAO', url: 'https://www.icao.int/Security/SFP/Pages/Passenger-Bag-Security.aspx' }
     };
 
     const scrollKey = `item-${item.id}`;
     navManager.saveScrollPosition(scrollKey);
     if (!skipHistoryPush) navManager.pushState(item.id, item.name);
-    // PHASE 2 FIX: Update SEO Tags and Canonical URL
-    updateSEOTags(item);
     
-    let canonical = document.querySelector('link[rel="canonical"]');
-    if (canonical) canonical.setAttribute('href', `https://www.canibringonplane.com/?item=${item.slug}`);
-
+    // Update SEO Tags
+    updateSocialMeta(item);
+    injectSchema(item);
+    
     document.getElementById('welcomeMessage')?.classList.add('hidden');
     document.getElementById('countryRulesSection')?.classList.add('hidden');
     
@@ -412,6 +402,7 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     toggleMobileView(true); 
 
     let variants = findItemVariants(item);
+    // De-duplicate variants
     variants = variants.filter((v, index, self) =>
         index === self.findIndex((t) => t.name.trim().toLowerCase() === v.name.trim().toLowerCase())
     );
@@ -427,12 +418,6 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     };
 
     const currentStatus = getDisplayStatus(item);
-    const allSameEffectiveRules = variants.every(v => {
-        const s = getDisplayStatus(v);
-        return s.carryOn === currentStatus.carryOn && s.checked === currentStatus.checked && v.note === item.note;
-    });
-    if (allSameEffectiveRules) variants = [item];
-
     const rightPanel = document.getElementById('rightPanel');
     rightPanel.classList.remove('hidden'); 
     rightPanel.scrollTop = 0; 
@@ -504,8 +489,8 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
             ${customsWarningHTML}
 
             <div class="action-buttons-row">
-                <a href="${amazonLink}" target="_blank" class="action-btn amazon-btn"><i class="fa-brands fa-amazon"></i> Shop on Amazon</a>
-                <button class="${bagBtnClass}" onclick="toggleBagItem(${item.id})">${bagBtnText}</button>
+                <a href="${amazonLink}" target="_blank" class="amazon-button">🛒 Shop on Amazon</a>
+                <button class="${bagBtnClass} add-to-bag-btn" onclick="toggleBagItem(${item.id})">${bagBtnText}</button>
             </div>
 
            <div class="item-note">
@@ -557,8 +542,6 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
 
     displayRelatedItems(item);
     adProvider.refreshInlineAd();
-    injectSchema(item);
-    updateSocialMeta(item);
 }
 
 function findItemVariants(item) {
@@ -768,11 +751,13 @@ function shareItemLink(id) {
     }
 }
 
+// Global Exports
 window.showItemById = (id) => { 
     const item = itemsData.find(i => i.id === id); 
     if(item) {
-        const isDesktop = window.innerWidth >= 1024;
-        displayItemResult(item, isDesktop); 
+        const middlePanel = document.getElementById('middlePanel');
+        const isMiddlePanelVisible = middlePanel && !middlePanel.classList.contains('hidden');
+        displayItemResult(item, isMiddlePanelVisible); 
     }
 };
 window.toggleBagItem = toggleBagItem;
@@ -810,7 +795,7 @@ function injectSchema(item) {
  * Updates document title, meta description, and Social Graph tags
  * Requirement: ADS_AND_INDEXING_GUIDELINES Section 5.3
  */
-function updateSEOTags(item) {
+function updateSocialMeta(item) {
     const title = `Can I bring ${item.name} on a plane? - Airport Checker`;
     const description = `Find out if ${item.name} is allowed in carry-on or checked luggage. ${item.note.replace(/[✅❌⚠️💡]/g, '').substring(0, 150)}...`;
     
@@ -831,7 +816,9 @@ function updateSEOTags(item) {
     setMeta('description', description);
     setMeta('og:title', title, true);
     setMeta('og:description', description, true);
-setMeta('og:url', `https://www.canibringonplane.com/?item=${item.slug}`, true);
+    // Use the slug in the OG URL
+    const slug = toSlug(item.name);
+    setMeta('og:url', `https://www.canibringonplane.com/?item=${slug}`, true);
 
     // Update Canonical URL dynamically
     let canonical = document.querySelector('link[rel="canonical"]');
@@ -840,5 +827,6 @@ setMeta('og:url', `https://www.canibringonplane.com/?item=${item.slug}`, true);
         canonical.setAttribute('rel', 'canonical');
         document.head.appendChild(canonical);
     }
-    canonical.setAttribute('href', `https://www.canibringonplane.com/?item=${item.slug}`);
+    // Use the slug in the canonical URL
+    canonical.setAttribute('href', `https://www.canibringonplane.com/?item=${slug}`);
 }
