@@ -54,12 +54,12 @@ header h1 i { color: #fff; opacity: 0.9; margin-right: 8px; }
     width: auto !important; max-width: 380px !important; z-index: 9999 !important;
     background: rgba(15, 23, 42, 0.95); /* Deep slate */
     border-left: 4px solid #f43f5e; /* Vibrant Rose */
-    border-radius: 8px; 
+    border-radius: 5cap; 
     padding: 12px 16px; 
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2); /* Deep soft shadow */
     color: #f1f5f9 !important;
-    font-size: 0.75rem !important;
-    line-height: 1.4 !important;
+    font-size: 0.65rem !important;
+    line-height: 1.1 !important;
     backdrop-filter: blur(4px);
 }
 .disclaimer-mobile-only { display: none; }

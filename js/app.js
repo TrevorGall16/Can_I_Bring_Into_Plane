@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeEventListeners();
     updateBagCounter(); 
     navManager.loadFromURL();
+    // Initialize sticky footer ad
+    adProvider.initStickyFooter();
 });
 
 // --- HELPER: Mobile Scroll Locking ---
@@ -86,15 +88,59 @@ class AdProvider {
         this.initTopBanner();
     }
     
-    initTopBanner() {
-        const adSlot = document.getElementById('ad-top-slot');
-        if (adSlot) {
-            adSlot.innerHTML = '';
-            // --- ADSTERRA TOP BANNER PLACEHOLDER ---
-            // If you create a 728x90 or 320x50 banner in Adsterra, paste the code here.
-            // For now, we keep it empty or use a placeholder to reserve layout space.
-            // Example structure to replace later:
-            // adSlot.innerHTML = '<script...src="//..."></script>';
+initTopBanner() {
+    const adSlot = document.getElementById('ad-top-slot');
+    if (adSlot) {
+        adSlot.innerHTML = '';
+
+        // Create a safe iframe for the ad to prevent document.write from wiping the page
+        const iframe = document.createElement('iframe');
+        iframe.style.width = '728px';
+        iframe.style.height = '90px';
+        iframe.style.border = 'none';
+        iframe.style.overflow = 'hidden';
+        iframe.scrolling = 'no';
+
+        adSlot.appendChild(iframe);
+
+        const doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(`
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : '1eb6f5f58fd51d48c864a2232bd79e77',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                };
+            <\/script>
+            <script type="text/javascript" src="https://www.highperformanceformat.com/1eb6f5f58fd51d48c864a2232bd79e77/invoke.js"><\/script>
+        `);
+        doc.close();
+    }
+}
+
+    initStickyFooter() {
+        // Create a container for a sticky footer ad if it doesn't exist
+        if (!document.getElementById('ad-sticky-footer')) {
+            const footerAd = document.createElement('div');
+            footerAd.id = 'ad-sticky-footer';
+            footerAd.style.cssText = 'position:fixed; bottom:0; left:0; width:100%; background:white; z-index:9999; text-align:center; border-top:1px solid #ddd; display:none;'; // Hidden by default until you add code
+            // Add close button
+            const closeBtn = document.createElement('button');
+            closeBtn.innerText = '×';
+            closeBtn.style.cssText = 'position:absolute; top:-20px; right:5px; background:#333; color:white; border:none; border-radius:50%; width:20px; height:20px; cursor:pointer; line-height:18px; font-size:14px;';
+            closeBtn.onclick = () => footerAd.style.display = 'none';
+            footerAd.appendChild(closeBtn);
+            
+            // Placeholder for Adsterra 320x50 or 728x90
+            const adContent = document.createElement('div');
+            adContent.innerHTML = '<div style="padding:10px; color:#888; font-size:12px;">Sticky Footer Ad Space</div>';
+            footerAd.appendChild(adContent);
+
+            document.body.appendChild(footerAd);
+            // Uncomment to show: footerAd.style.display = 'block';
         }
     }
     
@@ -187,11 +233,11 @@ const navManager = new NavigationManager();
 // COUNTRY RULES DATA
 // ---------------------------------------------------------
 const countryRules = {
-    'USA': { title: 'Important TSA Rules (United States)', rules: [{ title: '3-1-1 Liquids Rule', description: 'Carry-on liquids must be in containers of 3.4 oz (100ml) or less, all fitting in one quart-sized clear plastic bag.' }, { title: 'Lithium Batteries', description: 'Spare lithium batteries and power banks must be in carry-on luggage only. Maximum 100Wh without approval.' }, { title: 'Sharp Objects', description: 'Scissors under 4 inches allowed in carry-on. All knives must be checked.' }] },
+    'USA': { title: 'Important TSA Rules (United States)', rules: [{ title: '3-1-1 Liquids Rule', description: 'Carry-on liquids must be in containers of 3.4 oz (100ml) or less, all fitting in one quart-sized clear plastic bag.' }, { title: 'Lithium Batteries', description: 'Spare lithium batteries and power banks must be in carry-on luggage only. Maximum 100Wh without approval.' }, { title: 'Sharp Objects', description: 'Scissors under 4 inches allowed in carry-on. All knives must be checked. Tools under 7 inches generally allowed.' }] },
     'China': { title: 'Important CAAC Rules (China)', rules: [{ title: 'Liquids Restriction', description: 'Maximum 100ml per container, total 1 liter allowed in carry-on.' }, { title: 'Power Banks (Critical!)', description: 'Power banks MUST have clear capacity marking and manufacturer logo. Unmarked power banks will be confiscated.' }, { title: 'Lighters & Matches', description: 'Lighters and matches are PROHIBITED in both carry-on and checked luggage in China.' }] },
-    'EU': { title: 'Important EASA Rules (European Union)', rules: [{ title: 'Liquids, Aerosols & Gels', description: 'Maximum 100ml per container in a single 1-liter transparent bag.' }, { title: 'Lithium Batteries', description: 'Spare batteries in carry-on only. Power banks up to 100Wh allowed.' }, { title: 'Sharp Objects', description: 'Knives and scissors with blades over 6cm prohibited in carry-on.' }] },
+    'EU': { title: 'Important EASA Rules (European Union)', rules: [{ title: 'Liquids, Aerosols & Gels', description: 'Maximum 100ml per container in a single 1-liter transparent bag.' }, { title: 'Lithium Batteries', description: 'Spare batteries in carry-on only. Power banks up to 100Wh allowed. 100-160Wh requires airline approval.' }, { title: 'Sharp Objects', description: 'Knives and scissors with blades over 6cm prohibited in carry-on. Must be in checked luggage.' }] },
     'UK': { title: 'Important UK Aviation Rules', rules: [{ title: 'Liquids Rule', description: 'Maximum 100ml per container in a single transparent bag.' }, { title: 'Electronic Devices', description: 'All electronic devices larger than phones must be screened separately.' }, { title: 'Prohibited Items', description: 'All knives, razor blades, and tools over 6cm prohibited in carry-on.' }] },
-    'Canada': { title: 'Important CATSA Rules (Canada)', rules: [{ title: 'Liquids & Gels', description: 'Maximum 100ml per container in a single 1-liter clear, resealable bag.' }, { title: 'Lithium Batteries', description: 'Spare lithium batteries must be in carry-on.' }, { title: 'Tools', description: 'Tools must be less than 6cm from pivot point for carry-on.' }] },
+    'Canada': { title: 'Important CATSA Rules (Canada)', rules: [{ title: 'Liquids & Gels', description: 'Maximum 100ml per container in a single 1-liter clear, resealable bag. Exceptions for medications and baby formula.' }, { title: 'Lithium Batteries', description: 'Spare lithium batteries must be in carry-on.' }, { title: 'Tools', description: 'Tools must be less than 6cm from pivot point for carry-on.' }] },
     'Australia': { title: 'Important Australian Aviation Rules', rules: [{ title: 'Liquids, Aerosols & Gels', description: 'Maximum 100ml per container.' }, { title: 'Quarantine Rules', description: 'Strict quarantine on food, plants, and animal products. Heavy fines.' }] },
     'Japan': { title: 'Important Japanese Aviation Rules', rules: [{ title: 'Liquids Rule', description: 'Maximum 100ml per container in a transparent bag.' }, { title: 'Lithium Batteries', description: 'Spare batteries and power banks in carry-on only.' }] },
     'International': { title: 'General International Aviation Rules', rules: [{ title: 'Universal Liquids Rule', description: 'Most countries follow 100ml rule.' }, { title: 'Lithium Batteries', description: 'Globally: spare lithium batteries in carry-on only.' }, { title: 'Dangerous Goods', description: 'Flammable liquids, compressed gases, explosives prohibited everywhere.' }] }
@@ -508,7 +554,9 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
             ${customsWarningHTML}
 
             <div class="action-buttons-row">
-                <a href="${amazonLink}" target="_blank" class="amazon-button">🛒 Shop on Amazon</a>
+                <a href="${amazonLink}" target="_blank" class="action-btn amazon-btn">
+                   <i class="fa-brands fa-amazon" style="margin-right: 5px;"></i> Shop on Amazon
+                </a>
                 <button class="${bagBtnClass} add-to-bag-btn" onclick="toggleBagItem(${item.id})">${bagBtnText}</button>
             </div>
 
@@ -557,6 +605,8 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
 
     displayRelatedItems(item);
     adProvider.refreshInlineAd();
+    injectSchema(item);
+    updateSEOTags(item);
 }
 
 function findItemVariants(item) {
