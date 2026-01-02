@@ -710,23 +710,26 @@ function displayCategoryResults(category, skipHistoryPush = false) {
             displayClass = 'status-prohibited';
         }
 
-        const div = document.createElement('div');
-        div.className = 'category-item-card';
-        div.innerHTML = `
-            <div class="category-item-name">${item.name}</div>
-            <div class="category-item-status">
-                <span class="${displayClass}">
-                    🎒 ${displayText}
-                </span>
-            </div>`;
+const link = document.createElement('a');
+link.className = 'category-item-card';
+link.href = `?item=${toSlug(item.name)}`; // Google can now see this URL
+link.style.textDecoration = 'none';      // Remove underline
+link.innerHTML = `
+    <div class="category-item-name">${item.name}</div>
+    <div class="category-item-status">
+        <span class="${displayClass}">
+            🎒 ${displayText}
+        </span>
+    </div>`;
 
-        div.onclick = () => {
-            const isDesktop = window.innerWidth >= 1024; 
-            displayItemResult(item, isDesktop);
-        };
-        list.appendChild(div);
+// Keep the "Instant" feel by preventing the page reload
+link.onclick = (e) => {
+    e.preventDefault(); 
+    const isDesktop = window.innerWidth >= 1024; 
+    displayItemResult(item, isDesktop);
+};
+list.appendChild(link);
     });
-    
     if (window.innerWidth >= 1024) {
         document.getElementById('rightPanel').innerHTML = `
             <div class="welcome-message">
