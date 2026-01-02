@@ -50,18 +50,27 @@ header h1 i { color: #fff; opacity: 0.9; margin-right: 8px; }
 
 /* ===== DISCLAIMER (Sleek & Unobtrusive) ===== */
 .disclaimer-banner {
-    position: fixed !important; bottom: 20px !important; left: 20px !important; right: auto !important; top: auto !important;
-    width: auto !important; max-width: 380px !important; z-index: 9999 !important;
+    position: fixed !important; 
+    bottom: 15px !important; 
+    left: 15px !important; 
+    right: auto !important; 
+    top: auto !important;
+    width: auto !important; 
+    max-width: 320px !important; /* Smaller max-width */
+    z-index: 9999 !important;
     background: rgba(15, 23, 42, 0.95); /* Deep slate */
-    border-left: 4px solid #f43f5e; /* Vibrant Rose */
-    border-radius: 5cap; 
-    padding: 12px 16px; 
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2); /* Deep soft shadow */
+    border-left: 3px solid #f43f5e; /* Vibrant Rose */
+    border-radius: 8px; 
+    padding: 10px 14px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Soft shadow */
     color: #f1f5f9 !important;
-    font-size: 0.65rem !important;
-    line-height: 1.1 !important;
+    font-size: 0.7rem !important; /* Smaller font */
+    line-height: 1.2 !important;
     backdrop-filter: blur(4px);
+    opacity: 0.95;
+    transition: opacity 0.2s;
 }
+.disclaimer-banner:hover { opacity: 1; }
 .disclaimer-mobile-only { display: none; }
 .disclaimer-banner strong { font-weight: 700; color: #fb7185; }
 
@@ -210,7 +219,21 @@ header h1 i { color: #fff; opacity: 0.9; margin-right: 8px; }
 .action-btn { flex: 1; min-width: 200px; padding: 16px 24px; border: none; border-radius: 14px; font-size: 1rem; font-weight: 700; cursor: pointer; text-decoration: none; text-align: center; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); transition: all 0.2s; }
 .action-btn:active { transform: scale(0.97); }
 
-.amazon-btn { background: #f59e0b; color: #fff; background-image: linear-gradient(to bottom right, #fbbf24, #d97706); }
+/* --- OFFICIAL AMAZON BUTTON STYLE --- */
+.amazon-btn { 
+    background: linear-gradient(to bottom, #f7dfa5, #f0c14b);
+    border: 1px solid #a88734;
+    color: #111;
+    font-family: Arial, sans-serif;
+    text-shadow: none;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.4) inset;
+}
+.amazon-btn:hover {
+    background: linear-gradient(to bottom, #f5d78e, #eeb933);
+    border-color: #a88734;
+}
+/* ----------------------------------- */
+
 .action-btn:not(.amazon-btn) { background: #334155; background-image: linear-gradient(to bottom right, #475569, #1e293b); }
 .action-btn.saved { background: #22c55e !important; background-image: linear-gradient(to bottom right, #4ade80, #16a34a) !important; }
 
@@ -236,9 +259,21 @@ footer a:hover { color: #60a5fa; }
     .middle-panel, .right-panel { display: none; width: 100%; min-height: 100vh; background: #f8fafc; margin: 0; padding-bottom: 100px; }
     .middle-panel:not(.hidden), .right-panel:not(.hidden) { display: block !important; }
 
-    /* Fix Disclaimer on Mobile */
+    /* Fix Disclaimer on Mobile - Make it STATIC so it scrolls */
     .disclaimer-banner:not(.disclaimer-mobile-only) { display: none !important; }
-    .disclaimer-mobile-only { display: block !important; position: static !important; width: 100% !important; margin: 15px 0 !important; padding: 12px !important; font-size: 0.8rem !important; background: #fffbeb !important; color: #92400e !important; border: 1px solid #fcd34d !important; border-radius: 8px !important; text-align: center; box-shadow: none !important; }
+    .disclaimer-mobile-only { 
+        display: block !important; 
+        position: static !important; /* Forces it to scroll with content */
+        width: 100% !important; 
+        margin: 20px 0 0 0 !important; 
+        padding: 15px !important; 
+        font-size: 0.8rem !important; 
+        background: #fffbeb !important; 
+        color: #92400e !important; 
+        border-top: 1px solid #fcd34d !important; 
+        text-align: center; 
+        box-shadow: none !important; 
+    }
 }
 
 /* =================================================================
