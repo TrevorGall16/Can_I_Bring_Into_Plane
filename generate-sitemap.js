@@ -2,145 +2,128 @@
 
 /**
  * Sitemap Generator for Can I Bring Into Plane
- *
- * This script generates a sitemap.xml file containing all items from ITEMS_DATA
- * Google will use this to index all 120+ item pages for better SEO
- *
- * Usage: node generate-sitemap.js
- * Output: sitemap.xml in the same directory
+ * Follows SEO_TRAFFIC_PROTOCOL.md (Protocol A - Vanilla Lite)
+ * Usage: node scripts/generate-sitemap.js (from root)
  */
 
 const fs = require('fs');
 const path = require('path');
 
 // Configuration
-const SITE_URL = 'https://www.canibringonplane.com'; // Your actual domain from CNAME
-const DATA_FILE = path.join(__dirname, 'js', 'data-embedded.js');
-const OUTPUT_FILE = path.join(__dirname, 'sitemap.xml');
+const SITE_URL = 'https://www.canibringonplane.com';
 
-// Create URL-friendly slug from item name (matches SEOManager.createSlug in app.js)
-function createSlug(itemName) {
-    return itemName
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, '') // Remove special chars except spaces and hyphens
-        .replace(/\s+/g, '-') // Replace spaces with hyphens
-        .replace(/-+/g, '-') // Replace multiple hyphens with single
+// Paths - Assumes running from project root
+// If running from scripts folder, adjust manually or cd to root first
+const DATA_FILE_PATH = path.join(process.cwd(), 'js', 'data-embedded.js');
+const OUTPUT_FILE_PATH = path.join(process.cwd(), 'sitemap.xml');
+
+// Standard Slug Logic (Must match app.js toSlug exactly)
+function createSlug(text) {
+    return text.toString().toLowerCase()
+        .replace(/[()]/g, '')
+        .replace(/\//g, '-')
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
         .trim();
 }
 
-// Format date to ISO 8601 (YYYY-MM-DD) for sitemap
 function getCurrentDate() {
     return new Date().toISOString().split('T')[0];
 }
 
-// Main function
 function generateSitemap() {
     console.log('🚀 Starting sitemap generation...');
+    console.log(`📂 Reading data from: ${DATA_FILE_PATH}`);
 
-    // Read the data-embedded.js file
     let fileContent;
     try {
-        fileContent = fs.readFileSync(DATA_FILE, 'utf8');
+        if (!fs.existsSync(DATA_FILE_PATH)) {
+            throw new Error(`Data file not found at ${DATA_FILE_PATH}. Are you running from the project root?`);
+        }
+        fileContent = fs.readFileSync(DATA_FILE_PATH, 'utf8');
     } catch (error) {
-        console.error('❌ Error reading data file:', error.message);
-        console.error(`   Make sure ${DATA_FILE} exists`);
+        console.error(`❌ Error reading data file:`, error.message);
         process.exit(1);
     }
 
-    // Extract ITEMS_DATA from the file
-    // The file contains: const ITEMS_DATA = [...]
+    // Extract ITEMS_DATA
     let itemsData;
     try {
-        // Use eval to extract the data (safe since we control the file)
         const dataMatch = fileContent.match(/const ITEMS_DATA = (\[[\s\S]*?\]);/);
-        if (!dataMatch) {
-            throw new Error('Could not find ITEMS_DATA in file');
-        }
-        itemsData = eval(dataMatch[1]);
+        if (!dataMatch) throw new Error('Could not find ITEMS_DATA array in file content');
+        
+        // Safe-ish eval for build script to parse the array structure
+        // We wrap it in parenthesis to ensure it evaluates as an expression
+        itemsData = eval('(' + dataMatch[1] + ')');
     } catch (error) {
         console.error('❌ Error parsing ITEMS_DATA:', error.message);
         process.exit(1);
     }
 
-    console.log(`✅ Found ${itemsData.length} items in database`);
+    console.log(`✅ Found ${itemsData.length} items`);
 
-    // Generate sitemap XML
     const currentDate = getCurrentDate();
-    let sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
+    
+    // Header
+    let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Homepage -->
-  <url>
-    <loc>${SITE_URL}/</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-
 `;
 
-    // Add each item as a URL
+    // 1. Homepage
+    sitemap += `  <url>
+    <loc>${SITE_URL}/</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>\n`;
+
+    // 2. Categories
+    const categories = new Set();
+    itemsData.forEach(item => {
+        if (Array.isArray(item.category)) {
+            item.category.forEach(c => categories.add(c));
+        } else if (item.category) {
+            categories.add(item.category);
+        }
+    });
+
+    categories.forEach(cat => {
+        const catUrl = `${SITE_URL}/?category=${cat}`;
+        sitemap += `  <url>
+    <loc>${catUrl}</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>\n`;
+    });
+
+    // 3. Items
     itemsData.forEach(item => {
         const slug = createSlug(item.name);
         const itemUrl = `${SITE_URL}/?item=${slug}`;
+        
+        // Boost priority for high-traffic items if needed, default 0.8
+        const priority = 0.8;
 
-        sitemapContent += `  <!-- ${item.name} -->
-  <url>
+        sitemap += `  <url>
     <loc>${itemUrl}</loc>
     <lastmod>${currentDate}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-`;
+    <changefreq>weekly</changefreq>
+    <priority>${priority}</priority>
+  </url>\n`;
     });
 
-    // Add category pages
-    const categories = [
-        'liquids',
-        'electronics',
-        'food',
-        'toiletries',
-        'medication',
-        'tools',
-        'sports',
-        'baby',
-        'customs'
-    ];
+    sitemap += `</urlset>`;
 
-    categories.forEach(category => {
-        const categoryUrl = `${SITE_URL}/?category=${category}`;
-        sitemapContent += `  <!-- Category: ${category} -->
-  <url>
-    <loc>${categoryUrl}</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-`;
-    });
-
-    sitemapContent += `</urlset>`;
-
-    // Write sitemap.xml
     try {
-        fs.writeFileSync(OUTPUT_FILE, sitemapContent, 'utf8');
-        console.log(`✅ Sitemap generated successfully!`);
-        console.log(`   Output: ${OUTPUT_FILE}`);
-        console.log(`   Total URLs: ${itemsData.length + categories.length + 1}`);
-        console.log('');
-        console.log('📝 Next Steps:');
-        console.log('   1. Update SITE_URL in this script with your actual domain');
-        console.log('   2. Upload sitemap.xml to your website root directory');
-        console.log('   3. Submit to Google Search Console: https://search.google.com/search-console');
-        console.log('   4. Verify ownership and submit sitemap URL');
-        console.log('');
-        console.log('🎯 SEO Tip: Re-run this script whenever you add/remove items from ITEMS_DATA');
+        fs.writeFileSync(OUTPUT_FILE_PATH, sitemap, 'utf8');
+        console.log(`✅ Sitemap written to: ${OUTPUT_FILE_PATH}`);
+        console.log(`   Total URLs: ${1 + categories.size + itemsData.length}`);
     } catch (error) {
-        console.error('❌ Error writing sitemap.xml:', error.message);
-        process.exit(1);
+         console.error(`❌ Error writing sitemap file:`, error.message);
+         process.exit(1);
     }
 }
 
-// Run the generator
 generateSitemap();

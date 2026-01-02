@@ -7,29 +7,25 @@ let searchIndex = new Map();
 
 /**
  * Builds a fast lookup index for items
- * Requirement: BEST_PRACTICES_GUIDELINES Section 4
  */
 function buildSearchIndex() {
     searchIndex.clear();
     itemsData.forEach(item => {
-        // Index by name
         searchIndex.set(item.name.toLowerCase(), item);
-        // Index by keywords
         if (item.keywords) {
             item.keywords.forEach(kw => searchIndex.set(kw.toLowerCase(), item));
         }
     });
 }
 
-// Call this inside your DOMContentLoaded listener
 document.addEventListener('DOMContentLoaded', () => {
-    buildSearchIndex(); // <--- ADD THIS
+    buildSearchIndex();
     initializeEventListeners();
     updateBagCounter(); 
     navManager.loadFromURL();
 });
-// --- HELPER: Mobile Scroll Locking ----
-// We don't need complex locking anymore because we are hiding the background!
+
+// --- HELPER: Mobile Scroll Locking ---
 function toggleMobileView(showResult) {
     if (window.innerWidth < 1024) {
         const leftPanel = document.querySelector('.left-panel');
@@ -52,6 +48,7 @@ function toSlug(text) {
         .replace(/-+/g, '-')
         .trim();
 }
+
 // Setup Set for Saved Items (My Bag)
 let savedItems = new Set(); 
 if (localStorage.getItem('myBag')) {
@@ -81,30 +78,50 @@ function getCategoryContext(category, itemName) {
 }
 
 // ---------------------------------------------------------
-// AD PROVIDER
+// AD PROVIDER (Adsterra Integration)
 // ---------------------------------------------------------
 class AdProvider {
     constructor() {
         this.lastRefreshTime = 0;
-        this.clientId = 'ca-pub-8732422930809097'; 
         this.initTopBanner();
     }
+    
     initTopBanner() {
         const adSlot = document.getElementById('ad-top-slot');
         if (adSlot) {
-            adSlot.innerHTML = `<ins class="adsbygoogle" style="display:block" data-ad-client="${this.clientId}" data-ad-slot="3472136875" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
-            try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
+            adSlot.innerHTML = '';
+            // --- ADSTERRA TOP BANNER PLACEHOLDER ---
+            // If you create a 728x90 or 320x50 banner in Adsterra, paste the code here.
+            // For now, we keep it empty or use a placeholder to reserve layout space.
+            // Example structure to replace later:
+            // adSlot.innerHTML = '<script...src="//..."></script>';
         }
     }
+    
     refreshInlineAd() {
         const now = Date.now();
-        if (now - this.lastRefreshTime < 30000) return;
+        // Rate limit: 5 seconds (Adsterra native ads are robust)
+        if (now - this.lastRefreshTime < 5000) return;
         this.lastRefreshTime = now;
+        
         const adContainer = document.getElementById('ad-inline-slot');
         if (adContainer) {
-            adContainer.innerHTML = ''; 
-            adContainer.innerHTML = `<ins class="adsbygoogle" style="display:block" data-ad-client="${this.clientId}" data-ad-slot="7464897364" data-ad-format="rectangle" data-full-width-responsive="true"></ins>`;
-            try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
+            adContainer.innerHTML = ''; // Clear previous ad
+            
+            // --- ADSTERRA NATIVE BANNER INJECTION ---
+            // 1. Create the container div required by Adsterra
+            const nativeDiv = document.createElement('div');
+            nativeDiv.id = 'container-8ac2407d74cc99d97e2b914c6cf09c47';
+            adContainer.appendChild(nativeDiv);
+            
+            // 2. Create and inject the script
+            const script = document.createElement('script');
+            script.async = true;
+            script.dataset.cfasync = "false";
+            script.src = "//pl28383908.effectivegatecpm.com/8ac2407d74cc99d97e2b914c6cf09c47/invoke.js";
+            
+            // Append script to trigger the ad load
+            adContainer.appendChild(script);
         }
     }
 }
@@ -125,13 +142,13 @@ class NavigationManager {
             setTimeout(() => { rightPanel.scrollTop = this.scrollPositions.get(key); }, 50);
         }
     }
- pushState(itemId, itemName) {
+    pushState(itemId, itemName) {
         try {
             const url = new URL(window.location);
             const item = itemsData.find(i => i.id === itemId);
             url.searchParams.delete('category'); 
-            // Use the pre-generated slug from Phase 1
-            url.searchParams.set('item', item.slug || toSlug(itemName)); 
+            // Fixed: Use toSlug logic directly to be safe
+            url.searchParams.set('item', toSlug(itemName)); 
             window.history.pushState({ itemId, itemName }, '', url);
         } catch (e) {}
     }
@@ -156,6 +173,11 @@ class NavigationManager {
                 return true;
             }
         } catch (e) {}
+        
+        // If nothing loaded and on desktop, show welcome
+        if (window.innerWidth >= 1024) {
+             resetToHome();
+        }
         return false;
     }
 }
@@ -176,14 +198,8 @@ const countryRules = {
 };
 
 // ---------------------------------------------------------
-// INITIALIZATION
+// EVENT LISTENERS
 // ---------------------------------------------------------
-document.addEventListener('DOMContentLoaded', () => {
-    initializeEventListeners();
-    updateBagCounter(); 
-    navManager.loadFromURL();
-});
-
 window.addEventListener('popstate', (event) => {
     if (event.state) {
         if (event.state.itemId) {
@@ -192,9 +208,6 @@ window.addEventListener('popstate', (event) => {
         } else if (event.state.category) {
             displayCategoryResults(event.state.category, true);
         } else if (event.state.home) {
-            // Reset canonical to homepage
-let canonical = document.querySelector('link[rel="canonical"]');
-if (canonical) canonical.setAttribute('href', 'https://www.canibringonplane.com/');
             resetToHome();
         }
     } else {
@@ -206,17 +219,20 @@ function resetToHome() {
     // Hide panels
     document.getElementById('middlePanel').classList.add('hidden');
     document.getElementById('rightPanel').classList.add('hidden');
+    // We clear rightPanel to ensure clean slate, but then re-inject the Rich Content
     document.getElementById('rightPanel').innerHTML = ''; 
     currentCategory = null;
     
     // CRITICAL: SHOW HOME PANEL ON MOBILE
     toggleMobileView(false); 
 
-document.title = "Airport Carry-On Checker - Can I Bring This On A Plane?";
+    document.title = "Airport Carry-On Checker - Can I Bring This On A Plane?";
+    
+    // SEO FIX: Reset canonical to homepage
     let canonical = document.querySelector('link[rel="canonical"]');
     if (canonical) canonical.setAttribute('href', 'https://www.canibringonplane.com/');
 
-    // Desktop Welcome Message Logic
+    // Desktop Welcome Message Logic - RESTORED RICH CONTENT
     if(window.innerWidth >= 1024) {
          const rightPanel = document.getElementById('rightPanel');
          rightPanel.classList.remove('hidden'); 
@@ -242,7 +258,7 @@ document.title = "Airport Carry-On Checker - Can I Bring This On A Plane?";
 
                     <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">🔋 The Lithium Battery Danger</h3>
                     <p style="margin-bottom: 15px;">
-                        This is the most common mistake travelers make. <strong>Loose Lithium-Ion batteries and Power Banks are PROHIBITED in checked luggage</strong> due to fire risks. You MUST carry them with you in the cabin.
+                        This is the most common mistake travelers make. <strong>Loose Lithium-Ion batteries and Power Banks are PROHIBITED in checked luggage</strong> due to fire risks. You MUST carry them with you in the cabin. If you pack them in your checked bag, security will likely remove them, and you will lose your item.
                     </p>
 
                     <div style="background: #eef2ff; border-left: 4px solid #667eea; padding: 15px; margin-top: 20px; border-radius: 4px;">
@@ -251,11 +267,13 @@ document.title = "Airport Carry-On Checker - Can I Bring This On A Plane?";
                 </div>
             </div>
             
-            <div style="margin-top: 30px; min-height: 600px; background: #f8f9fa; border: 1px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
+            <div style="margin-top: 30px; min-height: 250px; background: #f8f9fa; border: 1px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                 <div id="ad-inline-slot" class="ad-slot"></div>
             </div>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
             `;
+            
+            // Re-init ad after re-injecting HTML
+            adProvider.refreshInlineAd();
     }
 }
 
@@ -284,14 +302,10 @@ function initializeEventListeners() {
         }
     });
 
-// Replacement for the current searchInput listener
-searchInput.addEventListener('input', (e) => {
-    clearTimeout(autocompleteTimeout);
-    // 300ms wait period before executing search
-    autocompleteTimeout = setTimeout(() => { 
-        handleSearch(e.target.value); 
-    }, 300);
-});
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(autocompleteTimeout);
+        autocompleteTimeout = setTimeout(() => { handleSearch(e.target.value); }, 300);
+    });
 
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
@@ -333,13 +347,11 @@ function handleSearch(query) {
 
 function searchItems(query) {
     const lowerQuery = query.toLowerCase();
-    // Return items where the name or a keyword contains the query
     return itemsData.filter(item => {
         const nameMatch = item.name.toLowerCase().includes(lowerQuery);
         const keywordMatch = item.keywords && item.keywords.some(k => k.toLowerCase().includes(lowerQuery));
         return nameMatch || keywordMatch;
     }).sort((a, b) => {
-        // Prioritize exact matches at the start of the word
         const aStart = a.name.toLowerCase().startsWith(lowerQuery);
         const bStart = b.name.toLowerCase().startsWith(lowerQuery);
         return (aStart === bStart) ? 0 : aStart ? -1 : 1;
@@ -356,7 +368,7 @@ function displayAutocomplete(items) {
     autocompleteResults.innerHTML = '';
     items.forEach(item => {
         const div = document.createElement('div');
-        div.className = 'category-item-card';
+        div.className = 'autocomplete-item';
         div.textContent = item.name;
         div.addEventListener('click', () => {
             displayItemResult(item);
@@ -395,11 +407,9 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     navManager.saveScrollPosition(scrollKey);
     if (!skipHistoryPush) navManager.pushState(item.id, item.name);
     // PHASE 2 FIX: Update SEO Tags and Canonical URL
-    updateSEOTags(item);
+    updateSocialMeta(item);
+    injectSchema(item);
     
-    let canonical = document.querySelector('link[rel="canonical"]');
-    if (canonical) canonical.setAttribute('href', `https://www.canibringonplane.com/?item=${item.slug}`);
-
     document.getElementById('welcomeMessage')?.classList.add('hidden');
     document.getElementById('countryRulesSection')?.classList.add('hidden');
     
@@ -427,12 +437,6 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     };
 
     const currentStatus = getDisplayStatus(item);
-    const allSameEffectiveRules = variants.every(v => {
-        const s = getDisplayStatus(v);
-        return s.carryOn === currentStatus.carryOn && s.checked === currentStatus.checked && v.note === item.note;
-    });
-    if (allSameEffectiveRules) variants = [item];
-
     const rightPanel = document.getElementById('rightPanel');
     rightPanel.classList.remove('hidden'); 
     rightPanel.scrollTop = 0; 
@@ -504,8 +508,8 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
             ${customsWarningHTML}
 
             <div class="action-buttons-row">
-                <a href="${amazonLink}" target="_blank" class="action-btn amazon-btn"><i class="fa-brands fa-amazon"></i> Shop on Amazon</a>
-                <button class="${bagBtnClass}" onclick="toggleBagItem(${item.id})">${bagBtnText}</button>
+                <a href="${amazonLink}" target="_blank" class="amazon-button">🛒 Shop on Amazon</a>
+                <button class="${bagBtnClass} add-to-bag-btn" onclick="toggleBagItem(${item.id})">${bagBtnText}</button>
             </div>
 
            <div class="item-note">
@@ -526,10 +530,6 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
             <div class="related-items" id="relatedItems"></div>
         </div>
         <div class="ad-inline" id="resultAd"><div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div></div>
-        <div style="margin-top: 30px; min-height: 600px; background: #f8f9fa; border: 1px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
-        </div>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     `;
 
     if (variants.length > 1 && document.getElementById('variantSelect')) {
@@ -551,14 +551,12 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
             toggleMobileView(true); 
         } else {
             // We are going all the way back to home
-            toggleMobileView(false);
+            resetToHome();
         }
     });
 
     displayRelatedItems(item);
     adProvider.refreshInlineAd();
-    injectSchema(item);
-    updateSocialMeta(item);
 }
 
 function findItemVariants(item) {
@@ -666,13 +664,9 @@ function displayCategoryResults(category, skipHistoryPush = false) {
                 <div style="margin-top: 20px; font-weight: 600; color: #667eea;">Select an item to view details →</div>
             </div>
             <div class="ad-inline"><div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div></div>
-            <div style="margin-top: 30px; min-height: 600px; background: #f8f9fa; border: 1px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
-            </div>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
         `;
+        adProvider.refreshInlineAd();
     }
-    adProvider.refreshInlineAd();
 }
 
 function showCountryRules(country) {
@@ -768,17 +762,7 @@ function shareItemLink(id) {
     }
 }
 
-window.showItemById = (id) => { 
-    const item = itemsData.find(i => i.id === id); 
-    if(item) {
-        const isDesktop = window.innerWidth >= 1024;
-        displayItemResult(item, isDesktop); 
-    }
-};
-window.toggleBagItem = toggleBagItem;
-window.shareItemLink = shareItemLink;
-window.showMyBagModal = showMyBagModal;
-
+// SEO Functions
 function injectSchema(item) {
     const existing = document.getElementById('dynamic-schema');
     if (existing) existing.remove();
@@ -810,7 +794,7 @@ function injectSchema(item) {
  * Updates document title, meta description, and Social Graph tags
  * Requirement: ADS_AND_INDEXING_GUIDELINES Section 5.3
  */
-function updateSEOTags(item) {
+function updateSocialMeta(item) {
     const title = `Can I bring ${item.name} on a plane? - Airport Checker`;
     const description = `Find out if ${item.name} is allowed in carry-on or checked luggage. ${item.note.replace(/[✅❌⚠️💡]/g, '').substring(0, 150)}...`;
     
@@ -831,7 +815,9 @@ function updateSEOTags(item) {
     setMeta('description', description);
     setMeta('og:title', title, true);
     setMeta('og:description', description, true);
-setMeta('og:url', `https://www.canibringonplane.com/?item=${item.slug}`, true);
+    // Use the slug in the OG URL
+    const slug = toSlug(item.name);
+    setMeta('og:url', `https://www.canibringonplane.com/?item=${slug}`, true);
 
     // Update Canonical URL dynamically
     let canonical = document.querySelector('link[rel="canonical"]');
@@ -840,5 +826,21 @@ setMeta('og:url', `https://www.canibringonplane.com/?item=${item.slug}`, true);
         canonical.setAttribute('rel', 'canonical');
         document.head.appendChild(canonical);
     }
-    canonical.setAttribute('href', `https://www.canibringonplane.com/?item=${item.slug}`);
+    // Use the slug in the canonical URL
+    canonical.setAttribute('href', `https://www.canibringonplane.com/?item=${slug}`);
 }
+
+// Global Exports
+window.showItemById = (id) => { 
+    const item = itemsData.find(i => i.id === id); 
+    if(item) {
+        const middlePanel = document.getElementById('middlePanel');
+        const isMiddlePanelVisible = middlePanel && !middlePanel.classList.contains('hidden');
+        displayItemResult(item, isMiddlePanelVisible); 
+    }
+};
+window.toggleBagItem = toggleBagItem;
+window.shareItemLink = shareItemLink;
+window.showMyBagModal = showMyBagModal;
+
+console.log('✅ App initialized with Ads & Features!');
