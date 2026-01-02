@@ -64,10 +64,10 @@ header h1 i { color: #fff; opacity: 0.9; margin-right: 8px; }
     padding: 8px 12px; /* Reduced padding */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); 
     color: #f1f5f9 !important;
-    font-size: 0.65rem !important; /* Smaller text */
-    line-height: 1.2 !important;
+    font-size: 0.55rem !important; /* Smaller text */
+    line-height: 1.1 !important;
     backdrop-filter: blur(4px);
-    opacity: 0.90; /* Slightly more transparent */
+    opacity: 0.65; /* Slightly more transparent */
     transition: opacity 0.2s;
 }
 .disclaimer-banner:hover { opacity: 1; }
