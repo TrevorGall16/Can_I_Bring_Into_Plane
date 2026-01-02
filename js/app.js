@@ -121,12 +121,14 @@ initTopBanner() {
     }
 }
 
+  // Ad 2: Sticky Footer (320x50 Iframe)
     initStickyFooter() {
-        // Create a container for a sticky footer ad if it doesn't exist
         if (!document.getElementById('ad-sticky-footer')) {
             const footerAd = document.createElement('div');
             footerAd.id = 'ad-sticky-footer';
-            footerAd.style.cssText = 'position:fixed; bottom:0; left:0; width:100%; background:white; z-index:9999; text-align:center; border-top:1px solid #ddd; display:none;'; // Hidden by default until you add code
+            // Styling for the sticky footer container
+            footerAd.style.cssText = 'position:fixed; bottom:0; left:0; width:100%; background:white; z-index:9999; text-align:center; border-top:1px solid #ddd; display:flex; justify-content:center; align-items:center; padding-top:5px; padding-bottom:5px; box-shadow: 0 -2px 5px rgba(0,0,0,0.1);';
+            
             // Add close button
             const closeBtn = document.createElement('button');
             closeBtn.innerText = '×';
@@ -134,13 +136,33 @@ initTopBanner() {
             closeBtn.onclick = () => footerAd.style.display = 'none';
             footerAd.appendChild(closeBtn);
             
-            // Placeholder for Adsterra 320x50 or 728x90
-            const adContent = document.createElement('div');
-            adContent.innerHTML = '<div style="padding:10px; color:#888; font-size:12px;">Sticky Footer Ad Space</div>';
-            footerAd.appendChild(adContent);
-
+            // Create iframe for the ad
+            const iframe = document.createElement('iframe');
+            iframe.style.width = '320px';
+            iframe.style.height = '50px';
+            iframe.style.border = 'none';
+            iframe.style.overflow = 'hidden';
+            iframe.scrolling = 'no';
+            
+            footerAd.appendChild(iframe);
             document.body.appendChild(footerAd);
-            // Uncomment to show: footerAd.style.display = 'block';
+
+            // Inject the script into the iframe
+            const doc = iframe.contentWindow.document;
+            doc.open();
+            doc.write(`
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : 'e9b5cd97e61a665c3e6310d0c16893ff',
+                        'format' : 'iframe',
+                        'height' : 50,
+                        'width' : 320,
+                        'params' : {}
+                    };
+                <\/script>
+                <script type="text/javascript" src="https://www.highperformanceformat.com/e9b5cd97e61a665c3e6310d0c16893ff/invoke.js"><\/script>
+            `);
+            doc.close();
         }
     }
     

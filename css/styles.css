@@ -51,23 +51,23 @@ header h1 i { color: #fff; opacity: 0.9; margin-right: 8px; }
 /* ===== DISCLAIMER (Sleek & Unobtrusive) ===== */
 .disclaimer-banner {
     position: fixed !important; 
-    bottom: 15px !important; 
-    left: 15px !important; 
+    bottom: 10px !important; /* Tighter to bottom */
+    left: 10px !important;   /* Tighter to left */
     right: auto !important; 
     top: auto !important;
     width: auto !important; 
-    max-width: 320px !important; /* Smaller max-width */
+    max-width: 280px !important; /* Reduced max-width */
     z-index: 9999 !important;
-    background: rgba(15, 23, 42, 0.95); /* Deep slate */
-    border-left: 3px solid #f43f5e; /* Vibrant Rose */
-    border-radius: 8px; 
-    padding: 10px 14px; 
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Soft shadow */
+    background: rgba(15, 23, 42, 0.95); 
+    border-left: 3px solid #f43f5e; 
+    border-radius: 6px; /* Slightly sharper corners */
+    padding: 8px 12px; /* Reduced padding */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); 
     color: #f1f5f9 !important;
-    font-size: 0.7rem !important; /* Smaller font */
+    font-size: 0.65rem !important; /* Smaller text */
     line-height: 1.2 !important;
     backdrop-filter: blur(4px);
-    opacity: 0.95;
+    opacity: 0.90; /* Slightly more transparent */
     transition: opacity 0.2s;
 }
 .disclaimer-banner:hover { opacity: 1; }
