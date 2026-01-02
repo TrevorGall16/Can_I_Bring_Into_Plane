@@ -228,17 +228,29 @@ class NavigationManager {
             window.history.pushState({ category }, '', url);
         } catch (e) {}
     }
-    loadFromURL() {
+loadFromURL() {
         try {
             const url = new URL(window.location);
             const itemParam = url.searchParams.get('item');
             const category = url.searchParams.get('category');
+            const rulesParam = url.searchParams.get('rules'); // NEW
+
             if (itemParam) {
                 let item = !isNaN(itemParam) ? itemsData.find(i => i.id === parseInt(itemParam)) : itemsData.find(i => toSlug(i.name) === itemParam);
                 if (item) { displayItemResult(item, false); return true; }
             } else if (category) {
                 displayCategoryResults(category);
                 return true;
+            } else if (rulesParam) {
+                // NEW: Handle Country Landing Page
+                const countryName = Object.keys(countryRules).find(c => c.toLowerCase() === rulesParam.toLowerCase());
+                if (countryName) {
+                    currentCountry = countryName;
+                    const selector = document.getElementById('countrySelector');
+                    if(selector) selector.value = countryName;
+                    showCountryRules(countryName);
+                    return true;
+                }
             }
         } catch (e) {}
         
@@ -431,21 +443,25 @@ function findBestMatch(query) {
     return matches.length > 0 ? matches[0] : null;
 }
 
-function displayAutocomplete(items) {
-    const autocompleteResults = document.getElementById('autocompleteResults');
-    autocompleteResults.innerHTML = '';
-    items.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'autocomplete-item';
-        div.textContent = item.name;
-        div.addEventListener('click', () => {
-            displayItemResult(item);
-            hideAutocomplete();
-            document.getElementById('searchInput').value = '';
-        });
-        autocompleteResults.appendChild(div);
-    });
-    autocompleteResults.classList.remove('hidden');
+function displayRelatedItems(currentItem) {
+    const relatedItemsDiv = document.getElementById('relatedItems');
+    const related = itemsData.filter(i => i.id !== currentItem.id && currentItem.category?.some(c => i.category.includes(c))).slice(0, 6);
+    
+    if (related.length === 0) { relatedItemsDiv.innerHTML = ''; return; }
+    
+    // SEO FIX: Use <a> tags instead of spans
+    const html = '<h4>Related:</h4><div style="display: flex; flex-wrap: wrap; gap: 8px;">' + 
+    related.map(i => `
+        <a href="?item=${toSlug(i.name)}" 
+           class="related-tag" 
+           onclick="event.preventDefault(); showItemById(${i.id});"
+           style="text-decoration: none; color: inherit;">
+           ${i.name}
+        </a>
+    `).join('') + 
+    '</div>';
+    
+    relatedItemsDiv.innerHTML = html;
 }
 
 function hideAutocomplete() {

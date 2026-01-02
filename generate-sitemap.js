@@ -1,23 +1,19 @@
-#!/usr/bin/env node
-
 /**
  * Sitemap Generator for Can I Bring Into Plane
- * Follows SEO_TRAFFIC_PROTOCOL.md (Protocol A - Vanilla Lite)
- * Usage: node scripts/generate-sitemap.js (from root)
+ * Usage: node scripts/generate_sitemap.js
  */
 
 const fs = require('fs');
 const path = require('path');
 
-// Configuration
+// CONFIGURATION
 const SITE_URL = 'https://www.canibringonplane.com';
 
-// Paths - Assumes running from project root
-// If running from scripts folder, adjust manually or cd to root first
-const DATA_FILE_PATH = path.join(process.cwd(), 'js', 'data-embedded.js');
-const OUTPUT_FILE_PATH = path.join(process.cwd(), 'sitemap.xml');
+// PATHS (Using __dirname makes this robust no matter where you run it from)
+const DATA_FILE_PATH = path.join(__dirname, 'js/data-embedded.js');
+const OUTPUT_FILE_PATH = path.join(__dirname, 'sitemap.xml');
 
-// Standard Slug Logic (Must match app.js toSlug exactly)
+// Standard Slug Logic
 function createSlug(text) {
     return text.toString().toLowerCase()
         .replace(/[()]/g, '')
@@ -39,7 +35,7 @@ function generateSitemap() {
     let fileContent;
     try {
         if (!fs.existsSync(DATA_FILE_PATH)) {
-            throw new Error(`Data file not found at ${DATA_FILE_PATH}. Are you running from the project root?`);
+            throw new Error(`Data file not found at ${DATA_FILE_PATH}`);
         }
         fileContent = fs.readFileSync(DATA_FILE_PATH, 'utf8');
     } catch (error) {
@@ -53,8 +49,7 @@ function generateSitemap() {
         const dataMatch = fileContent.match(/const ITEMS_DATA = (\[[\s\S]*?\]);/);
         if (!dataMatch) throw new Error('Could not find ITEMS_DATA array in file content');
         
-        // Safe-ish eval for build script to parse the array structure
-        // We wrap it in parenthesis to ensure it evaluates as an expression
+        // Safe-ish eval for build script
         itemsData = eval('(' + dataMatch[1] + ')');
     } catch (error) {
         console.error('❌ Error parsing ITEMS_DATA:', error.message);
@@ -65,18 +60,24 @@ function generateSitemap() {
 
     const currentDate = getCurrentDate();
     
-    // Header
+    // XML Header
     let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 `;
 
-    // 1. Homepage
-    sitemap += `  <url>
-    <loc>${SITE_URL}/</loc>
+    // 1. Static Pages - ADDED sitemap.html HERE
+    const staticPages = ['', 'contact.html', 'privacy.html', 'sitemap.html'];
+    
+    staticPages.forEach(page => {
+        const priority = page === '' ? '1.0' : '0.3';
+        const url = page === '' ? SITE_URL + '/' : `${SITE_URL}/${page}`;
+        sitemap += `  <url>
+    <loc>${url}</loc>
     <lastmod>${currentDate}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
+    <changefreq>weekly</changefreq>
+    <priority>${priority}</priority>
   </url>\n`;
+    });
 
     // 2. Categories
     const categories = new Set();
@@ -103,14 +104,11 @@ function generateSitemap() {
         const slug = createSlug(item.name);
         const itemUrl = `${SITE_URL}/?item=${slug}`;
         
-        // Boost priority for high-traffic items if needed, default 0.8
-        const priority = 0.8;
-
         sitemap += `  <url>
     <loc>${itemUrl}</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>${priority}</priority>
+    <priority>0.8</priority>
   </url>\n`;
     });
 
@@ -119,7 +117,7 @@ function generateSitemap() {
     try {
         fs.writeFileSync(OUTPUT_FILE_PATH, sitemap, 'utf8');
         console.log(`✅ Sitemap written to: ${OUTPUT_FILE_PATH}`);
-        console.log(`   Total URLs: ${1 + categories.size + itemsData.length}`);
+        console.log(`   Total URLs: ${staticPages.length + categories.size + itemsData.length}`);
     } catch (error) {
          console.error(`❌ Error writing sitemap file:`, error.message);
          process.exit(1);
