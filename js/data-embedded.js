@@ -373,12 +373,6 @@ const ITEMS_DATA = [
         "note": "✅ Allowed. (Source: TSA)", 
         "category": ["toiletries", "electronics"], "keywords": ["toothbrush", "electric"]
     },
-    {
-        "id": 484, "name": "Knitting Needles", "carryOn": "allowed", "checked": "allowed", 
-        "note": "✅ Allowed. Circular needles recommended. (Source: TSA)", 
-        "category": ["art", "hobbies", "tools"], "keywords": ["knitting", "needles", "yarn"] 
-        // ^^^ ADDED "art" tag so it shows up in your new button
-    },
     // --- SPORTS EQUIPMENT ---
     {
 "id": 300, 
@@ -498,15 +492,6 @@ const ITEMS_DATA = [
         "keywords": ["ball", "soccer", "basketball", "football", "volleyball"]
     },
     {
-        "id": 313, 
-        "name": "Tent Spikes / Poles", 
-        "carryOn": "prohibited", 
-        "checked": "allowed", 
-        "note": "❌ Spikes and poles are BANNED in carry-on. The tent fabric can go in carry-on, but metal parts must be checked. (Source: TSA)", 
-        "category": ["sports", "camping"], 
-        "keywords": ["tent", "camping", "stakes", "spikes", "poles"]
-    },
-    {
         "id": 314, 
         "name": "Parachute", 
         "carryOn": "allowed", 
@@ -572,7 +557,7 @@ const ITEMS_DATA = [
     },
     {
         "id": 403, 
-        "name": "Screwdriver (< 7 inches)", 
+        "name": "Screwdriver (Under 7 inches)", 
         "carryOn": "allowed", 
         "checked": "allowed", 
         "note": "✅ Allowed if overall length is UNDER 7 inches (18cm). (Source: TSA)", 
@@ -581,7 +566,7 @@ const ITEMS_DATA = [
     },
     {
         "id": 404, 
-        "name": "Screwdriver (> 7 inches)", 
+        "name": "Screwdriver (Over 7 inches)", 
         "carryOn": "prohibited", 
         "checked": "allowed", 
         "note": "❌ Tools longer than 7 inches (18cm) must be checked. (Source: TSA)", 

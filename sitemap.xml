@@ -109,18 +109,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.canibringonplane.com/?category=art</loc>
-    <lastmod>2026-01-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.canibringonplane.com/?category=hobbies</loc>
-    <lastmod>2026-01-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://www.canibringonplane.com/?category=sports</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -151,6 +139,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.canibringonplane.com/?category=art</loc>
+    <lastmod>2026-01-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.canibringonplane.com/?category=cleaning</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -170,6 +164,12 @@
   </url>
   <url>
     <loc>https://www.canibringonplane.com/?category=holiday</loc>
+    <lastmod>2026-01-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.canibringonplane.com/?category=hobbies</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -439,12 +439,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.canibringonplane.com/?item=knitting-needles</loc>
-    <lastmod>2026-01-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://www.canibringonplane.com/?item=baseball-cricket-bat</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -523,12 +517,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.canibringonplane.com/?item=tent-spikes-poles</loc>
-    <lastmod>2026-01-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://www.canibringonplane.com/?item=parachute</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -571,13 +559,13 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.canibringonplane.com/?item=screwdriver-7-inches</loc>
+    <loc>https://www.canibringonplane.com/?item=screwdriver-under-7-inches</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.canibringonplane.com/?item=screwdriver-7-inches</loc>
+    <loc>https://www.canibringonplane.com/?item=screwdriver-over-7-inches</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
