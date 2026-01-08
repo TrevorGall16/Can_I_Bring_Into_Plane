@@ -79,17 +79,35 @@ function generateSitemap() {
   </url>\n`;
     });
 
-    // 2. Categories
-    const categories = new Set();
+    // 2. Categories - ONLY visible categories from index.html
+    // These match the data-category values in the visible UI buttons
+    const VISIBLE_CATEGORIES = [
+        'liquids', 'electronics', 'food', 'toiletries', 'medication',
+        'tools', 'sports', 'baby', 'customs', 'camping', 'household',
+        'art', 'weapons', 'hazardous'
+    ];
+
+    const allCategories = new Set();
     itemsData.forEach(item => {
         if (Array.isArray(item.category)) {
-            item.category.forEach(c => categories.add(c));
+            item.category.forEach(c => allCategories.add(c));
         } else if (item.category) {
-            categories.add(item.category);
+            allCategories.add(item.category);
         }
     });
 
-    categories.forEach(cat => {
+    // Filter to only include visible categories
+    const visibleCategories = [...allCategories].filter(cat =>
+        VISIBLE_CATEGORIES.includes(cat)
+    );
+
+    console.log(`✅ Filtered categories: ${allCategories.size} total → ${visibleCategories.length} visible`);
+    if (allCategories.size > visibleCategories.length) {
+        const hidden = [...allCategories].filter(cat => !VISIBLE_CATEGORIES.includes(cat));
+        console.log(`⚠️  Hidden categories (not in UI): ${hidden.join(', ')}`);
+    }
+
+    visibleCategories.forEach(cat => {
         const catUrl = `${SITE_URL}/?category=${cat}`;
         sitemap += `  <url>
     <loc>${catUrl}</loc>
@@ -117,7 +135,7 @@ function generateSitemap() {
     try {
         fs.writeFileSync(OUTPUT_FILE_PATH, sitemap, 'utf8');
         console.log(`✅ Sitemap written to: ${OUTPUT_FILE_PATH}`);
-        console.log(`   Total URLs: ${staticPages.length + categories.size + itemsData.length}`);
+        console.log(`   Total URLs: ${staticPages.length + visibleCategories.length + itemsData.length}`);
     } catch (error) {
          console.error(`❌ Error writing sitemap file:`, error.message);
          process.exit(1);

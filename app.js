@@ -288,7 +288,7 @@ function resetToHome() {
                 </div>
             </div>
             
-            <div style="margin-top: 30px; min-height: 600px; background: #f8f9fa; border: 1px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+            <div class="ad-container-vertical">
                  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
             </div>
             <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
@@ -531,7 +531,7 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
             ${customsWarningHTML}
 
             <div class="action-buttons-row">
-                <a href="${amazonLink}" target="_blank" class="amazon-button">🛒 Shop on Amazon</a>
+                <a href="${amazonLink}" target="_blank" class="action-btn amazon-btn">🛒 Shop on Amazon</a>
                 <button class="${bagBtnClass} add-to-bag-btn" onclick="toggleBagItem(${item.id})">${bagBtnText}</button>
             </div>
 
@@ -553,7 +553,7 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
             <div class="related-items" id="relatedItems"></div>
         </div>
         <div class="ad-inline" id="resultAd"><div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div></div>
-        <div style="margin-top: 30px; min-height: 600px; background: #f8f9fa; border: 1px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div class="ad-container-vertical">
              <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
         </div>
         <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
@@ -691,7 +691,7 @@ function displayCategoryResults(category, skipHistoryPush = false) {
                 <div style="margin-top: 20px; font-weight: 600; color: #667eea;">Select an item to view details →</div>
             </div>
             <div class="ad-inline"><div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div></div>
-            <div style="margin-top: 30px; min-height: 600px; background: #f8f9fa; border: 1px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+            <div class="ad-container-vertical">
                  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
             </div>
             <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>

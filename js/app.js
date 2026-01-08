@@ -88,40 +88,40 @@ class AdProvider {
         this.initTopBanner();
     }
     
-initTopBanner() {
-    const adSlot = document.getElementById('ad-top-slot');
-    if (adSlot) {
-        adSlot.innerHTML = '';
+    initTopBanner() {
+        const adSlot = document.getElementById('ad-top-slot');
+        if (adSlot) {
+            adSlot.innerHTML = '';
 
-        // Create a safe iframe for the ad to prevent document.write from wiping the page
-        const iframe = document.createElement('iframe');
-        iframe.style.width = '728px';
-        iframe.style.height = '90px';
-        iframe.style.border = 'none';
-        iframe.style.overflow = 'hidden';
-        iframe.scrolling = 'no';
+            // Create a safe iframe for the ad to prevent document.write from wiping the page
+            const iframe = document.createElement('iframe');
+            iframe.style.width = '728px';
+            iframe.style.height = '90px';
+            iframe.style.border = 'none';
+            iframe.style.overflow = 'hidden';
+            iframe.scrolling = 'no';
 
-        adSlot.appendChild(iframe);
+            adSlot.appendChild(iframe);
 
-        const doc = iframe.contentWindow.document;
-        doc.open();
-        doc.write(`
-            <script type="text/javascript">
-                atOptions = {
-                    'key' : '1eb6f5f58fd51d48c864a2232bd79e77',
-                    'format' : 'iframe',
-                    'height' : 90,
-                    'width' : 728,
-                    'params' : {}
-                };
-            <\/script>
-            <script type="text/javascript" src="https://www.highperformanceformat.com/1eb6f5f58fd51d48c864a2232bd79e77/invoke.js"><\/script>
-        `);
-        doc.close();
+            const doc = iframe.contentWindow.document;
+            doc.open();
+            doc.write(`
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : '1eb6f5f58fd51d48c864a2232bd79e77',
+                        'format' : 'iframe',
+                        'height' : 90,
+                        'width' : 728,
+                        'params' : {}
+                    };
+                <\/script>
+                <script type="text/javascript" src="https://www.highperformanceformat.com/1eb6f5f58fd51d48c864a2232bd79e77/invoke.js"><\/script>
+            `);
+            doc.close();
+        }
     }
-}
 
-  // Ad 2: Sticky Footer (320x50 Iframe)
+    // Ad 2: Sticky Footer (320x50 Iframe)
     initStickyFooter() {
         if (!document.getElementById('ad-sticky-footer')) {
             const footerAd = document.createElement('div');
@@ -201,6 +201,11 @@ const adProvider = new AdProvider();
 class NavigationManager {
     constructor() { this.scrollPositions = new Map(); }
     saveScrollPosition(key) {
+        // Fix Memory Leak: Limit map size
+        if (this.scrollPositions.size > 20) {
+             const firstKey = this.scrollPositions.keys().next().value;
+             this.scrollPositions.delete(firstKey);
+        }
         const rightPanel = document.getElementById('rightPanel');
         if (rightPanel) this.scrollPositions.set(key, rightPanel.scrollTop);
     }
@@ -228,7 +233,7 @@ class NavigationManager {
             window.history.pushState({ category }, '', url);
         } catch (e) {}
     }
-loadFromURL() {
+    loadFromURL() {
         try {
             const url = new URL(window.location);
             const itemParam = url.searchParams.get('item');
@@ -312,7 +317,22 @@ function resetToHome() {
     let canonical = document.querySelector('link[rel="canonical"]');
     if (canonical) canonical.setAttribute('href', 'https://www.canibringonplane.com/');
 
-    // Desktop Welcome Message Logic - RESTORED RICH CONTENT
+    // SEO FIX: Reset OG tags
+    const setMeta = (name, content, isProperty = false) => {
+        const attr = isProperty ? 'property' : 'name';
+        let el = document.querySelector(`meta[${attr}="${name}"]`);
+        if (el) el.setAttribute('content', content);
+    };
+    setMeta('description', 'Instantly check TSA and airport security rules for over 200 items.');
+    setMeta('og:title', 'Airport Carry-On Checker - Can I Bring This On A Plane?', true);
+    setMeta('og:description', 'Instantly check TSA and airport security rules for over 200 items.', true);
+    setMeta('og:url', 'https://www.canibringonplane.com/', true);
+
+    // SEO FIX: Remove Orphaned Schema
+    const existingSchema = document.getElementById('dynamic-schema');
+    if (existingSchema) existingSchema.remove();
+
+    // Desktop Welcome Message Logic - RESTORED RICH CONTENT & AD FIX
     if(window.innerWidth >= 1024) {
          const rightPanel = document.getElementById('rightPanel');
          rightPanel.classList.remove('hidden'); 
@@ -324,6 +344,11 @@ function resetToHome() {
                 <div style="text-align: left; max-width: 650px; margin: 0 auto; color: #4a5568; font-size: 0.95rem; line-height: 1.7;">
                     <p style="margin-bottom: 15px;">
                         Welcome to the ultimate tool for air travel preparation. Security regulations vary significantly by country (TSA, EASA, CAAC) and airline. This tool helps you instantly verify if an item is allowed in your <strong>Carry-On (Cabin Bag)</strong> or must be packed in your <strong>Checked Luggage</strong>.
+                    </p>
+
+                    <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">✈️ Why Do Carry-On Rules Vary?</h3>
+                    <p style="margin-bottom: 15px;">
+                        Aviation security standards differ between countries and regulatory bodies. The <strong>TSA (Transportation Security Administration)</strong> governs U.S. airports, while <strong>EASA (European Aviation Safety Agency)</strong> sets rules for the European Union. China operates under the <strong>CAAC (Civil Aviation Administration of China)</strong>, which has unique restrictions on power banks and lighters. While the core principles remain similar worldwide—no explosives, no weapons, no large liquids—the specific size thresholds and enforcement strictness vary. For example, the U.S. TSA allows scissors with blades under 4 inches in carry-on, but many Asian and European airports lower this to 6 centimeters (2.4 inches). Always check your departure <em>and</em> arrival country's rules, as you must comply with both.
                     </p>
 
                     <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">🛑 The "No-Go" Items (Universal Rules)</h3>
@@ -338,22 +363,32 @@ function resetToHome() {
 
                     <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">🔋 The Lithium Battery Danger</h3>
                     <p style="margin-bottom: 15px;">
-                        This is the most common mistake travelers make. <strong>Loose Lithium-Ion batteries and Power Banks are PROHIBITED in checked luggage</strong> due to fire risks. You MUST carry them with you in the cabin. If you pack them in your checked bag, security will likely remove them, and you will lose your item.
+                        This is the most common mistake travelers make. <strong>Loose Lithium-Ion batteries and Power Banks are PROHIBITED in checked luggage</strong> due to fire risks. You MUST carry them with you in the cabin. If you pack them in checked baggage, security will likely remove them, and you may lose your item. Airlines universally prohibit lithium batteries in the cargo hold because cabin crew cannot access the hold during flight to extinguish a battery fire, which can reach temperatures exceeding 1,000°F (538°C). Power banks must be under 100 watt-hours (Wh) for carry-on without airline approval—most consumer power banks fall within this range, but always check the label.
+                    </p>
+
+                    <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">💊 Medical & Baby Exceptions to the 3-1-1 Rule</h3>
+                    <p style="margin-bottom: 15px;">
+                        The famous <strong>3-1-1 Liquids Rule</strong>—3.4 ounces (100ml) per container, all fitting in 1 quart-sized bag, 1 bag per passenger—has critical exemptions. <strong>Prescription medications</strong> in liquid, gel, or aerosol form are allowed in reasonable quantities exceeding 3.4oz, but you must declare them to TSA officers at the checkpoint. Similarly, <strong>baby formula, breast milk, and juice for infants</strong> are exempt from the size limit. You do not need to travel with a baby to carry these items. Medical supplies like contact lens solution, eye drops, and liquid medications should be separated from your toiletry bag for faster screening. If you're traveling with life-sustaining medical devices (insulin pumps, EpiPens), inform security officers before screening begins.
+                    </p>
+
+                    <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">🛍️ Duty-Free Liquids: The Sealed Bag Rule</h3>
+                    <p style="margin-bottom: 15px;">
+                        There is one major loophole to the 100ml liquid restriction: <strong>duty-free liquids purchased after the security checkpoint</strong>. Bottles of wine, perfume, or spirits bought in airport shops beyond security are allowed in carry-on, even if they exceed 100ml, as long as they remain in the <strong>sealed, tamper-evident bag</strong> provided by the retailer. This bag must show a receipt proving the purchase was made within the last 48 hours. However, if you have a connecting flight, this rule becomes tricky. If your layover requires you to re-clear security (common when entering the U.S. or changing terminals internationally), your duty-free liquids will be confiscated unless they are in checked baggage. Plan accordingly—many travelers lose expensive bottles of alcohol due to this rule.
                     </p>
 
                     <div style="background: #eef2ff; border-left: 4px solid #667eea; padding: 15px; margin-top: 20px; border-radius: 4px;">
-                        <strong>How to use this tool:</strong> Use the search bar above or browse the categories to find specific rules for over 200+ common travel items.
+                        <strong>How to use this tool:</strong> Use the search bar above or browse the categories to find specific rules for over 200+ common travel items. Select your departure country from the dropdown to see region-specific regulations.
                     </div>
                 </div>
             </div>
             
-            <div style="margin-top: 30px; min-height: 250px; background: #f8f9fa; border: 1px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                 <div id="ad-inline-slot" class="ad-slot"></div>
+            <div class="ad-container-vertical">
+                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
             </div>
             `;
             
-            // Re-init ad after re-injecting HTML
-            adProvider.refreshInlineAd();
+        // Trigger the vertical ad manually (The Fix)
+        try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
     }
 }
 
@@ -423,6 +458,17 @@ function handleSearch(query) {
         return;
     }
     displayAutocomplete(matches.slice(0, 5));
+}
+
+function displayAutocomplete(matches) {
+    const autocompleteResults = document.getElementById('autocompleteResults');
+    autocompleteResults.innerHTML = matches.map(item => `
+        <div class="autocomplete-item" onclick="showItemById(${item.id}); hideAutocomplete();">
+            <span class="autocomplete-icon">${item.carryOn === 'allowed' ? '✅' : (item.carryOn === 'prohibited' ? '❌' : '⚠️')}</span>
+            <span class="autocomplete-name">${item.name}</span>
+        </div>
+    `).join('');
+    autocompleteResults.classList.remove('hidden');
 }
 
 function searchItems(query) {
@@ -616,6 +662,10 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
             <div class="related-items" id="relatedItems"></div>
         </div>
         <div class="ad-inline" id="resultAd"><div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div></div>
+        
+        <div class="ad-container-vertical">
+             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
+        </div>
     `;
 
     if (variants.length > 1 && document.getElementById('variantSelect')) {
@@ -643,8 +693,9 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
 
     displayRelatedItems(item);
     adProvider.refreshInlineAd();
-    injectSchema(item);
-    updateSEOTags(item);
+    
+    // Refresh Vertical Ad (The Fix)
+    try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
 }
 
 function findItemVariants(item) {
@@ -670,13 +721,6 @@ function addBoldToKeywords(text) {
     let result = text;
     keywords.forEach(k => { result = result.replace(new RegExp(`\\b(${k})\\b`, 'gi'), '<strong>$1</strong>'); });
     return result;
-}
-
-function displayRelatedItems(currentItem) {
-    const relatedItemsDiv = document.getElementById('relatedItems');
-    const related = itemsData.filter(i => i.id !== currentItem.id && currentItem.category?.some(c => i.category.includes(c))).slice(0, 6);
-    if (related.length === 0) { relatedItemsDiv.innerHTML = ''; return; }
-    relatedItemsDiv.innerHTML = '<h4>Related:</h4><div>' + related.map(i => `<span class="related-tag" onclick="showItemById(${i.id})">${i.name}</span>`).join('') + '</div>';
 }
 
 // ---------------------------------------------------------
@@ -726,26 +770,27 @@ function displayCategoryResults(category, skipHistoryPush = false) {
             displayClass = 'status-prohibited';
         }
 
-const link = document.createElement('a');
-link.className = 'category-item-card';
-link.href = `?item=${toSlug(item.name)}`; // Google can now see this URL
-link.style.textDecoration = 'none';      // Remove underline
-link.innerHTML = `
-    <div class="category-item-name">${item.name}</div>
-    <div class="category-item-status">
-        <span class="${displayClass}">
-            🎒 ${displayText}
-        </span>
-    </div>`;
+        const link = document.createElement('a');
+        link.className = 'category-item-card';
+        link.href = `?item=${toSlug(item.name)}`; // Google can now see this URL
+        link.style.textDecoration = 'none';      // Remove underline
+        link.innerHTML = `
+            <div class="category-item-name">${item.name}</div>
+            <div class="category-item-status">
+                <span class="${displayClass}">
+                    🎒 ${displayText}
+                </span>
+            </div>`;
 
-// Keep the "Instant" feel by preventing the page reload
-link.onclick = (e) => {
-    e.preventDefault(); 
-    const isDesktop = window.innerWidth >= 1024; 
-    displayItemResult(item, isDesktop);
-};
-list.appendChild(link);
+        // Keep the "Instant" feel by preventing the page reload
+        link.onclick = (e) => {
+            e.preventDefault(); 
+            const isDesktop = window.innerWidth >= 1024; 
+            displayItemResult(item, isDesktop);
+        };
+        list.appendChild(link);
     });
+    
     if (window.innerWidth >= 1024) {
         document.getElementById('rightPanel').innerHTML = `
             <div class="welcome-message">
@@ -755,8 +800,14 @@ list.appendChild(link);
                 <div style="margin-top: 20px; font-weight: 600; color: #667eea;">Select an item to view details →</div>
             </div>
             <div class="ad-inline"><div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div></div>
+            
+            <div class="ad-container-vertical">
+                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
+            </div>
         `;
         adProvider.refreshInlineAd();
+        // Refresh Vertical Ad (The Fix)
+        try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
     }
 }
 
@@ -784,6 +835,10 @@ function showCountryRules(country) {
             <div class="info-cards">${cards}</div>
         </div>
         <div class="ad-inline"><div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div></div>
+        
+        <div class="ad-container-vertical">
+             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
+        </div>
     `;
 
     document.getElementById('closeResult')?.addEventListener('click', () => {
@@ -793,6 +848,8 @@ function showCountryRules(country) {
     });
 
     adProvider.refreshInlineAd();
+    // Refresh Vertical Ad (The Fix)
+    try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
 }
 
 function toggleBagItem(id) {
