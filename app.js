@@ -115,7 +115,15 @@ class NavigationManager {
     constructor() { this.scrollPositions = new Map(); }
     saveScrollPosition(key) {
         const rightPanel = document.getElementById('rightPanel');
-        if (rightPanel) this.scrollPositions.set(key, rightPanel.scrollTop);
+        if (rightPanel) {
+            this.scrollPositions.set(key, rightPanel.scrollTop);
+
+            // Memory leak prevention: Limit Map size to 20 entries
+            if (this.scrollPositions.size > 20) {
+                const firstKey = this.scrollPositions.keys().next().value;
+                this.scrollPositions.delete(firstKey);
+            }
+        }
     }
     restoreScrollPosition(key) {
         const rightPanel = document.getElementById('rightPanel');
@@ -205,11 +213,30 @@ function resetToHome() {
     // CRITICAL: SHOW HOME PANEL ON MOBILE
     toggleMobileView(false); 
 
-    document.title = "Airport Carry-On Checker - Can I Bring This On A Plane?";
-    
-    // SEO FIX: Reset canonical to homepage
+    // SEO FIX: Reset all metadata to homepage defaults (must match index.html)
+    document.title = "Can I Bring This On A Plane? | Airport Carry-On Checker";
+
+    // Reset canonical URL
     let canonical = document.querySelector('link[rel="canonical"]');
     if (canonical) canonical.setAttribute('href', 'https://www.canibringonplane.com/');
+
+    // Reset meta description
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', 'Can I bring this on a plane? Instantly check if items are allowed in carry-on cabin or checked luggage. Fast, simple airport security rules for travelers.');
+
+    // Reset Open Graph tags (prevents social share corruption)
+    let ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', 'Can I Bring This On A Plane? | Airport Carry-On Checker');
+
+    let ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute('content', 'Instantly check TSA and airport security rules for any item. Carry-on vs Checked luggage guide.');
+
+    let ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) ogUrl.setAttribute('content', 'https://www.canibringonplane.com/');
+
+    // Remove orphaned FAQ schema from previous item (prevents Google Schema mismatch)
+    const existingSchema = document.getElementById('dynamic-schema');
+    if (existingSchema) existingSchema.remove();
 
     // Desktop Welcome Message Logic
     if(window.innerWidth >= 1024) {
