@@ -252,6 +252,11 @@ function resetToHome() {
                         Welcome to the ultimate tool for air travel preparation. Security regulations vary significantly by country (TSA, EASA, CAAC) and airline. This tool helps you instantly verify if an item is allowed in your <strong>Carry-On (Cabin Bag)</strong> or must be packed in your <strong>Checked Luggage</strong>.
                     </p>
 
+                    <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">✈️ Why Do Carry-On Rules Vary?</h3>
+                    <p style="margin-bottom: 15px;">
+                        Aviation security standards differ between countries and regulatory bodies. The <strong>TSA (Transportation Security Administration)</strong> governs U.S. airports, while <strong>EASA (European Aviation Safety Agency)</strong> sets rules for the European Union. China operates under the <strong>CAAC (Civil Aviation Administration of China)</strong>, which has unique restrictions on power banks and lighters. While the core principles remain similar worldwide—no explosives, no weapons, no large liquids—the specific size thresholds and enforcement strictness vary. For example, the U.S. TSA allows scissors with blades under 4 inches in carry-on, but many Asian and European airports lower this to 6 centimeters (2.4 inches). Always check your departure <em>and</em> arrival country's rules, as you must comply with both.
+                    </p>
+
                     <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">🛑 The "No-Go" Items (Universal Rules)</h3>
                     <p style="margin-bottom: 15px;">
                         Across almost all airports globally, the following items are strictly prohibited in the cabin:
@@ -264,11 +269,21 @@ function resetToHome() {
 
                     <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">🔋 The Lithium Battery Danger</h3>
                     <p style="margin-bottom: 15px;">
-                        This is the most common mistake travelers make. <strong>Loose Lithium-Ion batteries and Power Banks are PROHIBITED in checked luggage</strong> due to fire risks. You MUST carry them with you in the cabin.
+                        This is the most common mistake travelers make. <strong>Loose Lithium-Ion batteries and Power Banks are PROHIBITED in checked luggage</strong> due to fire risks. You MUST carry them with you in the cabin. If you pack them in checked baggage, security will likely remove them, and you may lose your item. Airlines universally prohibit lithium batteries in the cargo hold because cabin crew cannot access the hold during flight to extinguish a battery fire, which can reach temperatures exceeding 1,000°F (538°C). Power banks must be under 100 watt-hours (Wh) for carry-on without airline approval—most consumer power banks fall within this range, but always check the label.
+                    </p>
+
+                    <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">💊 Medical & Baby Exceptions to the 3-1-1 Rule</h3>
+                    <p style="margin-bottom: 15px;">
+                        The famous <strong>3-1-1 Liquids Rule</strong>—3.4 ounces (100ml) per container, all fitting in 1 quart-sized bag, 1 bag per passenger—has critical exemptions. <strong>Prescription medications</strong> in liquid, gel, or aerosol form are allowed in reasonable quantities exceeding 3.4oz, but you must declare them to TSA officers at the checkpoint. Similarly, <strong>baby formula, breast milk, and juice for infants</strong> are exempt from the size limit. You do not need to travel with a baby to carry these items. Medical supplies like contact lens solution, eye drops, and liquid medications should be separated from your toiletry bag for faster screening. If you're traveling with life-sustaining medical devices (insulin pumps, EpiPens), inform security officers before screening begins.
+                    </p>
+
+                    <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">🛍️ Duty-Free Liquids: The Sealed Bag Rule</h3>
+                    <p style="margin-bottom: 15px;">
+                        There is one major loophole to the 100ml liquid restriction: <strong>duty-free liquids purchased after the security checkpoint</strong>. Bottles of wine, perfume, or spirits bought in airport shops beyond security are allowed in carry-on, even if they exceed 100ml, as long as they remain in the <strong>sealed, tamper-evident bag</strong> provided by the retailer. This bag must show a receipt proving the purchase was made within the last 48 hours. However, if you have a connecting flight, this rule becomes tricky. If your layover requires you to re-clear security (common when entering the U.S. or changing terminals internationally), your duty-free liquids will be confiscated unless they are in checked baggage. Plan accordingly—many travelers lose expensive bottles of alcohol due to this rule.
                     </p>
 
                     <div style="background: #eef2ff; border-left: 4px solid #667eea; padding: 15px; margin-top: 20px; border-radius: 4px;">
-                        <strong>How to use this tool:</strong> Use the search bar above or browse the categories to find specific rules for over 200+ common travel items.
+                        <strong>How to use this tool:</strong> Use the search bar above or browse the categories to find specific rules for over 200+ common travel items. Select your departure country from the dropdown to see region-specific regulations.
                     </div>
                 </div>
             </div>

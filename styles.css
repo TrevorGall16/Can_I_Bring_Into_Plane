@@ -28,7 +28,7 @@ body {
 /* Ad Banners - Clean styling */
 .ad-banner-top { background: white; padding: 15px; text-align: center; border-bottom: 1px solid #e2e8f0; min-height: 80px; overflow: hidden; }
 .ad-banner-top .ad-placeholder { max-width: 320px; height: 50px; margin: 0 auto; display: flex; align-items: center; justify-content: center; flex-direction: column; font-size: 10px; color: #94a3b8; }
-.ad-inline { margin: 20px 0; padding: 15px; background: white; border-radius: 12px; border: 1px solid #e2e8f0; max-width: 100%; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+/* Note: .ad-inline is defined in the CLS Prevention section below with proper min-height */
 
 /* ===== HEADER (Modernized) ===== */
 header {
@@ -393,19 +393,73 @@ footer a:hover { color: #60a5fa; }
    ========================================================= */
 
 /* 1. Reserve space for results to prevent the layout from jumping */
-#rightPanel, #middlePanel {
-    min-height: 500px;
+#rightPanel {
+    min-height: 800px; /* Increased to accommodate typical item result cards */
+    contain: layout;
+}
+
+#middlePanel {
+    min-height: 600px; /* Category list minimum height */
     contain: layout;
 }
 
 /* 2. AdSense Compliance: Reserve space for ad slots to avoid layout shifts */
-.ad-slot, .ad-inline, .ad-container {
-    min-height: 250px;
+/* Standard horizontal/rectangle ad slots */
+.ad-slot, .ad-container {
+    min-height: 280px; /* Standard AdSense display ad height */
     background: #fdfdfd;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 20px 0;
+    transition: none; /* Disable transitions to prevent CLS */
+}
+
+/* Inline content ads */
+.ad-inline {
+    min-height: 280px; /* Match standard ad height */
+    margin: 20px 0;
+    padding: 15px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: none; /* Prevent layout shifts */
+}
+
+/* Reserved slot class for skeleton loading */
+.ad-slot-reserved {
+    min-height: 280px;
+    height: 280px; /* Fixed height to reserve exact space */
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    margin: 20px 0;
+}
+
+/* Shimmer effect for loading ad slots */
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Large vertical ad format (homepage sidebar ads) */
+.ad-slot-vertical {
+    min-height: 600px;
+    height: 600px; /* Fixed height prevents CLS */
+    background: #fdfdfd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 30px 0;
+    border-radius: 8px;
+    transition: none;
 }
 
 /* 3. Smooth fade-in for item cards and results to improve User Experience */
@@ -414,17 +468,29 @@ footer a:hover { color: #60a5fa; }
 }
 
 @keyframes fadeIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(10px); 
+    from {
+        opacity: 0;
+        transform: translateY(10px);
     }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
 /* 4. Ensure the Search results container doesn't collapse when empty */
 #autocompleteResults {
-    min-height: 50px;
+    min-height: 0; /* Changed from 50px - empty autocomplete should not reserve space */
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* 5. Result card container - reserve space to prevent content jump */
+.result-card {
+    min-height: 400px; /* Minimum height for any item result */
+}
+
+/* 6. Welcome message stable height */
+.welcome-message {
+    min-height: 600px; /* Prevents jump when switching between home and results */
 }
