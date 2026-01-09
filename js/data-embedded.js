@@ -286,14 +286,23 @@ const ITEMS_DATA = [
         "customs_restricted": ["Australia", "New Zealand"]
     },
     {
-"id": 14, 
-        "name": "Prescription Medication (General)", 
-        "carryOn": "allowed", 
-        "checked": "allowed", 
-        "note": "✅ Allowed. It is highly recommended to keep all medication in its original packaging and bring a copy of the prescription or a doctor's note, especially when traveling internationally. Liquids (e.g., insulin) that are medically necessary are EXEMPT from the 100ml rule. 🚨 JAPAN/UAE WARNING: Certain common narcotics and stimulants (like Adderall or codeine) are ILLEGAL narcotics without special permits. Check embassy lists BEFORE travel. (Source: TSA/Gov)", 
-        "category": ["medication", "customs"], 
+"id": 14,
+        "name": "Prescription Medication (General)",
+        "carryOn": "allowed",
+        "checked": "allowed",
+        "note": "✅ Allowed. It is highly recommended to keep all medication in its original packaging and bring a copy of the prescription or a doctor's note, especially when traveling internationally. Liquids (e.g., insulin) that are medically necessary are EXEMPT from the 100ml rule. 🚨 JAPAN/UAE WARNING: Certain common narcotics and stimulants (like Adderall or codeine) are ILLEGAL narcotics without special permits. Check embassy lists BEFORE travel. (Source: TSA/Gov)",
+        "category": ["medication", "customs"],
         "keywords": ["medicine", "pills", "drugs", "adderall", "ritalin", "codeine"],
         "customs_restricted": ["Japan", "UAE"]
+    },
+    {
+        "id": 16,
+        "name": "Insulin and Syringes",
+        "carryOn": "allowed",
+        "checked": "allowed",
+        "note": "✅ Allowed in both carry-on and checked luggage. 💡 CRITICAL: Keep insulin in its original prescription packaging with your name clearly visible. Notify TSA officer at the start of screening. ✅ Insulin and other liquid medications are EXEMPT from the 100ml (3.4oz) rule. You may carry unlimited quantities of medically necessary liquids. 💉 Syringes and needles are permitted when accompanied by injectable medication. Declare all medical supplies at checkpoint. (Source: TSA.gov)",
+        "category": ["medication", "medical"],
+        "keywords": ["insulin", "diabetes", "diabetic", "needles", "syringes", "injection", "shots", "glucose"]
     },
     {
         "id": 26, 
@@ -995,6 +1004,8 @@ ITEMS_DATA.forEach(item => {
     if (!item.slug) {
         item.slug = item.name
             .toLowerCase()
+            .replace(/&/g, 'and')    // <--- Add this
+            .replace(/\+/g, 'plus')
             .replace(/[()]/g, '') // Remove parentheses
             .replace(/\//g, '-')  // Replace slashes with hyphens
             .replace(/[^\w\s-]/g, '') // Remove special characters

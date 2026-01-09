@@ -42,6 +42,8 @@ function toggleMobileView(showResult) {
 // --- HELPER: Convert Name to URL Slug ---
 function toSlug(text) {
     return text.toString().toLowerCase()
+        .replace(/&/g, 'and')
+        .replace(/\+/g, 'plus')
         .replace(/[()]/g, '')
         .replace(/\//g, '-')
         .replace(/[^\w\s-]/g, '')
