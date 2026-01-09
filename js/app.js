@@ -43,6 +43,8 @@ function toggleMobileView(showResult) {
 // --- HELPER: Convert Name to URL Slug ---
 function toSlug(text) {
     return text.toString().toLowerCase()
+        .replace(/&/g, 'and')      // Fixes "Insulin & Syringes" -> "insulin-and-syringes"
+        .replace(/\+/g, 'plus')    // Fixes items with "+"
         .replace(/[()]/g, '')
         .replace(/\//g, '-')
         .replace(/[^\w\s-]/g, '')
