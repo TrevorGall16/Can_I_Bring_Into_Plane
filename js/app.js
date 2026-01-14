@@ -199,31 +199,10 @@ initWelcomeAd() {
         }
     }
     
-    refreshInlineAd() {
-        const now = Date.now();
-        // Rate limit: 5 seconds (Adsterra native ads are robust)
-        if (now - this.lastRefreshTime < 5000) return;
-        this.lastRefreshTime = now;
-        
-        const adContainer = document.getElementById('ad-inline-slot');
-        if (adContainer) {
-            adContainer.innerHTML = ''; // Clear previous ad
-            
-            // --- ADSTERRA NATIVE BANNER INJECTION ---
-            // 1. Create the container div required by Adsterra
-            const nativeDiv = document.createElement('div');
-            nativeDiv.id = 'container-8ac2407d74cc99d97e2b914c6cf09c47';
-            adContainer.appendChild(nativeDiv);
-            
-            // 2. Create and inject the script
-            const script = document.createElement('script');
-            script.async = true;
-            script.dataset.cfasync = "false";
-            script.src = "//pl28383908.effectivegatecpm.com/8ac2407d74cc99d97e2b914c6cf09c47/invoke.js";
-            
-            // Append script to trigger the ad load
-            adContainer.appendChild(script);
-        }
+refreshInlineAd() {
+        // DISABLED: Removed Adsterra Native Banner (Key: 8ac2407d...)
+        // This was triggering antivirus "Phishing" warnings.
+        return; 
     }
 
     checkAdBlock() {
