@@ -119,7 +119,39 @@ class AdProvider {
             doc.close();
         }
     }
+initWelcomeAd() {
+        const adSlot = document.getElementById('ad-welcome-slot');
+        if (!adSlot) return;
+        
+        // Prevent loading if already loaded
+        if (adSlot.children.length > 0) return;
 
+        // Create a safe iframe so the ad doesn't break your site layout
+        const iframe = document.createElement('iframe');
+        iframe.style.width = '300px';
+        iframe.style.height = '250px';
+        iframe.style.border = 'none';
+        iframe.style.overflow = 'hidden';
+        iframe.scrolling = 'no';
+        
+        adSlot.appendChild(iframe);
+
+        const doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(`
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : '1cdec3e45ca4d17202a0a9d38b08a542',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            <\/script>
+            <script type="text/javascript" src="https://repelaffinityworlds.com/1cdec3e45ca4d17202a0a9d38b08a542/invoke.js"><\/script>
+        `);
+        doc.close();
+    }
     // Ad 2: Sticky Footer (320x50 Iframe)
     initStickyFooter() {
         if (!document.getElementById('ad-sticky-footer')) {
@@ -190,6 +222,49 @@ class AdProvider {
             // Append script to trigger the ad load
             adContainer.appendChild(script);
         }
+    }
+
+    checkAdBlock() {
+        // Wait 2.5 seconds for ads to try loading first
+        setTimeout(() => {
+            const adSlots = [
+                document.getElementById('ad-inline-slot'),
+                document.getElementById('ad-welcome-slot')
+            ];
+
+            adSlots.forEach(slot => {
+                if (!slot) return;
+                
+                // DETECT BLOCK: If the slot is empty or hidden, AdBlock killed it.
+                const isBlocked = slot.clientHeight === 0 || slot.innerHTML.trim() === '' || window.getComputedStyle(slot).display === 'none';
+
+                if (isBlocked) {
+                    // THE FIX: Show a friendly Affiliate Button instead
+                    slot.style.display = 'flex';
+                    slot.style.flexDirection = 'column';
+                    slot.style.justifyContent = 'center';
+                    slot.style.alignItems = 'center';
+                    slot.style.height = 'auto';
+                    slot.style.minHeight = '200px';
+                    slot.style.background = '#f0f9ff';
+                    slot.style.border = '1px dashed #bae6fd';
+                    slot.style.borderRadius = '12px';
+                    slot.style.padding = '20px';
+                    
+                    slot.innerHTML = `
+                        <div style="text-align: center; color: #475569;">
+                            <i class="fa-solid fa-heart" style="color: #ef4444; font-size: 1.5rem; margin-bottom: 10px;"></i>
+                            <p style="font-weight: 600; margin-bottom: 8px;">Support this free tool</p>
+                            <p style="font-size: 0.85rem; margin-bottom: 16px; color: #64748b;">AdBlocker detected. That's okay! You can still support us by checking out these travel deals.</p>
+                            <a href="https://www.amazon.com/s?k=travel+accessories&tag=canibringonpl-20" target="_blank" 
+                               style="background: #0061ff; color: white; padding: 10px 20px; border-radius: 99px; text-decoration: none; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s;">
+                               <i class="fa-brands fa-amazon"></i> Shop Travel Gear
+                            </a>
+                        </div>
+                    `;
+                }
+            });
+        }, 2500);
     }
 }
 const adProvider = new AdProvider();
