@@ -27,16 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
     adProvider.initStickyFooter();
 });
 
-// --- HELPER: Mobile Scroll Locking ---
+// --- HELPER: Toggle between Welcome and Result views ---
 function toggleMobileView(showResult) {
-    if (window.innerWidth < 1024) {
-        const leftPanel = document.querySelector('.left-panel');
-        if (showResult) {
-            leftPanel.classList.add('hidden'); // Hide Home
-            window.scrollTo(0, 0); // Reset scroll to top
-        } else {
-            leftPanel.classList.remove('hidden'); // Show Home
-        }
+    const welcomeContent = document.getElementById('welcomeMessage');
+    if (showResult) {
+        welcomeContent?.classList.add('hidden');
+        window.scrollTo(0, 0);
+    } else {
+        welcomeContent?.classList.remove('hidden');
     }
 }
 
@@ -303,18 +301,20 @@ window.addEventListener('popstate', (event) => {
 });
 
 function resetToHome() {
-    // Hide panels
-    document.getElementById('middlePanel').classList.add('hidden');
-    document.getElementById('rightPanel').classList.add('hidden');
-    // We clear rightPanel to ensure clean slate, but then re-inject the Rich Content
-    document.getElementById('rightPanel').innerHTML = ''; 
+    // Hide result panels
+    document.getElementById('middlePanel')?.classList.add('hidden');
+    document.getElementById('resultCard')?.classList.add('hidden');
+    document.getElementById('categoryResults')?.classList.add('hidden');
+    document.getElementById('countryRulesSection')?.classList.add('hidden');
+    document.getElementById('resultAd')?.classList.add('hidden');
+
     currentCategory = null;
-    
-    // CRITICAL: SHOW HOME PANEL ON MOBILE
-    toggleMobileView(false); 
+
+    // Show welcome content
+    toggleMobileView(false);
 
     document.title = "Airport Carry-On Checker - Can I Bring This On A Plane?";
-    
+
     // SEO FIX: Reset canonical to homepage
     let canonical = document.querySelector('link[rel="canonical"]');
     if (canonical) canonical.setAttribute('href', 'https://www.canibringonplane.com/');
@@ -334,69 +334,18 @@ function resetToHome() {
     const existingSchema = document.getElementById('dynamic-schema');
     if (existingSchema) existingSchema.remove();
 
-    // Desktop Welcome Message Logic - RESTORED RICH CONTENT & AD FIX
-    if(window.innerWidth >= 1024) {
-         const rightPanel = document.getElementById('rightPanel');
-         rightPanel.classList.remove('hidden'); 
-         rightPanel.innerHTML = `
-            <div class="welcome-message" id="welcomeMessage">
-                <div class="welcome-icon"><i class="fa-solid fa-plane-circle-check"></i></div>
-                <h2>Airport Carry-On Checker</h2>
-                
-                <div style="text-align: left; max-width: 650px; margin: 0 auto; color: #4a5568; font-size: 0.95rem; line-height: 1.7;">
-                    <p style="margin-bottom: 15px;">
-                        Welcome to the ultimate tool for air travel preparation. Security regulations vary significantly by country (TSA, EASA, CAAC) and airline. This tool helps you instantly verify if an item is allowed in your <strong>Carry-On (Cabin Bag)</strong> or must be packed in your <strong>Checked Luggage</strong>.
-                    </p>
-
-                    <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">✈️ Why Do Carry-On Rules Vary?</h3>
-                    <p style="margin-bottom: 15px;">
-                        Aviation security standards differ between countries and regulatory bodies. The <strong>TSA (Transportation Security Administration)</strong> governs U.S. airports, while <strong>EASA (European Aviation Safety Agency)</strong> sets rules for the European Union. China operates under the <strong>CAAC (Civil Aviation Administration of China)</strong>, which has unique restrictions on power banks and lighters. While the core principles remain similar worldwide—no explosives, no weapons, no large liquids—the specific size thresholds and enforcement strictness vary. For example, the U.S. TSA allows scissors with blades under 4 inches in carry-on, but many Asian and European airports lower this to 6 centimeters (2.4 inches). Always check your departure <em>and</em> arrival country's rules, as you must comply with both.
-                    </p>
-
-                    <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">🛑 The "No-Go" Items (Universal Rules)</h3>
-                    <p style="margin-bottom: 15px;">
-                        Across almost all airports globally, the following items are strictly prohibited in the cabin:
-                    </p>
-                    <ul style="list-style-type: disc; padding-left: 20px; margin-bottom: 15px;">
-                        <li><strong>Liquids over 100ml (3.4oz):</strong> Unless they are medically necessary or for a baby.</li>
-                        <li><strong>Sharp Objects:</strong> Knives, box cutters, and scissors with blades longer than 4 inches (6cm in EU/Asia).</li>
-                        <li><strong>Self-Defense Items:</strong> Pepper spray, tasers, and martial arts weapons are never allowed in the cabin.</li>
-                    </ul>
-
-                    <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">🔋 The Lithium Battery Danger</h3>
-                    <p style="margin-bottom: 15px;">
-                        This is the most common mistake travelers make. <strong>Loose Lithium-Ion batteries and Power Banks are PROHIBITED in checked luggage</strong> due to fire risks. You MUST carry them with you in the cabin. If you pack them in checked baggage, security will likely remove them, and you may lose your item. Airlines universally prohibit lithium batteries in the cargo hold because cabin crew cannot access the hold during flight to extinguish a battery fire, which can reach temperatures exceeding 1,000°F (538°C). Power banks must be under 100 watt-hours (Wh) for carry-on without airline approval—most consumer power banks fall within this range, but always check the label.
-                    </p>
-
-                    <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">💊 Medical & Baby Exceptions to the 3-1-1 Rule</h3>
-                    <p style="margin-bottom: 15px;">
-                        The famous <strong>3-1-1 Liquids Rule</strong>—3.4 ounces (100ml) per container, all fitting in 1 quart-sized bag, 1 bag per passenger—has critical exemptions. <strong>Prescription medications</strong> in liquid, gel, or aerosol form are allowed in reasonable quantities exceeding 3.4oz, but you must declare them to TSA officers at the checkpoint. Similarly, <strong>baby formula, breast milk, and juice for infants</strong> are exempt from the size limit. You do not need to travel with a baby to carry these items. Medical supplies like contact lens solution, eye drops, and liquid medications should be separated from your toiletry bag for faster screening. If you're traveling with life-sustaining medical devices (insulin pumps, EpiPens), inform security officers before screening begins.
-                    </p>
-
-                    <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">🛍️ Duty-Free Liquids: The Sealed Bag Rule</h3>
-                    <p style="margin-bottom: 15px;">
-                        There is one major loophole to the 100ml liquid restriction: <strong>duty-free liquids purchased after the security checkpoint</strong>. Bottles of wine, perfume, or spirits bought in airport shops beyond security are allowed in carry-on, even if they exceed 100ml, as long as they remain in the <strong>sealed, tamper-evident bag</strong> provided by the retailer. This bag must show a receipt proving the purchase was made within the last 48 hours. However, if you have a connecting flight, this rule becomes tricky. If your layover requires you to re-clear security (common when entering the U.S. or changing terminals internationally), your duty-free liquids will be confiscated unless they are in checked baggage. Plan accordingly—many travelers lose expensive bottles of alcohol due to this rule.
-                    </p>
-
-                    <div style="background: #eef2ff; border-left: 4px solid #667eea; padding: 15px; margin-top: 20px; border-radius: 4px;">
-                        <strong>How to use this tool:</strong> Use the search bar above or browse the categories to find specific rules for over 200+ common travel items. Select your departure country from the dropdown to see region-specific regulations.
-                    </div>
-                </div>
-            </div>
-            
-            <div class="ad-container-vertical">
-                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
-            </div>
-            `;
-            
-        // Trigger the vertical ad manually (The Fix)
-        try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
-    }
+    // Clear URL params
+    try {
+        const url = new URL(window.location);
+        url.searchParams.delete('item');
+        url.searchParams.delete('category');
+        window.history.pushState({ home: true }, '', url);
+    } catch (e) {}
 }
 
 function initializeEventListeners() {
     const searchInput = document.getElementById('searchInput');
-    const categoryButtons = document.querySelectorAll('.category-btn');
+    const categoryButtons = document.querySelectorAll('.category-chip');
     const popularTags = document.querySelectorAll('.popular-tag');
     const countrySelector = document.getElementById('countrySelector');
     const bagFAB = document.getElementById('bagFAB');
@@ -544,13 +493,13 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     
     document.getElementById('welcomeMessage')?.classList.add('hidden');
     document.getElementById('countryRulesSection')?.classList.add('hidden');
-    
-    // CRITICAL: Hide middle panel on mobile so we see the result clearly
-    if (!keepMiddlePanel && window.innerWidth < 1024) {
-        document.getElementById('middlePanel').classList.add('hidden');
+
+    // Hide category panel when showing item result (unless on desktop with keepMiddlePanel)
+    if (!keepMiddlePanel) {
+        document.getElementById('middlePanel')?.classList.add('hidden');
     }
-    
-    // CRITICAL: HIDE HOME SCREEN ON MOBILE
+
+    // Hide welcome content
     toggleMobileView(true); 
 
     let variants = findItemVariants(item);
@@ -569,9 +518,9 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     };
 
     const currentStatus = getDisplayStatus(item);
-    const rightPanel = document.getElementById('rightPanel');
-    rightPanel.classList.remove('hidden'); 
-    rightPanel.scrollTop = 0; 
+    const resultCard = document.getElementById('resultCard');
+    resultCard.classList.remove('hidden');
+    window.scrollTo(0, 0); 
 
     let variantSelectorHTML = '';
     if (variants.length > 1) {
@@ -614,61 +563,58 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     const sourceData = countrySources[currentCountry] || countrySources['International'];
     const richContext = getCategoryContext(item.category, item.name);
 
-    rightPanel.innerHTML = `
-        <div class="result-card" id="resultCard">
-            <button class="close-btn" id="closeResult">&times;</button>
-            <h2 class="item-name">
-                ${item.name} 
-                <button class="share-icon" onclick="shareItemLink(${item.id})" title="Copy Link">🔗</button>
-            </h2>
+    resultCard.innerHTML = `
+        <button class="close-btn" id="closeResult">&times;</button>
+        <h2 class="item-name">
+            ${item.name}
+            <button class="share-icon" onclick="shareItemLink(${item.id})" title="Copy Link" style="background:none;border:none;cursor:pointer;font-size:1rem;">🔗</button>
+        </h2>
 
-            ${variantSelectorHTML}
+        ${variantSelectorHTML}
 
-            <div class="status-grid">
-                <div class="status-box carry-on">
-                    <div class="status-icon">🎒</div>
-                    <div class="status-label">Carry-On</div>
-                    <div class="status-value ${finalCarryOnStatus}">${finalCarryOnText}</div>
-                </div>
-                <div class="status-box checked">
-                    <div class="status-icon">🧳</div>
-                    <div class="status-label">Checked Luggage</div>
-                    <div class="status-value ${finalCheckedStatus}">${finalCheckedText}</div>
-                </div>
+        <div class="status-grid">
+            <div class="status-box carry-on">
+                <div class="status-icon">🎒</div>
+                <div class="status-label">Carry-On</div>
+                <div class="status-value ${finalCarryOnStatus}">${finalCarryOnText}</div>
             </div>
-
-            ${customsWarningHTML}
-
-            <div class="action-buttons-row">
-                <a href="${amazonLink}" target="_blank" class="action-btn amazon-btn">
-                   <i class="fa-brands fa-amazon" style="margin-right: 5px;"></i> Shop on Amazon
-                </a>
-                <button class="${bagBtnClass} add-to-bag-btn" onclick="toggleBagItem(${item.id})">${bagBtnText}</button>
+            <div class="status-box checked">
+                <div class="status-icon">🧳</div>
+                <div class="status-label">Checked Luggage</div>
+                <div class="status-value ${finalCheckedStatus}">${finalCheckedText}</div>
             </div>
-
-           <div class="item-note">
-            ${currentStatus.isCustomsBanned 
-                ? '<strong>⚠️ Do not pack this item. It is prohibited at your destination.</strong>' 
-                : formatNoteToBulletPoints(item.note)
-            }
-            </div>
-
-            <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; color: #444;">${richContext}</div>
-            
-            <div style="margin-top: 15px; text-align: center; font-size: 0.8rem;">
-                <a href="${sourceData.url}" target="_blank" style="color: #667eea; text-decoration: underline;">
-                    ℹ️ Verify with official ${sourceData.name} website
-                </a>
-            </div>
-
-            <div class="related-items" id="relatedItems"></div>
         </div>
-        <div class="ad-inline" id="resultAd"><div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div></div>
-        
-        <div class="ad-container-vertical">
-             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
+
+        ${customsWarningHTML}
+
+        <div class="action-buttons-row">
+            <a href="${amazonLink}" target="_blank" class="action-btn amazon-btn">
+               <i class="fa-brands fa-amazon" style="margin-right: 5px;"></i> Shop on Amazon
+            </a>
+            <button class="${bagBtnClass} add-to-bag-btn" onclick="toggleBagItem(${item.id})">${bagBtnText}</button>
         </div>
+
+       <div class="item-note">
+        ${currentStatus.isCustomsBanned
+            ? '<strong>⚠️ Do not pack this item. It is prohibited at your destination.</strong>'
+            : formatNoteToBulletPoints(item.note)
+        }
+        </div>
+
+        <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; color: #444;">${richContext}</div>
+
+        <div style="margin-top: 15px; text-align: center; font-size: 0.8rem;">
+            <a href="${sourceData.url}" target="_blank" style="color: #0061ff; text-decoration: underline;">
+                ℹ️ Verify with official ${sourceData.name} website
+            </a>
+        </div>
+
+        <div class="related-items" id="relatedItems"></div>
     `;
+
+    // Show inline ad
+    const resultAd = document.getElementById('resultAd');
+    if (resultAd) resultAd.classList.remove('hidden');
 
     if (variants.length > 1 && document.getElementById('variantSelect')) {
         document.getElementById('variantSelect').onchange = (e) => {
@@ -678,17 +624,16 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     }
 
     document.getElementById('closeResult')?.addEventListener('click', () => {
-        rightPanel.classList.add('hidden');
+        resultCard.classList.add('hidden');
+        document.getElementById('resultAd')?.classList.add('hidden');
         document.getElementById('searchInput').value = '';
-        
-        // Mobile Logic: If going back from result, check if we came from a category
+
+        // Check if we came from a category
         const midPanel = document.getElementById('middlePanel');
-        if (midPanel && midPanel.querySelector('.category-item-card')) {
-            midPanel.classList.remove('hidden');
-            // We are still in "View 2" (Category List), so keep home hidden
-            toggleMobileView(true); 
+        if (midPanel && !midPanel.classList.contains('hidden')) {
+            // Stay on category view
         } else {
-            // We are going all the way back to home
+            // Go back to home
             resetToHome();
         }
     });
@@ -734,12 +679,12 @@ function displayCategoryResults(category, skipHistoryPush = false) {
 
     const midPanel = document.getElementById('middlePanel');
     midPanel.classList.remove('hidden');
-    midPanel.scrollTop = 0; 
-    
-    // CRITICAL: HIDE HOME SCREEN ON MOBILE
-    toggleMobileView(true); 
+    window.scrollTo(0, 0);
 
-    document.getElementById('welcomeMessage')?.classList.add('hidden');
+    // Hide other content
+    toggleMobileView(true);
+    document.getElementById('resultCard')?.classList.add('hidden');
+    document.getElementById('resultAd')?.classList.add('hidden');
     document.getElementById('countryRulesSection')?.classList.add('hidden');
 
     const items = itemsData.filter(i => i.category && i.category.includes(category));
@@ -793,65 +738,43 @@ function displayCategoryResults(category, skipHistoryPush = false) {
         list.appendChild(link);
     });
     
-    if (window.innerWidth >= 1024) {
-        document.getElementById('rightPanel').innerHTML = `
-            <div class="welcome-message">
-                <div class="welcome-icon"><i class="fa-solid fa-plane-circle-check"></i></div>
-                <h2>${category.charAt(0).toUpperCase() + category.slice(1)} Items</h2>
-                <p>Our database is sourced from global aviation standards.</p>
-                <div style="margin-top: 20px; font-weight: 600; color: #667eea;">Select an item to view details →</div>
-            </div>
-            <div class="ad-inline"><div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div></div>
-            
-            <div class="ad-container-vertical">
-                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
-            </div>
-        `;
-        adProvider.refreshInlineAd();
-        // Refresh Vertical Ad (The Fix)
-        try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
-    }
+    // Refresh inline ad
+    adProvider.refreshInlineAd();
 }
 
 function showCountryRules(country) {
     const rules = countryRules[country];
     if (!rules) return;
-    const rightPanel = document.getElementById('rightPanel');
-    
-    if (window.innerWidth < 1024) {
-        document.getElementById('middlePanel').classList.add('hidden');
-        toggleMobileView(true); // Hide home
-    }
-    
-    rightPanel.classList.remove('hidden');
-    rightPanel.scrollTop = 0;
-    
-    const cards = rules.rules.map(r => `<div class="info-card"><h4>${r.title}</h4><p>${r.description}</p></div>`).join('');
-    const closeBtnHTML = window.innerWidth < 1024 ? '<button class="close-btn" id="closeResult">&times;</button>' : '';
 
-    rightPanel.innerHTML = `
-        <div class="country-rules-section">
-            ${closeBtnHTML}
-            <div class="country-disclaimer">⚠️ <strong>Note:</strong> Rules change. Verify with airline.</div>
-            <h3>${rules.title}</h3>
-            <div class="info-cards">${cards}</div>
-        </div>
-        <div class="ad-inline"><div class="ad-container"><div id="ad-inline-slot" class="ad-slot"></div></div></div>
-        
-        <div class="ad-container-vertical">
-             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8732422930809097" data-ad-slot="3936050583" data-ad-format="vertical" data-full-width-responsive="true"></ins>
+    // Hide other content
+    toggleMobileView(true);
+    document.getElementById('middlePanel')?.classList.add('hidden');
+    document.getElementById('resultCard')?.classList.add('hidden');
+    document.getElementById('resultAd')?.classList.add('hidden');
+
+    const countrySection = document.getElementById('countryRulesSection');
+    countrySection.classList.remove('hidden');
+    window.scrollTo(0, 0);
+
+    const cards = rules.rules.map(r => `<div class="info-item"><div><h3>${r.title}</h3><p>${r.description}</p></div></div>`).join('');
+
+    countrySection.innerHTML = `
+        <div class="info-card">
+            <button class="close-btn" id="closeCountryRules">&times;</button>
+            <div style="background:#fef3c7;padding:12px;border-radius:8px;margin-bottom:16px;font-size:0.875rem;color:#92400e;">
+                ⚠️ <strong>Note:</strong> Rules change frequently. Always verify with your airline.
+            </div>
+            <h2 class="info-card-title"><i class="fa-solid fa-earth-americas"></i> ${rules.title}</h2>
+            <div class="info-grid">${cards}</div>
         </div>
     `;
 
-    document.getElementById('closeResult')?.addEventListener('click', () => {
-        rightPanel.classList.add('hidden');
-        // Mobile back logic
-        if (window.innerWidth < 1024) toggleMobileView(false);
+    document.getElementById('closeCountryRules')?.addEventListener('click', () => {
+        countrySection.classList.add('hidden');
+        toggleMobileView(false);
     });
 
     adProvider.refreshInlineAd();
-    // Refresh Vertical Ad (The Fix)
-    try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
 }
 
 function toggleBagItem(id) {
@@ -860,10 +783,11 @@ function toggleBagItem(id) {
     localStorage.setItem('myBag', JSON.stringify([...savedItems]));
     updateBagCounter();
     const item = itemsData.find(i => i.id === id);
-    const rightPanel = document.getElementById('rightPanel');
-    if (item && rightPanel && !rightPanel.classList.contains('hidden')) {
-        const isDesktop = window.innerWidth >= 1024;
-        displayItemResult(item, isDesktop, true);
+    const resultCard = document.getElementById('resultCard');
+    if (item && resultCard && !resultCard.classList.contains('hidden')) {
+        const midPanel = document.getElementById('middlePanel');
+        const keepMiddlePanel = midPanel && !midPanel.classList.contains('hidden');
+        displayItemResult(item, keepMiddlePanel, true);
     }
 }
 

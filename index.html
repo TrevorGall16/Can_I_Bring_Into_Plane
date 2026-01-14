@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Can I Bring This On A Plane? | Airport Carry-On Checker</title>
-    
+
     <meta name="description" content="Can I bring this on a plane? Instantly check if items are allowed in carry-on cabin or checked luggage. Fast, simple airport security rules for travelers.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.canibringonplane.com/">
@@ -16,164 +16,169 @@
     <meta property="og:image" content="https://www.canibringonplane.com/favicon.ico">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico?v=2">
-    
-    </head>
+</head>
 <body>
 
+    <!-- STICKY TOP NAVBAR -->
+    <nav class="top-navbar">
+        <div class="navbar-inner">
+            <a href="/" class="navbar-brand">
+                <i class="fa-solid fa-plane-departure"></i>
+                <span class="brand-text">Carry-On Checker</span>
+            </a>
 
-    <header style="position: relative;">
-        <nav style="position: absolute; top: 15px; right: 20px; font-size: 0.9rem; z-index: 10;">
-            <a href="contact.html" style="color: inherit; text-decoration: none; margin-left: 15px; font-weight: 600; opacity: 0.9;">Contact</a>
-            <a href="privacy.html" style="color: inherit; text-decoration: none; margin-left: 15px; font-weight: 600; opacity: 0.9;">Privacy</a>
-        </nav>
-
-        <h1><i class="fa-solid fa-plane-departure"></i> Airport Carry-On Checker</h1>
-        <p class="tagline">Know what you can bring on a plane</p>
-    </header>
-
-    <div class="disclaimer-banner">
-        ⚠️ <strong>Disclaimer:</strong> Information for guidance only. NOT responsible for misinformation or outdated data. <strong>ALWAYS verify with your airline before travel.</strong>
-    </div>
-
-    <div class="disclaimer-banner disclaimer-mobile-only">
-        ⚠️ <strong>Disclaimer:</strong> Info for guidance only. <strong>ALWAYS verify with your airline before travel.</strong>
-    </div>
-
-    <div class="three-column-container">
-        <div class="left-panel">
-            
-            <section class="country-section">
-                <label for="countrySelector">
-                    <i class="fa-solid fa-earth-americas" style="margin-right: 8px;"></i> Where are you traveling?
-                </label>
-                <select id="countrySelector" class="country-selector">
-                    <option value="USA">🇺🇸 United States (TSA)</option>
-                    <option value="China">🇨🇳 China (CAAC)</option>
-                    <option value="EU">🇪🇺 European Union (EASA)</option>
-                    <option value="UK">🇬🇧 United Kingdom</option>
+            <div class="navbar-country">
+                <select id="countrySelector" class="country-selector-nav">
+                    <option value="USA">🇺🇸 USA (TSA)</option>
+                    <option value="China">🇨🇳 China</option>
+                    <option value="EU">🇪🇺 EU (EASA)</option>
+                    <option value="UK">🇬🇧 UK</option>
                     <option value="Canada">🇨🇦 Canada</option>
                     <option value="Australia">🇦🇺 Australia</option>
                     <option value="Japan">🇯🇵 Japan</option>
-                    <option value="Thailand">🇹🇭 Thailand (Strict Vape Ban)</option>
-                    <option value="Singapore">🇸🇬 Singapore (Strict Bans)</option>
-                    <option value="Mexico">🇲🇽 Mexico (Vape Ban)</option>
-                    <option value="UAE">🇦🇪 UAE / Dubai (Medication)</option>
-                    <option value="International">🌐 General International Rules</option>
+                    <option value="Thailand">🇹🇭 Thailand</option>
+                    <option value="Singapore">🇸🇬 Singapore</option>
+                    <option value="Mexico">🇲🇽 Mexico</option>
+                    <option value="UAE">🇦🇪 UAE</option>
+                    <option value="International">🌐 International</option>
                 </select>
-            </section>
+            </div>
 
-            <section class="search-section">
-                <h2>Search Any Item</h2>
-                <div class="search-container">
-                    <input
-                        type="text"
-                        id="searchInput"
-                        class="search-input"
-                        placeholder="Type an item (e.g., water bottle)..."
-                        autocomplete="off"
-                    >
-                    <div id="autocompleteResults" class="autocomplete-results hidden"></div>
+            <div class="navbar-actions">
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="privacy.html" class="nav-link">Privacy</a>
+                <button class="bag-btn" id="bagFAB" title="My Carry-On Bag">
+                    <i class="fa-solid fa-suitcase-rolling"></i>
+                    <span class="bag-counter" id="bagCounter">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SEARCH SECTION -->
+    <section class="hero-search">
+        <h1 class="hero-title">Can I bring this on a plane?</h1>
+        <p class="hero-subtitle">Instantly check TSA & airport security rules for any item</p>
+
+        <div class="search-wrapper">
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="search-input-hero"
+                    placeholder="Search any item (e.g., water bottle, laptop, scissors...)"
+                    autocomplete="off"
+                >
+                <div id="autocompleteResults" class="autocomplete-results hidden"></div>
+            </div>
+        </div>
+
+        <p class="disclaimer-text">
+            <i class="fa-solid fa-circle-info"></i>
+            Info for guidance only. Always verify with your airline before travel.
+        </p>
+    </section>
+
+    <!-- HORIZONTAL CATEGORY STRIP -->
+    <section class="category-strip">
+        <div class="category-strip-inner">
+            <button class="category-chip" data-category="liquids">
+                <i class="fa-solid fa-bottle-water"></i> Liquids
+            </button>
+            <button class="category-chip" data-category="electronics">
+                <i class="fa-solid fa-mobile-screen"></i> Electronics
+            </button>
+            <button class="category-chip" data-category="food">
+                <i class="fa-solid fa-apple-whole"></i> Food
+            </button>
+            <button class="category-chip" data-category="toiletries">
+                <i class="fa-solid fa-pump-soap"></i> Toiletries
+            </button>
+            <button class="category-chip" data-category="medication">
+                <i class="fa-solid fa-pills"></i> Medication
+            </button>
+            <button class="category-chip" data-category="tools">
+                <i class="fa-solid fa-screwdriver-wrench"></i> Tools
+            </button>
+            <button class="category-chip" data-category="sports">
+                <i class="fa-solid fa-futbol"></i> Sports
+            </button>
+            <button class="category-chip" data-category="baby">
+                <i class="fa-solid fa-baby"></i> Baby
+            </button>
+            <button class="category-chip" data-category="customs">
+                <i class="fa-solid fa-passport"></i> Customs
+            </button>
+            <button class="category-chip" data-category="camping">
+                <i class="fa-solid fa-campground"></i> Camping
+            </button>
+            <button class="category-chip" data-category="household">
+                <i class="fa-solid fa-house-chimney"></i> Household
+            </button>
+            <button class="category-chip" data-category="art">
+                <i class="fa-solid fa-palette"></i> Art
+            </button>
+            <button class="category-chip" data-category="weapons">
+                <i class="fa-solid fa-shield-halved"></i> Self Defense
+            </button>
+            <button class="category-chip" data-category="hazardous">
+                <i class="fa-solid fa-triangle-exclamation"></i> Restricted
+            </button>
+        </div>
+    </section>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-content">
+
+        <!-- DEFAULT CONTENT: Quick Guide + Popular -->
+        <div id="welcomeMessage" class="welcome-content">
+
+            <!-- Quick Travel Security Guide -->
+            <section class="info-card">
+                <h2 class="info-card-title">
+                    <i class="fa-solid fa-book-open"></i> Quick Travel Security Guide
+                </h2>
+
+                <div class="info-grid">
+                    <article class="info-item">
+                        <div class="info-icon">💧</div>
+                        <div>
+                            <h3>The 3-1-1 Liquids Rule</h3>
+                            <p>Liquids, gels, and aerosols must be in containers of <strong>3.4 oz (100ml)</strong> or less, fitting in a single quart-sized bag.</p>
+                        </div>
+                    </article>
+
+                    <article class="info-item">
+                        <div class="info-icon">🔋</div>
+                        <div>
+                            <h3>Batteries & Power Banks</h3>
+                            <p>Lithium batteries and portable chargers are <strong>prohibited in checked luggage</strong>. Always pack in carry-on.</p>
+                        </div>
+                    </article>
+
+                    <article class="info-item">
+                        <div class="info-icon">🛂</div>
+                        <div>
+                            <h3>Customs & Food</h3>
+                            <p>Most solid foods pass security, but fresh fruits, vegetables, and meats are often banned by international customs.</p>
+                        </div>
+                    </article>
+
+                    <article class="info-item">
+                        <div class="info-icon">✂️</div>
+                        <div>
+                            <h3>Sharp Objects</h3>
+                            <p>Scissors under 4 inches allowed in carry-on. Knives and box cutters must be in checked luggage.</p>
+                        </div>
+                    </article>
                 </div>
             </section>
 
-            <section class="categories-section">
-                <h3>Browse by Category</h3>
-
-                <p style="margin-bottom: 20px; line-height: 1.5; font-size: 0.95rem; color: #4a5568;">
-                    Use this comprehensive browsing tool to discover all associated security rules for common travel categories. 
-                </p>
-                <div class="categories-grid">
-                    <button class="category-btn" data-category="liquids">
-                        <i class="fa-solid fa-bottle-water" style="width: 20px; margin-right: 5px;"></i> Liquids
-                    </button>
-                    <button class="category-btn" data-category="electronics">
-                        <i class="fa-solid fa-mobile-screen" style="width: 20px; margin-right: 5px;"></i> Electronics
-                    </button>
-                    <button class="category-btn" data-category="food">
-                        <i class="fa-solid fa-apple-whole" style="width: 20px; margin-right: 5px;"></i> Food
-                    </button>
-                    <button class="category-btn" data-category="toiletries">
-                        <i class="fa-solid fa-pump-soap" style="width: 20px; margin-right: 5px;"></i> Toiletries
-                    </button>
-                    <button class="category-btn" data-category="medication">
-                        <i class="fa-solid fa-pills" style="width: 20px; margin-right: 5px;"></i> Medication
-                    </button>
-                    <button class="category-btn" data-category="tools">
-                        <i class="fa-solid fa-screwdriver-wrench" style="width: 20px; margin-right: 5px;"></i> Tools
-                    </button>
-                    <button class="category-btn" data-category="sports">
-                        <i class="fa-solid fa-futbol" style="width: 20px; margin-right: 5px;"></i> Sports
-                    </button>
-                    <button class="category-btn" data-category="baby">
-                        <i class="fa-solid fa-baby" style="width: 20px; margin-right: 5px;"></i> Baby
-                    </button>
-                    <button class="category-btn" data-category="customs">
-                        <i class="fa-solid fa-passport" style="width: 20px; margin-right: 5px;"></i> Customs & Biosecurity
-                    </button>
-                    <button class="category-btn" data-category="camping">
-                        <i class="fa-solid fa-campground" style="width: 20px; margin-right: 5px;"></i> Camping
-                    </button>
-                    <button class="category-btn" data-category="household">
-                        <i class="fa-solid fa-house-chimney" style="width: 20px; margin-right: 5px;"></i> Household
-                    </button>
-                    <button class="category-btn" data-category="art">
-                        <i class="fa-solid fa-palette" style="width: 20px; margin-right: 5px;"></i> Art & Hobbies
-                    </button>
-                    <button class="category-btn" data-category="weapons">
-                        <i class="fa-solid fa-shield-halved" style="width: 20px; margin-right: 5px;"></i> Self Defense
-                    </button>
-                    <button class="category-btn" data-category="hazardous">
-                        <i class="fa-solid fa-triangle-exclamation" style="width: 20px; margin-right: 5px;"></i> Restricted
-                    </button>
-                </div>
-            </section>
-
-            <section style="margin-top: 25px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); border-left: 4px solid #667eea;">
-                <h3 style="color: #2d3748; font-size: 1.1rem; margin-bottom: 12px; border-bottom: 2px solid #edf2f7; padding-bottom: 8px;">
-                    <i class="fa-solid fa-book-open" style="color: #667eea; margin-right: 8px;"></i> Quick Travel Security Guide
-                </h3>
-                
-                <article style="margin-bottom: 15px;">
-                    <h4 style="font-size: 0.95rem; color: #4a5568; margin-bottom: 4px;">💧 The 3-1-1 Liquids Rule</h4>
-                    <p style="font-size: 0.85rem; color: #718096; line-height: 1.5;">
-                        Liquids, gels, and aerosols in carry-on bags must be in containers of <strong>3.4 oz (100ml)</strong> or less, fitting in a single quart-sized bag. Larger containers must be checked.
-                    </p>
-                </article>
-
-                <article style="margin-bottom: 15px;">
-                    <h4 style="font-size: 0.95rem; color: #4a5568; margin-bottom: 4px;">🔋 Batteries & Power Banks</h4>
-                    <p style="font-size: 0.85rem; color: #718096; line-height: 1.5;">
-                        Loose lithium batteries and portable chargers are <strong>prohibited in checked luggage</strong> due to fire risk. Always pack them in your carry-on (cabin) bag.
-                    </p>
-                </article>
-
-                <article>
-                    <h4 style="font-size: 0.95rem; color: #4a5568; margin-bottom: 4px;">🛂 Customs & Food</h4>
-                    <p style="font-size: 0.85rem; color: #718096; line-height: 1.5;">
-                        Most solid foods are allowed through security. However, when flying internationally, avoid bringing fresh fruits, vegetables, or meats, as they are often banned by customs at your destination.
-                    </p>
-                </article>
-            </section>
-            <section class="categories-section" style="margin-top: 20px; border: 2px solid #667eea; background: #f8f9ff;">
-                <h3 style="color: #667eea; margin-bottom: 10px;">
-                    <i class="fa-solid fa-suitcase-rolling" style="margin-right: 5px;"></i> Travel Must-Haves
-                </h3>
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <a href="https://www.amazon.com/s?k=tsa+approved+toiletry+bag&tag=canibringonpl-20" target="_blank" style="text-decoration: none; padding: 10px; background: white; border-radius: 6px; border: 1px solid #ddd; color: #333; font-weight: 600; display: block; text-align: center; transition: all 0.2s;">
-                        <i class="fa-solid fa-bottle-droplet" style="color: #667eea; margin-right: 5px;"></i> Travel Liquid Bags
-                    </a>
-                    <a href="https://www.amazon.com/s?k=universal+travel+power+adapter&tag=canibringonpl-20" target="_blank" style="text-decoration: none; padding: 10px; background: white; border-radius: 6px; border: 1px solid #ddd; color: #333; font-weight: 600; display: block; text-align: center; transition: all 0.2s;">
-                        <i class="fa-solid fa-plug" style="color: #667eea; margin-right: 5px;"></i> Universal Adapters
-                    </a>
-                    <a href="https://www.amazon.com/s?k=luggage+scale+portable&tag=canibringonpl-20" target="_blank" style="text-decoration: none; padding: 10px; background: white; border-radius: 6px; border: 1px solid #ddd; color: #333; font-weight: 600; display: block; text-align: center; transition: all 0.2s;">
-                        <i class="fa-solid fa-weight-hanging" style="color: #667eea; margin-right: 5px;"></i> Digital Luggage Scale
-                    </a>
-                </div>
-            </section>
-
+            <!-- Popular Searches -->
             <section class="popular-section">
                 <h3>Popular Searches</h3>
                 <div class="popular-tags">
@@ -183,98 +188,75 @@
                     <button class="popular-tag" data-item="scissors">Scissors</button>
                     <button class="popular-tag" data-item="shampoo">Shampoo</button>
                     <button class="popular-tag" data-item="lighter">Lighter</button>
+                    <button class="popular-tag" data-item="razor">Razor</button>
+                    <button class="popular-tag" data-item="e-cigarette">E-Cigarette</button>
                 </div>
             </section>
 
-            <section class="key-rules-section" style="margin-top: 20px; padding: 15px; background: #f0f0ff; border-radius: 8px; border: 1px solid #667eea;">
-                <h3 style="color: #667eea; margin-bottom: 10px;">
-                    <i class="fa-solid fa-clipboard-check" style="margin-right: 5px;"></i> Key Rules to Check
-                </h3>
-                <p style="font-size: 0.95rem; line-height: 1.5; color: #4a5568;">
-                    The <strong>3-1-1 Liquid Rule</strong>, specific <strong>Lithium Battery limits</strong>, and <strong>Sharp Object restrictions</strong> are critical pieces of information for every traveler. Check these core rules first to avoid delays at the security checkpoint and improve your trip experience.
-                </p>
+            <!-- Travel Must-Haves -->
+            <section class="affiliate-section">
+                <h3><i class="fa-solid fa-suitcase-rolling"></i> Travel Must-Haves</h3>
+                <div class="affiliate-grid">
+                    <a href="https://www.amazon.com/s?k=tsa+approved+toiletry+bag&tag=canibringonpl-20" target="_blank" class="affiliate-link">
+                        <i class="fa-solid fa-bottle-droplet"></i> Travel Liquid Bags
+                    </a>
+                    <a href="https://www.amazon.com/s?k=universal+travel+power+adapter&tag=canibringonpl-20" target="_blank" class="affiliate-link">
+                        <i class="fa-solid fa-plug"></i> Universal Adapters
+                    </a>
+                    <a href="https://www.amazon.com/s?k=luggage+scale+portable&tag=canibringonpl-20" target="_blank" class="affiliate-link">
+                        <i class="fa-solid fa-weight-hanging"></i> Digital Luggage Scale
+                    </a>
+                </div>
             </section>
-
-            
         </div>
 
-        <div class="middle-panel hidden" id="middlePanel">
+        <!-- CATEGORY ITEMS LIST (Shows when category clicked) -->
+        <div class="category-list-panel hidden" id="middlePanel">
             <div class="panel-header">
-                <button class="panel-back-btn" id="panelBackBtn">← Back</button>
-                <div style="flex: 1;">
-                    <h3 id="categoryTitle"></h3>
+                <button class="panel-back-btn" id="panelBackBtn">
+                    <i class="fa-solid fa-arrow-left"></i> Back
+                </button>
+                <div class="panel-title-group">
+                    <h2 id="categoryTitle"></h2>
                     <span class="item-count" id="categoryCount"></span>
                 </div>
             </div>
             <div id="categoryItemsList" class="category-items-list"></div>
         </div>
 
-<div class="right-panel" id="rightPanel">
-    
-    <div id="welcomeMessage" class="welcome-message">
-        <div class="welcome-icon"><i class="fa-solid fa-plane-circle-check"></i></div>
-        <h2>Airport Carry-On Checker</h2>
-        
-        <div style="text-align: left; max-width: 650px; margin: 0 auto; color: #4a5568; font-size: 0.95rem; line-height: 1.7;">
-            <p style="margin-bottom: 15px;">
-                Welcome to the ultimate tool for air travel preparation. Security regulations vary significantly by country (TSA, EASA, CAAC) and airline. This tool helps you instantly verify if an item is allowed in your <strong>Carry-On (Cabin Bag)</strong> or must be packed in your <strong>Checked Luggage</strong>.
-            </p>
+        <!-- RESULT CARD (Shows when item selected) -->
+        <div id="resultCard" class="result-card hidden"></div>
 
-            <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">🛑 The "No-Go" Items (Universal Rules)</h3>
-            <p style="margin-bottom: 15px;">
-                Across almost all airports globally, the following items are strictly prohibited in the cabin:
-            </p>
-            <ul style="list-style-type: disc; padding-left: 20px; margin-bottom: 15px;">
-                <li><strong>Liquids over 100ml (3.4oz):</strong> Unless they are medically necessary or for a baby.</li>
-                <li><strong>Sharp Objects:</strong> Knives, box cutters, and scissors with blades longer than 4 inches (6cm in EU/Asia).</li>
-                <li><strong>Self-Defense Items:</strong> Pepper spray, tasers, and martial arts weapons are never allowed in the cabin.</li>
-            </ul>
+        <!-- CATEGORY RESULTS -->
+        <div id="categoryResults" class="category-results hidden"></div>
 
-            <h3 style="color: #2d3748; font-size: 1.1rem; margin-top: 25px; margin-bottom: 10px;">🔋 The Lithium Battery Danger</h3>
-            <p style="margin-bottom: 15px;">
-                This is the most common mistake travelers make. <strong>Loose Lithium-Ion batteries and Power Banks are PROHIBITED in checked luggage</strong> due to fire risks. You MUST carry them with you in the cabin. If you pack them in your checked bag, security will likely remove them, and you will lose your item.
-            </p>
+        <!-- COUNTRY SPECIFIC RULES -->
+        <div id="countryRulesSection" class="country-rules-section hidden"></div>
 
-            <div style="background: #eef2ff; border-left: 4px solid #667eea; padding: 15px; margin-top: 20px; border-radius: 4px;">
-                <strong>How to use this tool:</strong> Use the search bar above or browse the categories to find specific rules for over 200+ common travel items.
+        <!-- AD SLOT -->
+        <div id="resultAd" class="ad-inline hidden">
+            <div class="ad-container">
+                <div id="ad-inline-slot" class="ad-slot"></div>
             </div>
         </div>
-    </div>
 
-    <div id="resultCard" class="result-card hidden">
-    </div>
+    </main>
 
-    <div id="categoryResults" class="category-results hidden">
-    </div>
-
-    <div id="countryRulesSection" class="country-rules-section hidden">
-    </div>
-
-    <div id="resultAd" class="ad-inline hidden">
-        <div class="ad-container">
-            <div id="ad-inline-slot" class="ad-slot"></div>
-        </div>
-    </div>
-
-</div>
-
-    <button class="bag-fab" id="bagFAB" title="My Carry-On Bag">
-        <i class="fa-solid fa-suitcase-rolling fab-icon"></i>
-        <span class="fab-text">My Bag</span>
-        <span class="bag-counter" id="bagCounter">0</span>
-    </button>
-
+    <!-- FOOTER -->
     <footer>
-        <p>&copy; 2024 Airport Carry-On Checker | 
-        <a href="privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a> | 
-        <a href="about.html" target="_blank" rel="noopener noreferrer">About Us</a> | 
-        <a href="contact.html" target="_blank" rel="noopener noreferrer">Contact</a> | 
-        <a href="sitemap.html" target="_blank" rel="noopener noreferrer">Sitemap</a>
-        </p>
-        <p class="footer-note">Check with your airline for specific policies. Rules may vary.</p>
+        <div class="footer-inner">
+            <p>&copy; 2024 Airport Carry-On Checker</p>
+            <nav class="footer-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact</a>
+                <a href="sitemap.html">Sitemap</a>
+            </nav>
+            <p class="footer-note">Check with your airline for specific policies. Rules may vary.</p>
+        </div>
     </footer>
 
-    <script src="js/data-embedded.js?v=3"></script>
-    <script src="js/app.js?v=3"></script>
+    <script src="js/data-embedded.js?v=4"></script>
+    <script src="js/app.js?v=4"></script>
 </body>
 </html>
