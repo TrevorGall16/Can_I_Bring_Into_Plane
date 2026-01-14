@@ -32,8 +32,7 @@ function toggleMobileView(showResult) {
     const welcomeContent = document.getElementById('welcomeMessage');
     if (showResult) {
         welcomeContent?.classList.add('hidden');
-        window.scrollTo(0, 0);
-    } else {
+            } else {
         welcomeContent?.classList.remove('hidden');
     }
 }
