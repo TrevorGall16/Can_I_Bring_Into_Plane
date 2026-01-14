@@ -519,7 +519,6 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     const currentStatus = getDisplayStatus(item);
     const resultCard = document.getElementById('resultCard');
     resultCard.classList.remove('hidden');
-    window.scrollTo(0, 0); 
 
     let variantSelectorHTML = '';
     if (variants.length > 1) {
