@@ -519,7 +519,9 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
     const currentStatus = getDisplayStatus(item);
     const resultCard = document.getElementById('resultCard');
     resultCard.classList.remove('hidden');
-
+setTimeout(() => {
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
     let variantSelectorHTML = '';
     if (variants.length > 1) {
         const usedLabels = new Set();
