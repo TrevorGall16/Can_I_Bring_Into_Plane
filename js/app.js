@@ -25,6 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
     navManager.loadFromURL();
     // Initialize sticky footer ad
     adProvider.initStickyFooter();
+    adProvider.initWelcomeAd(); 
+    adProvider.checkAdBlock();
 });
 
 // --- HELPER: Toggle between Welcome and Result views ---
