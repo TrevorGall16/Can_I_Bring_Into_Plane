@@ -1,3 +1,4 @@
+alert("SYSTEM CHECK: Connected!");
 // Use embedded data from data-embedded.js
 let itemsData = (typeof ITEMS_DATA !== 'undefined') ? ITEMS_DATA : [];
 let autocompleteTimeout = null;
