@@ -83,6 +83,9 @@ function getCategoryContext(category, itemName) {
 // ---------------------------------------------------------
 // AD PROVIDER (Adsterra Integration)
 // ---------------------------------------------------------
+// ---------------------------------------------------------
+// AD PROVIDER (Adsterra Integration)
+// ---------------------------------------------------------
 class AdProvider {
     constructor() {
         this.lastRefreshTime = 0;
@@ -93,134 +96,93 @@ class AdProvider {
         const adSlot = document.getElementById('ad-top-slot');
         if (adSlot) {
             adSlot.innerHTML = '';
-
-            // Create a safe iframe for the ad to prevent document.write from wiping the page
             const iframe = document.createElement('iframe');
             iframe.style.width = '728px';
             iframe.style.height = '90px';
             iframe.style.border = 'none';
             iframe.style.overflow = 'hidden';
             iframe.scrolling = 'no';
-
             adSlot.appendChild(iframe);
-
             const doc = iframe.contentWindow.document;
             doc.open();
             doc.write(`
                 <script type="text/javascript">
-                    atOptions = {
-                        'key' : '1eb6f5f58fd51d48c864a2232bd79e77',
-                        'format' : 'iframe',
-                        'height' : 90,
-                        'width' : 728,
-                        'params' : {}
-                    };
+                    atOptions = { 'key' : '1eb6f5f58fd51d48c864a2232bd79e77', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
                 <\/script>
                 <script type="text/javascript" src="https://www.highperformanceformat.com/1eb6f5f58fd51d48c864a2232bd79e77/invoke.js"><\/script>
             `);
             doc.close();
         }
     }
-initWelcomeAd() {
+
+    initWelcomeAd() {
         const adSlot = document.getElementById('ad-welcome-slot');
         if (!adSlot) return;
-        
-        // Prevent loading if already loaded
         if (adSlot.children.length > 0) return;
 
-        // Create a safe iframe so the ad doesn't break your site layout
         const iframe = document.createElement('iframe');
         iframe.style.width = '300px';
         iframe.style.height = '250px';
         iframe.style.border = 'none';
         iframe.style.overflow = 'hidden';
         iframe.scrolling = 'no';
-        
         adSlot.appendChild(iframe);
 
         const doc = iframe.contentWindow.document;
         doc.open();
         doc.write(`
             <script type="text/javascript">
-                atOptions = {
-                    'key' : '1cdec3e45ca4d17202a0a9d38b08a542',
-                    'format' : 'iframe',
-                    'height' : 250,
-                    'width' : 300,
-                    'params' : {}
-                };
+                atOptions = { 'key' : '1cdec3e45ca4d17202a0a9d38b08a542', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
             <\/script>
             <script type="text/javascript" src="https://repelaffinityworlds.com/1cdec3e45ca4d17202a0a9d38b08a542/invoke.js"><\/script>
         `);
         doc.close();
     }
-    // Ad 2: Sticky Footer (320x50 Iframe)
+
     initStickyFooter() {
         if (!document.getElementById('ad-sticky-footer')) {
             const footerAd = document.createElement('div');
             footerAd.id = 'ad-sticky-footer';
-            // Styling for the sticky footer container
             footerAd.style.cssText = 'position:fixed; bottom:0; left:0; width:100%; background:white; z-index:9999; text-align:center; border-top:1px solid #ddd; display:flex; justify-content:center; align-items:center; padding-top:5px; padding-bottom:5px; box-shadow: 0 -2px 5px rgba(0,0,0,0.1);';
             
-            // Add close button
             const closeBtn = document.createElement('button');
             closeBtn.innerText = '×';
             closeBtn.style.cssText = 'position:absolute; top:-20px; right:5px; background:#333; color:white; border:none; border-radius:50%; width:20px; height:20px; cursor:pointer; line-height:18px; font-size:14px;';
             closeBtn.onclick = () => footerAd.style.display = 'none';
             footerAd.appendChild(closeBtn);
             
-            // Create iframe for the ad
             const iframe = document.createElement('iframe');
             iframe.style.width = '320px';
             iframe.style.height = '50px';
             iframe.style.border = 'none';
             iframe.style.overflow = 'hidden';
             iframe.scrolling = 'no';
-            
             footerAd.appendChild(iframe);
             document.body.appendChild(footerAd);
 
-            // Inject the script into the iframe
             const doc = iframe.contentWindow.document;
             doc.open();
             doc.write(`
                 <script type="text/javascript">
-                    atOptions = {
-                        'key' : 'e9b5cd97e61a665c3e6310d0c16893ff',
-                        'format' : 'iframe',
-                        'height' : 50,
-                        'width' : 320,
-                        'params' : {}
-                    };
+                    atOptions = { 'key' : 'e9b5cd97e61a665c3e6310d0c16893ff', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
                 <\/script>
                 <script type="text/javascript" src="https://www.highperformanceformat.com/e9b5cd97e61a665c3e6310d0c16893ff/invoke.js"><\/script>
             `);
             doc.close();
         }
     }
-    
-refreshInlineAd() {
-        // DISABLED: Removed Adsterra Native Banner (Key: 8ac2407d...)
-        // This was triggering antivirus "Phishing" warnings.
+
+    refreshInlineAd() {
         return; 
     }
 
     checkAdBlock() {
-        // Wait 2.5 seconds for ads to try loading first
         setTimeout(() => {
-            const adSlots = [
-                document.getElementById('ad-inline-slot'),
-                document.getElementById('ad-welcome-slot')
-            ];
-
+            const adSlots = [ document.getElementById('ad-inline-slot'), document.getElementById('ad-welcome-slot') ];
             adSlots.forEach(slot => {
                 if (!slot) return;
-                
-                // DETECT BLOCK: If the slot is empty or hidden, AdBlock killed it.
                 const isBlocked = slot.clientHeight === 0 || slot.innerHTML.trim() === '' || window.getComputedStyle(slot).display === 'none';
-
                 if (isBlocked) {
-                    // THE FIX: Show a friendly Affiliate Button instead
                     slot.style.display = 'flex';
                     slot.style.flexDirection = 'column';
                     slot.style.justifyContent = 'center';
@@ -231,7 +193,6 @@ refreshInlineAd() {
                     slot.style.border = '1px dashed #bae6fd';
                     slot.style.borderRadius = '12px';
                     slot.style.padding = '20px';
-                    
                     slot.innerHTML = `
                         <div style="text-align: center; color: #475569;">
                             <i class="fa-solid fa-heart" style="color: #ef4444; font-size: 1.5rem; margin-bottom: 10px;"></i>
