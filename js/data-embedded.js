@@ -996,6 +996,355 @@ const ITEMS_DATA = [
         "note": "✅ Pods and Powder are allowed. Powders over 12oz (350ml) may require extra screening. (Source: TSA)", 
         "category": ["household", "cleaning"], 
         "keywords": ["detergent", "pods", "powder", "tide pods"]
+},
+// --- 🎵 MUSICAL INSTRUMENTS (NEW) ---
+{
+    id: 600,
+    name: "Cello",
+    keywords: ["string instrument", "violoncello", "large instrument", "orchestra"],
+    category: ["musical instruments"],
+    carryOn: "restricted",
+    checked: "allowed",
+    note: "⚠️ <strong>Too Large for Cabin.</strong> Unless you purchase a separate 'Seat Baggage' ticket, this must be checked in a hard case. If buying a seat, it must be a bulkhead window seat."
+},
+{
+    id: 601,
+    name: "Violin",
+    keywords: ["fiddle", "string instrument", "orchestra", "bow"],
+    category: ["musical instruments"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Allowed.</strong> US Law (FAA Act 2012) allows this as free carry-on IF there is space when you board. Do not loosen strings completely."
+},
+{
+    id: 602,
+    name: "Guitar",
+    keywords: ["acoustic", "electric", "fender", "gibson", "axe"],
+    category: ["musical instruments"],
+    carryOn: "restricted",
+    checked: "allowed",
+    note: "⚠️ <strong>Bin Space Roulette.</strong> Allowed if it fits in the overhead bin. If bins are full, you will be forced to gate-check it. Loosen strings to prevent neck warping in the cold cargo hold."
+},
+{
+    id: 603,
+    name: "Double Bass",
+    keywords: ["upright bass", "contrabass", "bass viol"],
+    category: ["musical instruments"],
+    carryOn: "prohibited",
+    checked: "restricted",
+    note: "❌ <strong>Oversize Cargo.</strong> Exceeds all carry-on limits. Must be checked as oversized cargo. Check flight cargo door dimensions first."
+},
+{
+    id: 604,
+    name: "Trumpet",
+    keywords: ["brass", "horn", "cornet", "bugle", "jazz"],
+    category: ["musical instruments"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Allowed.</strong> Fits in standard overhead bins. Keep in a hard case to prevent denting."
+},
+{
+    id: 605,
+    name: "Cello Bow / Violin Bow",
+    keywords: ["bow", "stick", "horsehair", "frog", "pernambuco"],
+    category: ["musical instruments", "restricted"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "⚠️ <strong>CITES Risk.</strong> High-quality bows made of Pernambuco wood or Ivory tips require a 'Musical Instrument Certificate' to cross international borders."
+},
+
+// --- 🏥 MEDICAL EQUIPMENT (HIGH ANXIETY) ---
+{
+    id: 610,
+    name: "CPAP Machine",
+    keywords: ["sleep apnea", "bipap", "apap", "snoring", "breathing"],
+    category: ["medical", "electronics"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Medical Device.</strong> Does NOT count against your carry-on bag limit. Remove from case for X-ray. Distilled water >3.4oz is allowed if declared."
+},
+{
+    id: 611,
+    name: "Nebulizer",
+    keywords: ["asthma pump", "mist inhaler", "atomizer", "therapy"],
+    category: ["medical", "electronics"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Allowed.</strong> Medical device. Liquid medication is exempt from the 100ml rule."
+},
+{
+    id: 612,
+    name: "Portable Oxygen Concentrator (POC)",
+    keywords: ["oxygen", "O2", "copd", "air machine"],
+    category: ["medical", "electronics"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Must be FAA Approved.</strong> Check for red manufacturer label. Battery must last 150% of flight duration. Liquid oxygen tanks are BANNED."
+},
+{
+    id: 613,
+    name: "Insulin Pump",
+    keywords: ["diabetes", "medtronic", "tandem", "diabetic"],
+    category: ["medical", "electronics"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "⚠️ <strong>DO NOT X-RAY.</strong> Radiation can corrupt the software. Request a 'Hand Inspection' or 'Pat Down' at the checkpoint."
+},
+{
+    id: 614,
+    name: "Continuous Glucose Monitor (CGM)",
+    keywords: ["dexcom", "libre", "blood sugar", "sensor"],
+    category: ["medical", "electronics"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "⚠️ <strong>DO NOT X-RAY.</strong> Wear it through the metal detector or request a pat-down. X-ray scanners can damage the sensor."
+},
+{
+    id: 615,
+    name: "Insulin Cooling Case",
+    keywords: ["frio", "cooler", "ice pack", "medication"],
+    category: ["medical", "liquids"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Exempt.</strong> Gel packs are allowed even if slushy or melted because they are 'Medically Necessary'. Declare them to TSA."
+},
+{
+    id: 616,
+    name: "EpiPen",
+    keywords: ["epinephrine", "allergy", "anaphylaxis", "auto-injector"],
+    category: ["medical", "liquids"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Allowed.</strong> Liquid rule exemption applies. Verification of prescription label may be requested."
+},
+{
+    id: 617,
+    name: "Wheelchair (Wet Cell Battery)",
+    keywords: ["power chair", "mobility aid", "electric chair"],
+    category: ["medical", "batteries"],
+    carryOn: "restricted",
+    checked: "restricted",
+    note: "⚠️ <strong>Captain Notification Required.</strong> Battery must be disconnected, terminals protected, and stored upright in the hold. Arrive early."
+},
+{
+    id: 618,
+    name: "Liquid Nitrogen Dry Shipper",
+    keywords: ["ivf", "embryo", "sperm tank", "cryo"],
+    category: ["medical", "hazardous"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>For IVF/Cryo.</strong> Nitrogen must be fully absorbed (no free liquid). Complies with IATA Special Provision A152."
+},
+
+// --- 👶 BABY & FAMILY (NEW) ---
+{
+    id: 630,
+    name: "Stroller",
+    keywords: ["pram", "buggy", "pushchair", "baby"],
+    category: ["baby"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Gate Check Standard.</strong> Small travel strollers (e.g. Yoyo) fit in overhead. Large ones must be gate-checked before boarding."
+},
+{
+    id: 631,
+    name: "Car Seat",
+    keywords: ["booster", "infant carrier", "child seat"],
+    category: ["baby"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Allowed on Board.</strong> If you bought a seat for your child, you can use the car seat (must be FAA approved). Otherwise, gate-check it for free."
+},
+{
+    id: 632,
+    name: "Freeze-Dried Baby Snacks",
+    keywords: ["yogurt melts", "puffs", "teething crackers"],
+    category: ["baby", "food"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Allowed.</strong> No liquid restrictions. Great for keeping toddlers quiet."
+},
+{
+    id: 633,
+    name: "Diaper Cream",
+    keywords: ["rash cream", "desitin", "ointment", "zinc"],
+    category: ["baby", "liquids"],
+    carryOn: "restricted",
+    checked: "allowed",
+    note: "⚠️ <strong>Liquid Rule Applies.</strong> Unless declared as 'Medically Necessary' (officer discretion), containers must be under 3.4oz (100ml)."
+},
+
+// --- 🤿 HOBBIES & TECH (NEW) ---
+{
+    id: 640,
+    name: "Drone (Consumer)",
+    keywords: ["dji", "mavic", "quadcopter", "uav"],
+    category: ["electronics", "batteries"],
+    carryOn: "allowed",
+    checked: "allowed",
+    customs_restricted: ["Nicaragua", "Morocco", "Egypt"],
+    note: "✅ <strong>Drone Body Allowed.</strong> 🚨 <strong>Batteries:</strong> MUST go in carry-on. ⚠️ <strong>Banned Countries:</strong> Nicaragua and Morocco confiscate drones at customs."
+},
+{
+    id: 641,
+    name: "LiPo Batteries (Spare)",
+    keywords: ["drone battery", "rc", "lithium polymer"],
+    category: ["electronics", "batteries"],
+    carryOn: "allowed",
+    checked: "prohibited",
+    note: "🚨 <strong>FIRE RISK.</strong> Carry-on ONLY. Terminals must be taped. Max 2 spares if between 100-160Wh. Unlimited if under 100Wh."
+},
+{
+    id: 642,
+    name: "VR Headset",
+    keywords: ["oculus", "meta quest", "vision pro", "goggles"],
+    category: ["electronics"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Treat as Laptop.</strong> Remove from bag for X-ray screening. Protect lenses from sunlight."
+},
+{
+    id: 643,
+    name: "Desktop Computer / GPU",
+    keywords: ["pc tower", "gaming rig", "nvidia", "graphics card"],
+    category: ["electronics"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Allowed.</strong> High value items should go in carry-on. If checking, remove the GPU and CPU cooler to prevent structural damage."
+},
+{
+    id: 644,
+    name: "Soldering Iron",
+    keywords: ["welding", "electronics tool", "heating"],
+    category: ["tools"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Corded:</strong> Allowed. ⚠️ <strong>Butane/Cordless:</strong> Carry-on ONLY, and must have a safety cover securely fitted."
+},
+{
+    id: 645,
+    name: "Satellite Phone",
+    keywords: ["iridium", "sat phone", "emergency"],
+    category: ["electronics", "customs"],
+    carryOn: "allowed",
+    checked: "allowed",
+    customs_restricted: ["India", "Cuba"],
+    note: "✅ <strong>Allowed by Airline.</strong> 🚨 <strong>Illegal in India:</strong> Possession of a satellite phone in India without a specific permit is a criminal offense."
+},
+{
+    id: 646,
+    name: "AirTag / Tracker",
+    keywords: ["apple tag", "tile", "smart tag", "luggage tracker"],
+    category: ["electronics"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Allowed.</strong> The small lithium coin cell (CR2032) is exempt from the strict battery ban in checked luggage."
+},
+{
+    id: 647,
+    name: "Scuba Tank",
+    keywords: ["dive cylinder", "air tank", "aluminum 80"],
+    category: ["sports", "hazardous"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "⚠️ <strong>Valve Must Be Removed.</strong> The tank must be completely open for visual inspection of the interior. No compressed air allowed."
+},
+{
+    id: 648,
+    name: "Dive Knife",
+    keywords: ["scuba knife", "sea knife", "underwater cutter"],
+    category: ["sports", "weapons"],
+    carryOn: "prohibited",
+    checked: "allowed",
+    note: "❌ <strong>Weapon.</strong> Checked baggage ONLY. Sheath securely to prevent injury to baggage handlers."
+},
+{
+    id: 649,
+    name: "Polymer Clay",
+    keywords: ["fimo", "sculpey", "modeling clay"],
+    category: ["art"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "⚠️ <strong>False Alarm Risk.</strong> Dense organic clay looks identical to C4 explosive on X-ray. Expect a bag search and swab test."
+},
+{
+    id: 650,
+    name: "Oil Paint Tubes",
+    keywords: ["artist paint", "pigments", "art supplies"],
+    category: ["art", "liquids"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Vegetable Oil Based:</strong> Allowed. ❌ <strong>Solvents/Turpentine:</strong> Strictly PROHIBITED in all luggage (Flammable)."
+},
+
+// --- 🌶️ FOOD & CUSTOMS (NEW) ---
+{
+    id: 660,
+    name: "Manuka Honey",
+    keywords: ["raw honey", "healing honey", "bee product"],
+    category: ["food", "liquids", "customs"],
+    carryOn: "restricted",
+    checked: "allowed",
+    customs_restricted: ["Australia", "New Zealand"],
+    note: "⚠️ <strong>Liquid Rule:</strong> Jars >3.4oz must be checked. 🚨 <strong>Biosecurity:</strong> Banned from entering Western Australia or NZ due to bee disease risks."
+},
+{
+    id: 661,
+    name: "Jamon Iberico / Cured Ham",
+    keywords: ["prosciutto", "serrano", "dry meat", "pork"],
+    category: ["food", "customs"],
+    carryOn: "allowed",
+    checked: "allowed",
+    customs_restricted: ["USA", "Australia", "New Zealand"],
+    note: "🚨 <strong>Customs Warning:</strong> The US and Australia confiscate soft cured meats (ham, salami) from Europe due to Swine Fever regulations."
+},
+{
+    id: 662,
+    name: "Canned Surstromming",
+    keywords: ["fermented herring", "rotten fish", "swedish fish"],
+    category: ["food"],
+    carryOn: "prohibited",
+    checked: "prohibited",
+    note: "❌ <strong>BANNED by Airlines.</strong> Air France, BA, and others forbid this due to the risk of pressurized can explosion and extreme odor."
+},
+{
+    id: 663,
+    name: "Durian Fruit",
+    keywords: ["stinky fruit", "king of fruits", "thai fruit"],
+    category: ["food"],
+    carryOn: "prohibited",
+    checked: "prohibited",
+    note: "❌ <strong>BANNED.</strong> Most Asian airlines refuse Durian in the cabin or cargo due to the overwhelming smell."
+},
+{
+    id: 664,
+    name: "Fresh Eggs",
+    keywords: ["raw eggs", "poultry", "baking"],
+    category: ["food", "customs"],
+    carryOn: "restricted",
+    checked: "allowed",
+    customs_restricted: ["USA", "Australia", "New Zealand", "Japan"],
+    note: "⚠️ <strong>Gel Rule?</strong> Raw eggs are sometimes treated as liquids/gels. 🚨 <strong>Customs:</strong> High risk of Newcastle Disease. Usually confiscated at borders."
+},
+{
+    id: 665,
+    name: "Saffron",
+    keywords: ["spice", "red gold", "crocus"],
+    category: ["food"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Allowed.</strong> High value. Ensure it is commercially packaged to avoid agricultural inspection issues."
+},
+
+// --- 👗 FASHION & LUXURY (NEW) ---
+{
+    id: 670,
+    name: "Wedding Dress",
+    keywords: ["bridal gown", "ceremonial", "white dress"],
+    category: ["clothing"],
+    carryOn: "allowed",
+    checked: "restricted",
+    note
 } // This is the end of your last item
 ]; // <--- This bracket closes the ITEMS_DATA array
 
