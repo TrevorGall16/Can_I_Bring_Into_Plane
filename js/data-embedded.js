@@ -1532,7 +1532,7 @@ const ITEMS_DATA = [
     id: 670,
     name: "Wedding Dress",
     keywords: ["bridal gown", "ceremonial", "white dress"],
-    category: ["clothing"],
+    category: ["fashion"],
     carryOn: "allowed",
     checked: "restricted",
     note
