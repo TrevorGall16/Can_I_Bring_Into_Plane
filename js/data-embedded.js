@@ -1535,22 +1535,24 @@ const ITEMS_DATA = [
     category: ["fashion"],
     carryOn: "allowed",
     checked: "restricted",
-    note
+    note: "✅ <strong>Carry-On Recommended.</strong> Ask flight attendants if there is closet space in First Class. Do not check it (loss risk)."
 } // This is the end of your last item
 ]; // <--- This bracket closes the ITEMS_DATA array
 
 // NOW you run the logic outside the array
-ITEMS_DATA.forEach(item => {
-    if (!item.slug) {
-        item.slug = item.name
-            .toLowerCase()
-            .replace(/&/g, 'and')    // <--- Add this
-            .replace(/\+/g, 'plus')
-            .replace(/[()]/g, '') // Remove parentheses
-            .replace(/\//g, '-')  // Replace slashes with hyphens
-            .replace(/[^\w\s-]/g, '') // Remove special characters
-            .replace(/\s+/g, '-') // Replace spaces with hyphens
-            .replace(/-+/g, '-')  // Remove duplicate hyphens
-            .trim();
-    }
-});
+if (typeof ITEMS_DATA !== 'undefined') {
+    ITEMS_DATA.forEach(item => {
+        if (!item.slug) {
+            item.slug = item.name
+                .toLowerCase()
+                .replace(/&/g, 'and')
+                .replace(/\+/g, 'plus')
+                .replace(/[()]/g, '')
+                .replace(/\//g, '-')
+                .replace(/[^\w\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+                .trim();
+        }
+    });
+}
