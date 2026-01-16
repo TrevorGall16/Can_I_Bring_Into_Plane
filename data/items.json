@@ -123,7 +123,7 @@
       "carryOn": "allowed",
       "checked": "allowed",
       "note": "Bring prescription or doctor's note. Liquids exempt from 3-1-1 rule.",
-      "category": ["medication", "medical"],
+      "category": ["medication", "medication"],
       "keywords": ["medicine", "medication", "pills", "prescription", "drugs"]
     },
     {
@@ -141,7 +141,7 @@
       "carryOn": "allowed",
       "checked": "allowed",
       "note": "Must have prescription label. Notify TSA officer.",
-      "category": ["medication", "medical"],
+      "category": ["medication", "medication"],
       "keywords": ["insulin", "diabetes", "needles", "syringes", "injection"]
     },
     {
@@ -231,7 +231,7 @@
       "carryOn": "allowed",
       "checked": "allowed",
       "note": "Exempt from 3-1-1 rule. Can bring ice packs.",
-      "category": ["liquids", "medical", "baby"],
+      "category": ["liquids", "medication", "baby"],
       "keywords": ["breast milk", "milk", "baby", "nursing"]
     },
     {
@@ -240,7 +240,7 @@
       "carryOn": "allowed",
       "checked": "allowed",
       "note": "Must be completely frozen at checkpoint.",
-      "category": ["medical", "other"],
+      "category": ["medication", "other"],
       "keywords": ["ice pack", "frozen", "cooler"]
     },
     {
@@ -249,7 +249,7 @@
       "carryOn": "restricted",
       "checked": "allowed",
       "note": "If partially frozen/slushy, subject to 3.4 oz limit.",
-      "category": ["liquids", "medical"],
+      "category": ["liquids", "medication"],
       "keywords": ["ice pack", "gel", "cooler"]
     },
     {
@@ -411,7 +411,7 @@
       "carryOn": "restricted",
       "checked": "allowed",
       "note": "Must be 3.4 oz or less in carry-on.",
-      "category": ["liquids", "medical"],
+      "category": ["liquids", "medication"],
       "keywords": ["contact", "lens", "solution", "saline"]
     },
     {
@@ -420,7 +420,7 @@
       "carryOn": "restricted",
       "checked": "allowed",
       "note": "Must be 3.4 oz or less in carry-on.",
-      "category": ["liquids", "medical"],
+      "category": ["liquids", "medication"],
       "keywords": ["eye drops", "drops", "eyes"]
     },
     {
@@ -510,8 +510,8 @@
       "carryOn": "allowed",
       "checked": "allowed",
       "note": "Medical canes allowed. Subject to inspection.",
-      "category": ["medical", "other"],
-      "keywords": ["cane", "walking stick", "medical"]
+      "category": ["medication", "other"],
+      "keywords": ["cane", "walking stick", "medication"]
     },
     {
       "id": 58,
@@ -519,8 +519,8 @@
       "carryOn": "allowed",
       "checked": "allowed",
       "note": "Medical devices allowed.",
-      "category": ["medical"],
-      "keywords": ["crutches", "medical", "mobility"]
+      "category": ["medication"],
+      "keywords": ["crutches", "medication", "mobility"]
     },
     {
       "id": 59,
@@ -528,8 +528,8 @@
       "carryOn": "allowed",
       "checked": "allowed",
       "note": "Allowed as medical device. Battery type matters.",
-      "category": ["medical"],
-      "keywords": ["wheelchair", "mobility", "medical"]
+      "category": ["medication"],
+      "keywords": ["wheelchair", "mobility", "medication"]
     },
     {
       "id": 60,
@@ -537,8 +537,8 @@
       "carryOn": "allowed",
       "checked": "allowed",
       "note": "Does not count as carry-on item. Notify TSA.",
-      "category": ["medical"],
-      "keywords": ["cpap", "sleep apnea", "medical", "breathing"]
+      "category": ["medication"],
+      "keywords": ["cpap", "sleep apnea", "medication", "breathing"]
     },
     {
       "id": 61,
@@ -546,8 +546,8 @@
       "carryOn": "restricted",
       "checked": "prohibited",
       "note": "Must be FAA-approved. Airline notification required.",
-      "category": ["medical"],
-      "keywords": ["oxygen", "medical", "breathing"]
+      "category": ["medication"],
+      "keywords": ["oxygen", "medication", "breathing"]
     },
     {
       "id": 62,
@@ -771,8 +771,8 @@
       "carryOn": "restricted",
       "checked": "restricted",
       "note": "Mercury thermometers prohibited. Digital allowed.",
-      "category": ["medical"],
-      "keywords": ["thermometer", "temperature", "medical"]
+      "category": ["medication"],
+      "keywords": ["thermometer", "temperature", "medication"]
     },
     {
       "id": 87,
@@ -780,7 +780,7 @@
       "carryOn": "allowed",
       "checked": "allowed",
       "note": "Scissors must be under 4 inches. Liquids follow 3-1-1 rule.",
-      "category": ["medical"],
+      "category": ["medication"],
       "keywords": ["first aid", "bandages", "medical kit"]
     },
     {
@@ -789,7 +789,7 @@
       "carryOn": "allowed",
       "checked": "allowed",
       "note": "No restrictions.",
-      "category": ["medical"],
+      "category": ["medication"],
       "keywords": ["bandages", "band-aid", "bandaid"]
     },
     {
@@ -987,7 +987,7 @@
       "carryOn": "allowed",
       "checked": "allowed",
       "note": "Trained service animals allowed. Documentation may be required.",
-      "category": ["pets", "medical"],
+      "category": ["pets", "medication"],
       "keywords": ["service dog", "service animal", "assistance"]
     },
     {

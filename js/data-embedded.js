@@ -301,7 +301,7 @@ const ITEMS_DATA = [
         "carryOn": "allowed",
         "checked": "allowed",
         "note": "✅ Allowed in both carry-on and checked luggage. 💡 CRITICAL: Keep insulin in its original prescription packaging with your name clearly visible. Notify TSA officer at the start of screening. ✅ Insulin and other liquid medications are EXEMPT from the 100ml (3.4oz) rule. You may carry unlimited quantities of medically necessary liquids. 💉 Syringes and needles are permitted when accompanied by injectable medication. Declare all medical supplies at checkpoint. (Source: TSA.gov)",
-        "category": ["medication", "medical"],
+        "category": ["medication", "medication"],
         "keywords": ["insulin", "diabetes", "diabetic", "needles", "syringes", "injection", "shots", "glucose"]
     },
     {
@@ -777,7 +777,7 @@ const ITEMS_DATA = [
         "carryOn": "allowed", 
         "checked": "allowed", 
         "note": "✅ Allowed. Must pass through X-ray. Container must be wood/plastic (not metal/lead) so X-ray can see inside. TSA will NOT open the container. (Source: TSA)", 
-        "category": ["other"], 
+        "category": ["household"], 
         "keywords": ["ashes", "cremation", "remains", "urn"]
     },
     {
@@ -1002,7 +1002,7 @@ const ITEMS_DATA = [
     id: 600,
     name: "Cello",
     keywords: ["string instrument", "violoncello", "large instrument", "orchestra"],
-    category: ["musical instruments"],
+    category: ["music"],
     carryOn: "restricted",
     checked: "allowed",
     note: "⚠️ <strong>Too Large for Cabin.</strong> Unless you purchase a separate 'Seat Baggage' ticket, this must be checked in a hard case. If buying a seat, it must be a bulkhead window seat."
@@ -1011,7 +1011,7 @@ const ITEMS_DATA = [
     id: 601,
     name: "Violin",
     keywords: ["fiddle", "string instrument", "orchestra", "bow"],
-    category: ["musical instruments"],
+    category: ["music"],
     carryOn: "allowed",
     checked: "allowed",
     note: "✅ <strong>Allowed.</strong> US Law (FAA Act 2012) allows this as free carry-on IF there is space when you board. Do not loosen strings completely."
@@ -1020,7 +1020,7 @@ const ITEMS_DATA = [
     id: 602,
     name: "Guitar",
     keywords: ["acoustic", "electric", "fender", "gibson", "axe"],
-    category: ["musical instruments"],
+    category: ["music"],
     carryOn: "restricted",
     checked: "allowed",
     note: "⚠️ <strong>Bin Space Roulette.</strong> Allowed if it fits in the overhead bin. If bins are full, you will be forced to gate-check it. Loosen strings to prevent neck warping in the cold cargo hold."
@@ -1029,7 +1029,7 @@ const ITEMS_DATA = [
     id: 603,
     name: "Double Bass",
     keywords: ["upright bass", "contrabass", "bass viol"],
-    category: ["musical instruments"],
+    category: ["music"],
     carryOn: "prohibited",
     checked: "restricted",
     note: "❌ <strong>Oversize Cargo.</strong> Exceeds all carry-on limits. Must be checked as oversized cargo. Check flight cargo door dimensions first."
@@ -1038,7 +1038,7 @@ const ITEMS_DATA = [
     id: 604,
     name: "Trumpet",
     keywords: ["brass", "horn", "cornet", "bugle", "jazz"],
-    category: ["musical instruments"],
+    category: ["music"],
     carryOn: "allowed",
     checked: "allowed",
     note: "✅ <strong>Allowed.</strong> Fits in standard overhead bins. Keep in a hard case to prevent denting."
@@ -1047,7 +1047,7 @@ const ITEMS_DATA = [
     id: 605,
     name: "Cello Bow / Violin Bow",
     keywords: ["bow", "stick", "horsehair", "frog", "pernambuco"],
-    category: ["musical instruments", "restricted"],
+    category: ["music", "restricted"],
     carryOn: "allowed",
     checked: "allowed",
     note: "⚠️ <strong>CITES Risk.</strong> High-quality bows made of Pernambuco wood or Ivory tips require a 'Musical Instrument Certificate' to cross international borders."
@@ -1058,7 +1058,7 @@ const ITEMS_DATA = [
     id: 610,
     name: "CPAP Machine",
     keywords: ["sleep apnea", "bipap", "apap", "snoring", "breathing"],
-    category: ["medical", "electronics"],
+    category: ["medication", "electronics"],
     carryOn: "allowed",
     checked: "allowed",
     note: "✅ <strong>Medical Device.</strong> Does NOT count against your carry-on bag limit. Remove from case for X-ray. Distilled water >3.4oz is allowed if declared."
@@ -1067,7 +1067,7 @@ const ITEMS_DATA = [
     id: 611,
     name: "Nebulizer",
     keywords: ["asthma pump", "mist inhaler", "atomizer", "therapy"],
-    category: ["medical", "electronics"],
+    category: ["medication", "electronics"],
     carryOn: "allowed",
     checked: "allowed",
     note: "✅ <strong>Allowed.</strong> Medical device. Liquid medication is exempt from the 100ml rule."
@@ -1076,7 +1076,7 @@ const ITEMS_DATA = [
     id: 612,
     name: "Portable Oxygen Concentrator (POC)",
     keywords: ["oxygen", "O2", "copd", "air machine"],
-    category: ["medical", "electronics"],
+    category: ["medication", "electronics"],
     carryOn: "allowed",
     checked: "allowed",
     note: "✅ <strong>Must be FAA Approved.</strong> Check for red manufacturer label. Battery must last 150% of flight duration. Liquid oxygen tanks are BANNED."
@@ -1085,7 +1085,7 @@ const ITEMS_DATA = [
     id: 613,
     name: "Insulin Pump",
     keywords: ["diabetes", "medtronic", "tandem", "diabetic"],
-    category: ["medical", "electronics"],
+    category: ["medication", "electronics"],
     carryOn: "allowed",
     checked: "allowed",
     note: "⚠️ <strong>DO NOT X-RAY.</strong> Radiation can corrupt the software. Request a 'Hand Inspection' or 'Pat Down' at the checkpoint."
@@ -1094,7 +1094,7 @@ const ITEMS_DATA = [
     id: 614,
     name: "Continuous Glucose Monitor (CGM)",
     keywords: ["dexcom", "libre", "blood sugar", "sensor"],
-    category: ["medical", "electronics"],
+    category: ["medication", "electronics"],
     carryOn: "allowed",
     checked: "allowed",
     note: "⚠️ <strong>DO NOT X-RAY.</strong> Wear it through the metal detector or request a pat-down. X-ray scanners can damage the sensor."
@@ -1103,7 +1103,7 @@ const ITEMS_DATA = [
     id: 615,
     name: "Insulin Cooling Case",
     keywords: ["frio", "cooler", "ice pack", "medication"],
-    category: ["medical", "liquids"],
+    category: ["medication", "liquids"],
     carryOn: "allowed",
     checked: "allowed",
     note: "✅ <strong>Exempt.</strong> Gel packs are allowed even if slushy or melted because they are 'Medically Necessary'. Declare them to TSA."
@@ -1112,7 +1112,7 @@ const ITEMS_DATA = [
     id: 616,
     name: "EpiPen",
     keywords: ["epinephrine", "allergy", "anaphylaxis", "auto-injector"],
-    category: ["medical", "liquids"],
+    category: ["medication", "liquids"],
     carryOn: "allowed",
     checked: "allowed",
     note: "✅ <strong>Allowed.</strong> Liquid rule exemption applies. Verification of prescription label may be requested."
@@ -1121,7 +1121,7 @@ const ITEMS_DATA = [
     id: 617,
     name: "Wheelchair (Wet Cell Battery)",
     keywords: ["power chair", "mobility aid", "electric chair"],
-    category: ["medical", "batteries"],
+    category: ["medication", "batteries"],
     carryOn: "restricted",
     checked: "restricted",
     note: "⚠️ <strong>Captain Notification Required.</strong> Battery must be disconnected, terminals protected, and stored upright in the hold. Arrive early."
@@ -1130,7 +1130,7 @@ const ITEMS_DATA = [
     id: 618,
     name: "Liquid Nitrogen Dry Shipper",
     keywords: ["ivf", "embryo", "sperm tank", "cryo"],
-    category: ["medical", "hazardous"],
+    category: ["medication", "hazardous"],
     carryOn: "allowed",
     checked: "allowed",
     note: "✅ <strong>For IVF/Cryo.</strong> Nitrogen must be fully absorbed (no free liquid). Complies with IATA Special Provision A152."
@@ -1335,7 +1335,198 @@ const ITEMS_DATA = [
     checked: "allowed",
     note: "✅ <strong>Allowed.</strong> High value. Ensure it is commercially packaged to avoid agricultural inspection issues."
 },
-
+// --- 💊 HIGH-RISK MEDICATIONS (SEO GOLDMINE) ---
+{
+    id: 700,
+    name: "Adderall / Vyvanse",
+    keywords: ["adhd", "amphetamine", "stimulant", "study drug", "focus"],
+    category: ["medication", "restricted"],
+    carryOn: "allowed",
+    checked: "allowed",
+    customs_restricted: ["Japan", "UAE", "Singapore", "Thailand", "China"],
+    note: "🚨 <strong>STRICTLY BANNED in Japan & UAE.</strong> Contains amphetamines. Possession can lead to arrest/deportation. In other countries, you MUST have a doctor's prescription and keep it in the original bottle."
+},
+{
+    id: 701,
+    name: "Ritalin / Concerta",
+    keywords: ["methylphenidate", "adhd", "focus", "meds"],
+    category: ["medication", "restricted"],
+    carryOn: "allowed",
+    checked: "allowed",
+    customs_restricted: ["Japan", "UAE", "Russia"],
+    note: "⚠️ <strong>Restricted.</strong> Unlike Adderall, this is *sometimes* allowed in Japan but requires a 'Yunyu Kakunin-sho' (Import Certificate) approved in advance. Always carry a prescription."
+},
+{
+    id: 702,
+    name: "Codeine / Tylenol #3",
+    keywords: ["painkiller", "cough syrup", "opioid", "tylenol 3"],
+    category: ["medication", "restricted"],
+    carryOn: "allowed",
+    checked: "allowed",
+    customs_restricted: ["UAE", "Japan", "Greece", "China"],
+    note: "🚨 <strong>Banned in UAE & Japan.</strong> Codeine is considered a narcotic. Even over-the-counter cough syrups with codeine are illegal to bring into these countries without special government permission."
+},
+{
+    id: 703,
+    name: "Xanax / Valium",
+    keywords: ["alprazolam", "benzodiazepine", "anxiety", "benzo", "diazepam"],
+    category: ["medication", "restricted"],
+    carryOn: "allowed",
+    checked: "allowed",
+    customs_restricted: ["UAE", "Japan", "Singapore", "Thailand"],
+    note: "⚠️ <strong>Controlled Substance.</strong> Strictly regulated in UAE and Japan. You can usually bring a 30-day supply with a prescription, but bringing more requires prior approval."
+},
+{
+    id: 704,
+    name: "Tramadol",
+    keywords: ["ultram", "pain relief", "opioid", "painkiller"],
+    category: ["medication", "restricted"],
+    carryOn: "allowed",
+    checked: "allowed",
+    customs_restricted: ["UAE", "Egypt", "Japan"],
+    note: "🚨 <strong>Banned in UAE & Egypt.</strong> Tramadol is strictly controlled and often treated as a narcotic illegal drug in the Middle East. Do not bring it without strict government approval."
+},
+{
+    id: 705,
+    name: "Ambien / Lunesta",
+    keywords: ["sleeping pill", "zolpidem", "insomnia", "sleep aid"],
+    category: ["medication", "restricted"],
+    carryOn: "allowed",
+    checked: "allowed",
+    customs_restricted: ["UAE", "Japan", "Singapore"],
+    note: "⚠️ <strong>Controlled Substance.</strong> Allowed in most countries with a prescription (max 30-day supply). In UAE and Japan, it is a controlled psychotropic; carry documentation."
+},
+{
+    id: 706,
+    name: "Sudafed (Pseudoephedrine)",
+    keywords: ["decongestant", "cold medicine", "sinus", "allergy"],
+    category: ["medication", "restricted"],
+    carryOn: "allowed",
+    checked: "allowed",
+    customs_restricted: ["Japan", "Mexico", "New Zealand"],
+    note: "🚨 <strong>Banned in Japan.</strong> Sudafed contains pseudoephedrine, a stimulant banned in Japan. Use standard Sudafed PE (Phenylephrine) instead."
+},
+{
+    id: 707,
+    name: "Vicks Inhaler",
+    keywords: ["nasal spray", "decongestant", "cold", "flu"],
+    category: ["medication", "restricted"],
+    carryOn: "allowed",
+    checked: "allowed",
+    customs_restricted: ["Japan"],
+    note: "⚠️ <strong>Check Ingredients.</strong> US versions often contain Levomethamphetamine, which is BANNED in Japan. Check the label carefully before flying."
+},
+{
+    id: 708,
+    name: "CBD Oil / Gummies",
+    keywords: ["cannabis", "hemp", "marijuana", "thc", "sleep"],
+    category: ["medication", "restricted"],
+    carryOn: "restricted",
+    checked: "restricted",
+    customs_restricted: ["UAE", "China", "Singapore", "Japan", "Russia"],
+    note: "🚨 <strong>High Risk.</strong> Even if 'THC Free', CBD is illegal in many Asian and Middle Eastern countries. Possession can lead to jail time. Legal to fly *within* the US (if <0.3% THC)."
+},
+{
+    id: 709,
+    name: "Melatonin",
+    keywords: ["sleep aid", "gummies", "jet lag", "supplement"],
+    category: ["medication"],
+    carryOn: "allowed",
+    checked: "allowed",
+    customs_restricted: ["UK", "EU", "Australia", "Japan"],
+    note: "⚠️ <strong>Restricted.</strong> In the UK, EU, and Australia, Melatonin is prescription-only. You can bring it for personal use, but you cannot buy it over the counter there. Japan restricts imports."
+},
+{
+    id: 710,
+    name: "Syringes / Needles",
+    keywords: ["injection", "diabetic", "sharp", "medication"],
+    category: ["medication", "medication"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Allowed with Medication.</strong> You must have the injectable medication (e.g., Insulin, Epipen) with you to carry unused syringes. Tell the TSA officer."
+},
+{
+    id: 711,
+    name: "Medical Marijuana",
+    keywords: ["weed", "cannabis", "thc", "edibles", "joint"],
+    category: ["medication", "restricted"],
+    carryOn: "restricted",
+    checked: "restricted",
+    customs_restricted: ["International", "UAE", "Singapore", "China", "Japan"],
+    note: "🚨 <strong>Federally Illegal (USA).</strong> TSA is federal; technically they can confiscate it. ❌ <strong>International:</strong> DO NOT FLY INTERNATIONALLY with cannabis. It is a serious crime (drug trafficking) in many countries."
+},
+{
+    id: 712,
+    name: "Birth Control Pills",
+    keywords: ["contraceptive", "the pill", "plan b", "hormones"],
+    category: ["medication"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Allowed.</strong> No restrictions in US/Europe. ⚠️ <strong>Middle East:</strong> Plan B (Emergency Contraception) is banned or restricted in some UAE/Gulf states."
+},
+{
+    id: 713,
+    name: "Viagra / Cialis",
+    keywords: ["sildenafil", "ed meds", "blue pill"],
+    category: ["medication"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Allowed.</strong> Keep in original bottle with prescription label to avoid suspicion of counterfeit drug trafficking."
+},
+{
+    id: 714,
+    name: "Ozempic / Wegovy",
+    keywords: ["semaglutide", "weight loss", "diabetes", "pen"],
+    category: ["medication", "liquids"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Allowed.</strong> It is a liquid but exempt from the 3-1-1 rule as a prescription medicine. Keep it cool (ask flight attendant for ice if needed)."
+},
+{
+    id: 715,
+    name: "Testosterone (Gel/Injection)",
+    keywords: ["hrt", "steroids", "trt", "hormone"],
+    category: ["medication", "liquids"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Allowed.</strong> Controlled substance (anabolic steroid), so you MUST have your prescription label on the bottle/box. Exempt from liquid limits."
+},
+{
+    id: 716,
+    name: "NyQuil (Liquid)",
+    keywords: ["cold medicine", "cough syrup", "flu", "sleep"],
+    category: ["medication", "liquids"],
+    carryOn: "restricted",
+    checked: "allowed",
+    note: "⚠️ <strong>Liquid Rule Applies.</strong> If the bottle is >3.4oz (100ml), it must be checked. Over-the-counter liquid meds are NOT exempt from the limit unless prescribed."
+},
+{
+    id: 717,
+    name: "Contact Lens Solution",
+    keywords: ["saline", "eye drops", "renu", "opti-free"],
+    category: ["toiletries", "liquids"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Allowed >3.4oz.</strong> Contact solution is considered 'Medically Necessary'. You can bring a full-size bottle, but you must declare it to TSA for separate screening."
+},
+{
+    id: 718,
+    name: "Nicotine Gum / Patches",
+    keywords: ["smoking cessation", "nicorette", "tobacco"],
+    category: ["medication"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Allowed.</strong> ⚠️ <strong>Singapore Warning:</strong> Chewing gum (even nicotine) is strictly regulated. You must declare it and have a prescription, or risk a fine."
+},
+{
+    id: 719,
+    name: "Accutane (Isotretinoin)",
+    keywords: ["acne", "skin", "pills", "dermatology"],
+    category: ["medication"],
+    carryOn: "allowed",
+    checked: "allowed",
+    note: "✅ <strong>Allowed.</strong> No travel restrictions. Keep in original packaging."
+},
 // --- 👗 FASHION & LUXURY (NEW) ---
 {
     id: 670,
