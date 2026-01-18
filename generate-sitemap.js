@@ -13,9 +13,11 @@ const SITE_URL = 'https://www.canibringonplane.com';
 const DATA_FILE_PATH = path.join(__dirname, 'js/data-embedded.js');
 const OUTPUT_FILE_PATH = path.join(__dirname, 'sitemap.xml');
 
-// Standard Slug Logic
+// ✅ CORRECTED SLUG LOGIC (Matches index.html exactly)
 function createSlug(text) {
     return text.toString().toLowerCase()
+        .replace(/&/g, 'and')      // Fixes "&" -> "and" (MISSING IN YOUR OLD SCRIPT)
+        .replace(/\+/g, 'plus')    // Fixes "+" -> "plus" (MISSING IN YOUR OLD SCRIPT)
         .replace(/[()]/g, '')
         .replace(/\//g, '-')
         .replace(/[^\w\s-]/g, '')
