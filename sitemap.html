@@ -40,17 +40,20 @@
         <a href="contact.html">Contact</a>
         </p>
     </footer>
-
-    <script src="js/data-embedded.js"></script>
+<script src="js/data-embedded.js"></script>
     
     <script>
-        // Use the exact same slug function as your main app to ensure links work
+        // ✅ CORRECTED SLUG LOGIC (Matches index.html exactly)
         function toSlug(text) {
             return text.toString().toLowerCase()
-                .trim()
-                .replace(/\s+/g, '-')     // Replace spaces with -
-                .replace(/[^\w\-]+/g, '') // Remove all non-word chars
-                .replace(/\-\-+/g, '-');  // Replace multiple - with single -
+                .replace(/&/g, 'and')      // Fixes "&" -> "and"
+                .replace(/\+/g, 'plus')    // Fixes "+" -> "plus"
+                .replace(/[()]/g, '')      // Removes parentheses
+                .replace(/\//g, '-')       // Replaces slash with dash
+                .replace(/[^\w\s-]/g, '')  // Removes special chars
+                .replace(/\s+/g, '-')      // Spaces to dashes
+                .replace(/-+/g, '-')       // Removes double dashes
+                .trim();
         }
 
         const list = document.getElementById('itemList');
@@ -63,7 +66,7 @@
                 const li = document.createElement('li');
                 const a = document.createElement('a');
                 
-                // Create the link to the specific result
+                // Create the link
                 a.href = `index.html?item=${toSlug(item.name)}`;
                 a.textContent = item.name;
                 
@@ -78,7 +81,7 @@
                 a.style.fontSize = '0.9rem';
                 a.style.transition = 'all 0.2s';
                 
-                // Hover effect logic
+                // Hover effect
                 a.onmouseover = function() {
                     this.style.background = '#e8ecff';
                     this.style.borderColor = '#667eea';
@@ -97,5 +100,3 @@
             list.innerHTML = '<p>Error loading data. Please try again.</p>';
         }
     </script>
-</body>
-</html>
