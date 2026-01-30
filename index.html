@@ -1239,6 +1239,20 @@ document.addEventListener('DOMContentLoaded', () => {
     buildSearchIndex();
     initializeEventListeners();
     updateBagCounter();
+
+    // SEO FIX: Ensure canonical exists on page load
+    // If no item/category param, set homepage canonical
+    const url = new URL(window.location);
+    if (!url.searchParams.get('item') && !url.searchParams.get('category')) {
+        let canonical = document.querySelector('link[rel="canonical"]');
+        if (!canonical) {
+            canonical = document.createElement('link');
+            canonical.setAttribute('rel', 'canonical');
+            document.head.appendChild(canonical);
+        }
+        canonical.setAttribute('href', 'https://www.canibringonplane.com/');
+    }
+
     navManager.loadFromURL();
     // Initialize sticky footer ad
     adProvider.initStickyFooter();
