@@ -1216,3 +1216,19 @@ select:focus-visible {
 .category-btn {
     display: none;
 }
+.breadcrumb-nav ol {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px 0;
+    display: flex;
+    font-size: 0.85rem;
+    color: #666;
+}
+.breadcrumb-nav li a {
+    text-decoration: none;
+    color: #0061ff;
+}
+.breadcrumb-nav .separator {
+    margin: 0 8px;
+    color: #ccc;
+}

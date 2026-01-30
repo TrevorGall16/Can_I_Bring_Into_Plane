@@ -217,20 +217,55 @@
                 </div>
             </section>
         </div>
-
+<section class="seo-content-block" style="margin-top: 40px; padding-top: 30px; border-top: 1px solid #eee; color: #444; font-size: 0.95rem; line-height: 1.6;">
+                <h3 style="font-size: 1.1rem; margin-bottom: 15px; color: #1a1a1a;">How We Verify Carry-On Rules</h3>
+                <p>
+                    Traveling with liquids, electronics, or medical equipment can be confusing. 
+                    <strong>Can I Bring This On A Plane?</strong> aggregates data from official aviation security agencies including the 
+                    <strong>TSA (USA)</strong>, <strong>CATSA (Canada)</strong>, <strong>EASA (Europe)</strong>, and the <strong>CAA (UK)</strong>. 
+                    Our database helps you determine if items like <a href="/?item=power-bank-portable-charger">power banks</a>, 
+                    <a href="/?item=razor-disposable-cartridge">razors</a>, or <a href="/?item=toothpaste">toothpaste</a> 
+                    are allowed in your carry-on bag or must be checked.
+                </p>
+                
+                <h3 style="font-size: 1.1rem; margin: 20px 0 15px; color: #1a1a1a;">Frequently Asked Questions</h3>
+                <details style="margin-bottom: 10px; cursor: pointer;">
+                    <summary style="font-weight: 600;">What is the 3-1-1 Liquids Rule?</summary>
+                    <p style="margin-top: 5px;">All liquids, gels, and aerosols in carry-on luggage must be in containers of 3.4 ounces (100ml) or less. All containers must fit inside one clear, quart-sized, resealable bag.</p>
+                </details>
+                <details style="margin-bottom: 10px; cursor: pointer;">
+                    <summary style="font-weight: 600;">Can I bring a razor on a plane?</summary>
+                    <p style="margin-top: 5px;">Disposable razors and electric shavers are allowed in carry-on. Safety razors (with removable blades) and straight razors are prohibited unless the blade is removed.</p>
+                </details>
+                <details style="margin-bottom: 10px; cursor: pointer;">
+                    <summary style="font-weight: 600;">Are batteries allowed in checked luggage?</summary>
+                    <p style="margin-top: 5px;">No. Loose lithium batteries and power banks are strictly prohibited in checked bags due to fire risk. They must be packed in your carry-on.</p>
+                </details>
+            </section>
         <!-- CATEGORY ITEMS LIST (Shows when category clicked) -->
         <div class="category-list-panel hidden" id="middlePanel">
-            <div class="panel-header">
-                <button class="panel-back-btn" id="panelBackBtn">
-                    <i class="fa-solid fa-arrow-left"></i> Back
-                </button>
+<div class="panel-header">
+                <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+                    <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+                        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                            <a href="/" itemprop="item" onclick="resetToHome(); return false;">
+                                <span itemprop="name">Home</span>
+                            </a>
+                            <meta itemprop="position" content="1" />
+                        </li>
+                        <li class="separator">/</li>
+                        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                            <span itemprop="name" id="breadcrumbCategory">Category</span>
+                            <meta itemprop="position" content="2" />
+                        </li>
+                    </ol>
+                </nav>
+                
                 <div class="panel-title-group">
                     <h2 id="categoryTitle"></h2>
                     <span class="item-count" id="categoryCount"></span>
                 </div>
             </div>
-            <div id="categoryItemsList" class="category-items-list"></div>
-        </div>
 
         <!-- RESULT CARD (Shows when item selected) -->
         <div id="resultCard" class="result-card hidden"></div>

@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sitemap - All Items | Airport Carry-On Checker</title>
+    <link rel="canonical" href="https://www.canibringonplane.com/sitemap.html">
     <link rel="stylesheet" href="css/styles.css"> 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body style="background: #f8f9fa; min-height: 100vh; display: flex; flex-direction: column;">
 
     <header>
-        <h1><a href="index.html" style="text-decoration:none; color:inherit;">Airport Carry-On Checker</a></h1>
+        <h1><a href="/" style="text-decoration:none; color:inherit;">Airport Carry-On Checker</a></h1>
         <p class="tagline">Full Item Index (A-Z)</p>
     </header>
 
@@ -29,7 +30,7 @@
         </div>
         
         <div style="margin-top: 30px; text-align: center;">
-            <a href="index.html" class="action-btn" style="display: inline-block; max-width: 200px; text-decoration: none;">&larr; Back to Search</a>
+            <a href="/" class="action-btn" style="display: inline-block; max-width: 200px; text-decoration: none;">&larr; Back to Search</a>
         </div>
     </div>
 
@@ -66,8 +67,8 @@
                 const li = document.createElement('li');
                 const a = document.createElement('a');
                 
-                // Create the link
-                a.href = `index.html?item=${toSlug(item.name)}`;
+                // Create the link (use ?item= for canonical URL consistency)
+                a.href = `/?item=${toSlug(item.name)}`;
                 a.textContent = item.name;
                 
                 // Styling
