@@ -9,11 +9,23 @@
     <meta name="robots" content="index, follow">
 
 
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.canibringonplane.com/">
     <meta property="og:title" content="Can I Bring This On A Plane? | Airport Carry-On Checker">
     <meta property="og:description" content="Instantly check TSA and airport security rules for any item. Carry-on vs Checked luggage guide.">
-    <meta property="og:image" content="https://www.canibringonplane.com/favicon.ico">
+    <meta property="og:image" content="https://www.canibringonplane.com/images/social-share.png">
+    <meta property="og:site_name" content="Can I Bring On Plane">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Can I Bring This On A Plane? | Airport Carry-On Checker">
+    <meta name="twitter:description" content="Instantly check TSA and airport security rules for any item. Carry-on vs Checked luggage guide.">
+    <meta name="twitter:image" content="https://www.canibringonplane.com/images/social-share.png">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://www.canibringonplane.com/">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -29,23 +41,6 @@
                 <i class="fa-solid fa-plane-departure"></i>
                 <span class="brand-text">Carry-On Checker</span>
             </a>
-
-            <div class="navbar-country">
-                <select id="countrySelector" class="country-selector-nav">
-                    <option value="USA">🇺🇸 USA (TSA)</option>
-                    <option value="China">🇨🇳 China</option>
-                    <option value="EU">🇪🇺 EU (EASA)</option>
-                    <option value="UK">🇬🇧 UK</option>
-                    <option value="Canada">🇨🇦 Canada</option>
-                    <option value="Australia">🇦🇺 Australia</option>
-                    <option value="Japan">🇯🇵 Japan</option>
-                    <option value="Thailand">🇹🇭 Thailand</option>
-                    <option value="Singapore">🇸🇬 Singapore</option>
-                    <option value="Mexico">🇲🇽 Mexico</option>
-                    <option value="UAE">🇦🇪 UAE</option>
-                    <option value="International">🌐 International</option>
-                </select>
-            </div>
 
             <div class="navbar-actions">
                 <a href="contact.html" class="nav-link">Contact</a>
@@ -344,38 +339,8 @@
             <h2><i class="fa-solid fa-plane-arrival"></i> Where are you flying?</h2>
             <button class="close-modal" onclick="document.getElementById('destinationModal').classList.add('hidden')">&times;</button>
         </div>
-        <div class="dest-grid" id="destGrid">
-            <div class="dest-card dest-high" onclick="window.selectDestination('JP')">
-                <span class="flag">🇯🇵</span> <span>Japan</span>
-            </div>
-            <div class="dest-card dest-high" onclick="window.selectDestination('TH')">
-                <span class="flag">🇹🇭</span> <span>Thailand</span>
-            </div>
-            <div class="dest-card dest-veryhigh" onclick="window.selectDestination('AE')">
-                <span class="flag">🇦🇪</span> <span>UAE (Dubai)</span>
-            </div>
-            <div class="dest-card dest-high" onclick="window.selectDestination('SG')">
-                <span class="flag">🇸🇬</span> <span>Singapore</span>
-            </div>
-            <div class="dest-card dest-high" onclick="window.selectDestination('CN')">
-                <span class="flag">🇨🇳</span> <span>China</span>
-            </div>
-            <div class="dest-card dest-high" onclick="window.selectDestination('MX')">
-                <span class="flag">🇲🇽</span> <span>Mexico</span>
-            </div>
-            <div class="dest-card dest-medium" onclick="window.selectDestination('UK')">
-                <span class="flag">🇬🇧</span> <span>UK</span>
-            </div>
-            <div class="dest-card dest-medium" onclick="window.selectDestination('IN')">
-                <span class="flag">🇮🇳</span> <span>India</span>
-            </div>
-            <div class="dest-card dest-medium" onclick="window.selectDestination('FR')">
-                <span class="flag">🇫🇷</span> <span>France</span>
-            </div>
-            <div class="dest-card dest-medium" onclick="window.selectDestination('IT')">
-                <span class="flag">🇮🇹</span> <span>Italy</span>
-            </div>
-        </div>
+        <!-- Countries populated dynamically from destinations.js -->
+        <div class="dest-grid" id="destGrid"></div>
         <div class="modal-footer-note">
             <p>Selecting a country updates compliance rules for Meds & Vapes.</p>
         </div>

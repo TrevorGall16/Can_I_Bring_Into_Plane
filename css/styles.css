@@ -62,18 +62,7 @@ body {
     font-size: 1.25rem;
 }
 
-.navbar-country {
-    display: none !important; /* This hides the container */
-}
-
-.country-selector-nav {
-    display: none !important; /* This hides the input itself */
-}
-
-.country-selector-nav:focus {
-    border-color: #0061ff;
-    box-shadow: 0 0 0 3px rgba(0, 97, 255, 0.1);
-}
+/* Legacy navbar-country removed from HTML */
 
 .navbar-actions {
     display: flex;

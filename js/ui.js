@@ -22,36 +22,116 @@ let autocompleteTimeout = null;
 // INITIALIZATION (The Engine Starter)
 // ---------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Build the Search Index so search works
+    console.log('🚀 Initializing Airport Carry-On Checker...');
+
+    // ========== FAILSAFE WINDOW BINDINGS ==========
+    // Bind BEFORE any other code runs to ensure onclick handlers work
+    window.showItemById = showItemById;
+    window.toggleBagItem = toggleBagItem;
+    window.shareItemLink = shareItemLink;
+    window.showMyBagModal = showMyBagModal;
+    window.updateBagCounter = updateBagCounter;
+    window.hideAutocomplete = hideAutocomplete;
+    window.resetToHome = resetToHome;
+    window.clearAllBagItems = clearAllBagItems;
+    window.displayCategoryResults = displayCategoryResults;
+    window.openDestinationModal = openDestinationModal;
+    window.selectDestination = selectDestination;
+    window.minimizeDestinationReport = minimizeDestinationReport;
+    window.closeDestinationReport = minimizeDestinationReport;
+    window.openItemModal = openItemModal;
+    window.handleSearch = handleSearch;
+    window.navManager = navManager;
+
+    // ========== 1. BUILD SEARCH INDEX ==========
     buildSearchIndex();
-    
-    // 2. Load the Default Category (Liquids)
-    displayCategoryResults('liquids', true);
-    
-    // 3. Setup Search Bar Listener
+
+    // ========== 2. SETUP HISTORY/NAVIGATION ==========
+    setupPopstateHandler();
+
+    // ========== 3. UPDATE BAG COUNTER ==========
+    updateBagCounter();
+
+    // ========== 4. SEO: CANONICAL URL ==========
+    const url = new URL(window.location);
+    if (!url.searchParams.get('item') && !url.searchParams.get('category')) {
+        let canonical = document.querySelector('link[rel="canonical"]');
+        if (!canonical) {
+            canonical = document.createElement('link');
+            canonical.setAttribute('rel', 'canonical');
+            document.head.appendChild(canonical);
+        }
+        canonical.setAttribute('href', 'https://www.canibringonplane.com/');
+    }
+
+    // ========== 5. LOAD FROM URL (Deep Links) ==========
+    const loaded = navManager.loadFromURL();
+
+    // ========== 6. SETUP EVENT LISTENERS ==========
+    initializeEventListeners();
+
+    // ========== 7. SEARCH INPUT LISTENER ==========
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
-            // Simple debounce could go here, but direct call is fine for now
-            const query = e.target.value.toLowerCase().trim();
+            const query = e.target.value.trim();
             if (!query) {
-                document.getElementById('searchResults')?.classList.add('hidden');
+                hideAutocomplete();
                 return;
             }
-            // Trigger search (assuming handleSearch exists or use simple filter)
-            // For now, let's just ensure basic UI doesn't break
+            handleSearch(query);
         });
     }
 
-    // 4. Setup Modal Close Buttons
+    // ========== 8. MODAL CLOSE BUTTONS ==========
     document.querySelectorAll('.close-modal').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
         });
     });
-    
-    // 5. Update Bag Count
-    if (window.updateBagCounter) window.updateBagCounter();
+
+    // ========== 9. CATEGORY CHIPS (Horizontal Strip) ==========
+    document.querySelectorAll('.category-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const category = chip.dataset.category;
+            if (category) displayCategoryResults(category);
+        });
+    });
+
+    // ========== 10. POPULAR TAGS ==========
+    document.querySelectorAll('.popular-tag').forEach(tag => {
+        tag.addEventListener('click', () => {
+            const itemName = tag.dataset.item;
+            if (itemName) {
+                const item = ITEMS_DATA.find(i => i.name.toLowerCase().includes(itemName.toLowerCase()));
+                if (item) showItemById(item.id);
+            }
+        });
+    });
+
+    // ========== 11. BAG FAB BUTTON ==========
+    const bagFAB = document.getElementById('bagFAB');
+    if (bagFAB) {
+        bagFAB.addEventListener('click', showMyBagModal);
+    }
+
+    // ========== 12. INITIALIZE ADS ==========
+    if (adProvider) {
+        adProvider.initStickyFooter();
+        adProvider.initWelcomeAd();
+        adProvider.checkAdBlock();
+    }
+
+    // ========== 13. LOAD SAVED DESTINATION ==========
+    const savedDest = localStorage.getItem('selectedDestination');
+    if (savedDest && DESTINATIONS[savedDest]) {
+        window.currentDestination = DESTINATIONS[savedDest];
+        window.currentDestinationCode = savedDest;
+        const btn = document.querySelector('.dest-btn span');
+        if (btn) btn.innerText = DESTINATIONS[savedDest].name;
+    }
+
+    console.log('✅ App initialized successfully');
 });
 // Load saved items from localStorage
 if (localStorage.getItem('myBag')) {
@@ -61,6 +141,24 @@ if (localStorage.getItem('myBag')) {
     } catch (e) {
         console.error("Error loading bag:", e);
     }
+}
+
+// ---------------------------------------------------------
+// SEO HELPERS
+// ---------------------------------------------------------
+function updateMetaTag(property, content) {
+    // Handle both name and property attributes
+    let meta = document.querySelector(`meta[property="${property}"]`) ||
+               document.querySelector(`meta[name="${property}"]`);
+    if (meta) {
+        meta.setAttribute('content', content);
+    }
+}
+
+function resetPageTitle() {
+    document.title = 'Can I Bring This On A Plane? | Airport Carry-On Checker';
+    updateMetaTag('og:title', 'Can I Bring This On A Plane? | Airport Carry-On Checker');
+    updateMetaTag('og:description', 'Instantly check TSA and airport security rules for any item.');
 }
 
 // ---------------------------------------------------------
@@ -537,41 +635,56 @@ function displayRelatedItems(currentItem) {
 }
 
 // ---------------------------------------------------------
-// DISPLAY CATEGORY RESULTS (Layout & Sort Fixed)
+// SEO HELPER (Paste this right above displayCategoryResults)
+// ---------------------------------------------------------
+function updatePageSEO(title, queryParam) {
+    // 1. Update Browser Tab Title
+    document.title = title;
+    
+    // 2. Update URL (Cleanly)
+    if (window.history.pushState) {
+        const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}${queryParam}`;
+        window.history.pushState({path: newUrl}, '', newUrl);
+    }
+
+    // 3. Update Meta Tags (Safety Wrapped)
+    try {
+        const ogTitle = document.querySelector('meta[property="og:title"]');
+        const twTitle = document.querySelector('meta[name="twitter:title"]');
+        if (ogTitle) ogTitle.content = title;
+        if (twTitle) twTitle.content = title;
+    } catch (e) { console.warn('Meta tag update failed', e); }
+}
+
+// ---------------------------------------------------------
+// DISPLAY CATEGORY RESULTS (Fixed: SEO + Green-Top Sort)
 // ---------------------------------------------------------
 export function displayCategoryResults(category, skipHistoryPush = false) {
     if (!skipHistoryPush && window.navManager) window.navManager.pushCategoryState(category);
     
-    // 1. LAYOUT FIX: Hide EVERYTHING on the home page
-    const elementsToHide = [
-        'welcomeMessage', 
-        'quickGuide', 
-        'popularSearches', 
-        'travelMustHaves', 
-        'securityGuide', 
-        'howItWorks',
-        'resultCard',
-        'resultAd', 
-        'destinationReport',
-        'homeContent' // Catch-all if you have a wrapper
-    ];
-    elementsToHide.forEach(id => {
-        document.getElementById(id)?.classList.add('hidden');
-    });
+    // 1. SEO UPDATE (The New Stuff)
+    const displayTitle = category.charAt(0).toUpperCase() + category.slice(1);
+    updatePageSEO(`${displayTitle} Rules - Carry-On Guide`, `?category=${category}`);
 
-    // Show the Results Panel
+    // 2. UI CLEANUP (Hide Home Page)
+    const elementsToHide = [
+        'welcomeMessage', 'quickGuide', 'popularSearches', 
+        'travelMustHaves', 'securityGuide', 'howItWorks',
+        'resultCard', 'resultAd', 'destinationReport', 'homeContent'
+    ];
+    elementsToHide.forEach(id => document.getElementById(id)?.classList.add('hidden'));
+
     const midPanel = document.getElementById('middlePanel');
     if (midPanel) midPanel.classList.remove('hidden');
     window.scrollTo(0, 0);
 
-    // 2. STICKY BAR FIX: Force the "Mode" visuals
+    // 3. STICKY BAR LOGIC
     const sticky = document.getElementById('stickyDestBar');
     const dest = window.currentDestination;
     if (sticky && dest) {
         sticky.classList.remove('hidden');
-        sticky.style.display = 'flex'; // Ensure flex layout
-        // Apply the Theme Color to the border
-        sticky.style.border = `2px solid ${dest.theme?.color || '#2563eb'}`;
+        sticky.style.display = 'flex';
+        sticky.style.border = `2px solid ${dest.theme?.bg || '#e2e8f0'}`;
         sticky.style.background = '#ffffff';
         
         const flagEl = document.getElementById('stickyFlag');
@@ -580,37 +693,40 @@ export function displayCategoryResults(category, skipHistoryPush = false) {
         if (textEl) textEl.innerHTML = `Mode: <strong style="color:${dest.theme?.color}">${dest.name}</strong>`;
     }
 
-    // Filter Items
+    // 4. FILTER & SORT (Green Safe Items -> TOP)
     const items = ITEMS_DATA.filter(i => i.category && i.category.includes(category));
+    
     const titleEl = document.getElementById('categoryTitle');
     const countEl = document.getElementById('categoryCount');
     if (titleEl) titleEl.textContent = category.toUpperCase();
     if (countEl) countEl.textContent = `${items.length} items`;
 
-    // 3. SORT FIX: Green (Safe) -> Orange -> Red (Banned)
     const destCode = window.currentDestinationCode;
     items.sort((a, b) => {
-        // Helper to get score: 3=Safe, 2=Mixed, 1=Prohibited, 0=Banned
         const getScore = (item) => {
-            const isBanned = destCode && item.customs_restricted?.includes(destCode);
-            if (isBanned) return 0; // Bottom
+            // Priority 0: Banned in Destination (Bottom)
+            if (destCode && item.customs_restricted?.includes(destCode)) return 0;
             
-            if (item.carryOn === 'allowed' && item.checked === 'allowed') return 3; // Top (Green)
-            if (item.carryOn === 'prohibited' && item.checked === 'prohibited') return 1; // Low
-            return 2; // Middle (Orange/Mixed)
+            // Priority 3: Fully Safe (Top)
+            if (item.carryOn === 'allowed' && item.checked === 'allowed') return 3;
+            
+            // Priority 1: Prohibited (Low)
+            if (item.carryOn === 'prohibited' && item.checked === 'prohibited') return 1;
+            
+            // Priority 2: Mixed/Restricted (Middle)
+            return 2;
         };
-        return getScore(b) - getScore(a); // Descending order (3 down to 0)
+        return getScore(b) - getScore(a); // High score first
     });
 
-    // Render Grid
+    // 5. RENDER GRID (Clean Look)
     const list = document.getElementById('categoryItemsList');
     if (!list) return;
     list.innerHTML = '';
 
     items.forEach(item => {
-        // --- DESIGN LOGIC ---
-        let gradient = '';
-        let accentColor = '';
+        let gradient = 'linear-gradient(to top, #f0fdf4 0%, #ffffff 100%)'; // Default Green
+        let accentColor = '#86efac';
         let bannerHTML = '';
 
         const isDestBanned = destCode && item.customs_restricted?.includes(destCode);
@@ -618,29 +734,28 @@ export function displayCategoryResults(category, skipHistoryPush = false) {
         const isMixed = !isFullyAllowed && !(item.carryOn === 'prohibited' && item.checked === 'prohibited');
 
         if (isDestBanned) {
-            // 🔴 BANNED
+            // 🔴 BANNED (Red)
             gradient = 'linear-gradient(to top, #fef2f2 0%, #ffffff 100%)';
             accentColor = '#ef4444'; 
             const destName = window.currentDestination ? window.currentDestination.name.toUpperCase() : 'THIS COUNTRY';
             bannerHTML = `<div style="background:#ef4444; color:white; font-size:0.65rem; padding:3px 10px; border-radius:0 0 0 6px; position:absolute; top:0; right:0; font-weight:700; letter-spacing:0.5px;">⛔ BANNED IN ${destName}</div>`;
         } 
         else if (isFullyAllowed) {
-            // 🟢 SAFE
+            // 🟢 SAFE (Green)
             gradient = 'linear-gradient(to top, #f0fdf4 0%, #ffffff 100%)';
             accentColor = '#86efac';
         } 
         else if (isMixed) {
-            // 🟠 MIXED
+            // 🟠 MIXED (Orange)
             gradient = 'linear-gradient(to top, #fff7ed 0%, #ffffff 100%)';
             accentColor = '#fdba74';
         } 
         else {
-            // 🔴 PROHIBITED (Global)
+            // 🔴 PROHIBITED (Red)
             gradient = 'linear-gradient(to top, #fff1f2 0%, #ffffff 100%)';
             accentColor = '#fda4af';
         }
 
-        // --- BUILD CARD ---
         const div = document.createElement('div');
         div.className = 'category-card';
         div.onclick = () => window.openItemModal(item.id);
@@ -656,33 +771,31 @@ export function displayCategoryResults(category, skipHistoryPush = false) {
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: transform 0.1s;
         `;
         
-        // Badge Pill Style
         const pillStyle = `font-size: 0.75rem; padding: 5px 10px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 6px; width: fit-content;`;
 
         div.innerHTML = `
             ${bannerHTML}
             <div style="flex:1;">
-                <h3 style="margin:0; font-size:1.15rem; font-weight:700; color:#0f172a; letter-spacing:-0.5px;">${item.name}</h3>
-                <div style="font-size:0.85rem; color:#64748b; margin-top:5px; font-weight:500;">Tap to view details</div>
+                <h3 style="margin:0; font-size:1.1rem; font-weight:700; color:#0f172a;">${item.name}</h3>
+                <div style="font-size:0.85rem; color:#64748b; margin-top:4px;">Tap for details</div>
             </div>
             <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
                 <div style="${pillStyle} background:${item.carryOn === 'allowed' ? '#dcfce7' : '#fee2e2'}; color:${item.carryOn === 'allowed' ? '#166534' : '#991b1b'};">
-                    <i class="fa-solid fa-suitcase"></i> 
-                    <span>${item.carryOn === 'allowed' ? 'Cabin OK' : 'No Cabin'}</span>
+                    <i class="fa-solid fa-suitcase"></i> ${item.carryOn === 'allowed' ? 'Cabin OK' : 'No Cabin'}
                 </div>
                 <div style="${pillStyle} background:${item.checked === 'allowed' ? '#dcfce7' : '#fee2e2'}; color:${item.checked === 'allowed' ? '#166534' : '#991b1b'};">
-                    <i class="fa-solid fa-plane-arrival"></i> 
-                    <span>${item.checked === 'allowed' ? 'Check OK' : 'No Check'}</span>
+                    <i class="fa-solid fa-plane-arrival"></i> ${item.checked === 'allowed' ? 'Check OK' : 'No Check'}
                 </div>
             </div>
         `;
         list.appendChild(div);
     });
 }
+
 
 // ---------------------------------------------------------
 // SHOW COUNTRY RULES
@@ -937,72 +1050,30 @@ function updateSocialMeta(item) {
 }
 
 // ---------------------------------------------------------
-// EVENT LISTENERS INITIALIZATION
+// EVENT LISTENERS (Safe Version)
 // ---------------------------------------------------------
 export function initializeEventListeners() {
+    // 1. Search Input (Safe Check)
     const searchInput = document.getElementById('searchInput');
-    const categoryButtons = document.querySelectorAll('.category-chip');
-    const popularTags = document.querySelectorAll('.popular-tag');
-    const countrySelector = document.getElementById('countrySelector');
-    const bagFAB = document.getElementById('bagFAB');
-    const panelBackBtn = document.getElementById('panelBackBtn');
-
-    if (panelBackBtn) {
-        panelBackBtn.addEventListener('click', () => {
-            resetToHome();
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            if (window.handleSearch) window.handleSearch(e.target.value);
         });
     }
 
-    if (bagFAB) bagFAB.addEventListener('click', showMyBagModal);
-
-    countrySelector.addEventListener('change', (e) => {
-        currentCountry = e.target.value;
-        showCountryRules(currentCountry);
-        adProvider.refreshInlineAd();
-        if (currentCategory && !document.getElementById('middlePanel').classList.contains('hidden')) {
-            displayCategoryResults(currentCategory, true);
-        }
-    });
-
-    searchInput.addEventListener('input', (e) => {
-        clearTimeout(autocompleteTimeout);
-        autocompleteTimeout = setTimeout(() => {
-            handleSearch(e.target.value);
-        }, 300);
-    });
-
-    searchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            const item = findBestMatch(e.target.value.trim());
-            if (item) {
-                displayItemResult(item);
-                hideAutocomplete();
-            }
-        }
-    });
-
-    categoryButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            displayCategoryResults(button.getAttribute('data-category'));
-            adProvider.refreshInlineAd();
-        });
-    });
-
-    popularTags.forEach(tag => {
-        tag.addEventListener('click', () => {
-            const item = findBestMatch(tag.getAttribute('data-item'));
-            if (item) {
-                displayItemResult(item);
-                adProvider.refreshInlineAd();
+    // 2. Modal Close Buttons (Safe Check)
+    document.querySelectorAll('.close-modal, .modal-overlay').forEach(el => {
+        el.addEventListener('click', (e) => {
+            if (e.target === el || e.target.classList.contains('close-modal')) {
+                document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
             }
         });
     });
 
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.search-container')) hideAutocomplete();
-    });
+    // 3. REMOVED: Old Country Dropdown Listeners
+    // We deleted the old 'countrySelect' listeners here because that HTML is gone.
+    // This prevents the "Cannot read properties of null" error.
 }
-
 // ---------------------------------------------------------
 // POPSTATE HANDLER
 // ---------------------------------------------------------
@@ -1040,7 +1111,29 @@ export function showItemById(id) {
 // ---------------------------------------------------------
 export function openDestinationModal() {
     const modal = document.getElementById('destinationModal');
-    if (modal) modal.classList.remove('hidden');
+    const grid = document.getElementById('destGrid');
+
+    if (!modal) return;
+
+    // Dynamically populate countries from DESTINATIONS
+    if (grid && grid.children.length === 0) {
+        grid.innerHTML = Object.entries(DESTINATIONS).map(([code, dest]) => {
+            // Determine risk class for visual accent
+            const riskClass = dest.risk === 'Very High' ? 'dest-veryhigh' :
+                              dest.risk === 'High' ? 'dest-high' : 'dest-medium';
+
+            return `
+                <div class="dest-card ${riskClass}"
+                     onclick="window.selectDestination('${code}')"
+                     style="border-left: 4px solid ${dest.theme.color};">
+                    <span class="flag">${dest.flag}</span>
+                    <span>${dest.name}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    modal.classList.remove('hidden');
 }
 
 export function selectDestination(code) {
@@ -1050,6 +1143,18 @@ export function selectDestination(code) {
         localStorage.setItem('selectedDestination', code);
         window.currentDestination = dest;
         window.currentDestinationCode = code; // Store 'JP', 'TH', etc.
+
+        // SEO: Dynamic Page Title & Meta
+        document.title = `What to bring to ${dest.name}? - Carry-On Rules ${dest.flag}`;
+        updateMetaTag('og:title', `${dest.name} Travel Rules - What's Banned? ${dest.flag}`);
+        updateMetaTag('og:description', dest.intro);
+        updateMetaTag('twitter:title', `${dest.name} Travel Rules ${dest.flag}`);
+        updateMetaTag('twitter:description', dest.intro);
+
+        // Update URL without reload
+        const url = new URL(window.location);
+        url.searchParams.set('dest', code);
+        window.history.pushState({ dest: code }, '', url);
 
         // Update UI
         renderDestinationReport(dest);
@@ -1186,17 +1291,18 @@ export function closeDestinationReport() {
     window.currentDestination = null;
     window.currentDestinationCode = null;
 }
-// --- HELPER ALIASES (Paste this ABOVE the window. lines) ---
+// ---------------------------------------------------------
+// HELPER ALIASES
+// ---------------------------------------------------------
 function openItemModal(id) {
-    // Redirects to the main item function
-    if (typeof showItemById === 'function') {
-        showItemById(id);
-    } else {
-        console.warn('Item clicked:', id);
-    }
+    showItemById(id);
 }
-// --- CRITICAL: WINDOW BINDINGS (Paste at the very bottom) ---
-window.displayCategoryResults = displayCategoryResults; // Fixed name
+
+// ---------------------------------------------------------
+// MODULE-LEVEL WINDOW BINDINGS (Backup for early access)
+// Primary bindings are in DOMContentLoaded above
+// ---------------------------------------------------------
+window.displayCategoryResults = displayCategoryResults;
 window.openDestinationModal = openDestinationModal;
 window.selectDestination = selectDestination;
 window.minimizeDestinationReport = minimizeDestinationReport;
@@ -1206,5 +1312,11 @@ window.toggleBagItem = toggleBagItem;
 window.clearAllBagItems = clearAllBagItems;
 window.openItemModal = openItemModal;
 window.showItemById = showItemById;
-window.resetToHome = () => window.location.reload();
+window.resetToHome = resetToHome;
+window.shareItemLink = shareItemLink;
+window.hideAutocomplete = hideAutocomplete;
+window.updateBagCounter = updateBagCounter;
+window.handleSearch = handleSearch;
+window.navManager = navManager;
+
 console.log('🎨 UI module loaded');

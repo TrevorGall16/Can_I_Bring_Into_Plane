@@ -1,97 +1,77 @@
-/**
- * DESTINATIONS.JS - Strict Country Rules Database
- * Central source of truth for high-risk travel compliance.
- * Phase UX: Added theme colors for dynamic styling.
- */
 export const DESTINATIONS = {
-    'JP': {
-        name: 'Japan',
-        flag: '🇯🇵',
-        risk: 'High',
-        intro: 'Strict anti-stimulant laws. Common US meds (Adderall/Vicks) are ILLEGAL.',
-        banned: ['Adderall', 'Pseudoephedrine', 'Codeine (>1%)'],
-        dutyFree: { alcohol: '3 Bottles (760ml each)', tobacco: '400 Cigarettes' },
-        theme: { color: '#dc2626', bg: '#fef2f2', border: '#fca5a5' } // Red
-    },
-    'TH': {
-        name: 'Thailand',
-        flag: '🇹🇭',
-        risk: 'High',
-        intro: 'Vapes/E-Cigarettes are STRICTLY BANNED. Fines up to 30,000 THB or jail time.',
-        banned: ['E-Cigarettes', 'Vapes', 'Sex Toys', 'Pornography'],
-        dutyFree: { alcohol: '1 Liter', tobacco: '200 Cigarettes' },
-        theme: { color: '#2563eb', bg: '#eff6ff', border: '#bfdbfe' } // Blue
-    },
+    // --- EUROPE ---
     'FR': {
-        name: 'France',
-        flag: '🇫🇷',
-        risk: 'Medium',
-        intro: 'EU Liquids Rule applies. Strict customs on luxury goods (fake designer items).',
-        banned: ['Counterfeit Goods', 'Meat/Dairy (Non-EU)', 'Ivory'],
-        dutyFree: { alcohol: '1 Liter (Spirits)', tobacco: '200 Cigarettes' },
-        theme: { color: '#1e3a8a', bg: '#f0f9ff', border: '#bae6fd' } // Navy
+        name: 'France', flag: '🇫🇷', risk: 'Medium',
+        intro: 'EU Liquids Rule applies. Strict customs on luxury goods.',
+        banned: ['Counterfeit Goods', 'Meat/Dairy (Non-EU)'],
+        dutyFree: { alcohol: '1 Liter', tobacco: '200 Cigs' },
+        theme: { color: '#1e40af', bg: '#eff6ff', border: '#bfdbfe' } // 🔵 Navy Blue
     },
     'IT': {
-        name: 'Italy',
-        flag: '🇮🇹',
-        risk: 'Medium',
-        intro: 'Strict on sand/shells from beaches. Counterfeit fashion fines are high.',
-        banned: ['Beach Sand/Shells', 'Counterfeit Fashion', 'Meat/Dairy'],
-        dutyFree: { alcohol: '1 Liter', tobacco: '200 Cigarettes' },
-        theme: { color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0' } // Green
-    },
-    'CN': {
-        name: 'China',
-        flag: '🇨🇳',
-        risk: 'High',
-        intro: 'Strict on batteries & political media. VPNs may not work.',
-        banned: ['Power Banks >160Wh', 'Lighters', 'Political Materials'],
-        dutyFree: { alcohol: '1.5 Liters', tobacco: '400 Cigarettes' },
-        theme: { color: '#dc2626', bg: '#fef2f2', border: '#fca5a5' } // Red
-    },
-    'MX': {
-        name: 'Mexico',
-        flag: '🇲🇽',
-        risk: 'High',
-        intro: 'Vapes are ILLEGAL. Don\'t bring them. Strict on cash declarations.',
-        banned: ['Vapes', 'E-Cigarettes', 'Undeclared Cash >$10K'],
-        dutyFree: { alcohol: '3 Liters', tobacco: '10 Packs' },
-        theme: { color: '#059669', bg: '#ecfdf5', border: '#6ee7b7' } // Green/Teal
-    },
-    'AE': {
-        name: 'UAE (Dubai)',
-        flag: '🇦🇪',
-        risk: 'Very High',
-        intro: 'Zero tolerance for drugs/medications. Many common meds are BANNED.',
-        banned: ['Codeine', 'Tramadol', 'Poppy Seeds', 'CBD Products'],
-        dutyFree: { alcohol: '4 Liters', tobacco: '400 Cigarettes' },
-        theme: { color: '#d97706', bg: '#fffbeb', border: '#fcd34d' } // Amber
-    },
-    'SG': {
-        name: 'Singapore',
-        flag: '🇸🇬',
-        risk: 'High',
-        intro: 'Strict laws with heavy fines. Death penalty for drug trafficking.',
-        banned: ['Chewing Gum', 'E-Cigarettes', 'Vapes'],
-        dutyFree: { alcohol: '1 Liter', tobacco: 'None (Duty applies)' },
-        theme: { color: '#be123c', bg: '#fff1f2', border: '#fda4af' } // Rose
+        name: 'Italy', flag: '🇮🇹', risk: 'Medium',
+        intro: 'Strict on sand/shells. Counterfeit fines are high.',
+        banned: ['Beach Sand', 'Counterfeit Fashion'],
+        dutyFree: { alcohol: '1 Liter', tobacco: '200 Cigs' },
+        theme: { color: '#16a34a', bg: '#f0fdf4', border: '#bbf7d0' } // 🟢 Italian Green
     },
     'UK': {
-        name: 'United Kingdom',
-        flag: '🇬🇧',
-        risk: 'Medium',
-        intro: 'Strict on offensive weapons. Post-Brexit customs rules apply.',
-        banned: ['Pepper Spray', 'Knives', 'Self-Defense Weapons'],
-        dutyFree: { alcohol: '1 Liter (Spirits)', tobacco: '200 Cigarettes' },
-        theme: { color: '#2563eb', bg: '#eff6ff', border: '#bfdbfe' } // Blue
+        name: 'UK', flag: '🇬🇧', risk: 'Medium',
+        intro: 'Strict laws on offensive weapons (pepper spray, knives).',
+        banned: ['Pepper Spray', 'Knives'],
+        dutyFree: { alcohol: '1 Liter', tobacco: '200 Cigs' },
+        theme: { color: '#2563eb', bg: '#eff6ff', border: '#bfdbfe' } // 🔵 Royal Blue
+    },
+
+    // --- ASIA ---
+    'JP': {
+        name: 'Japan', flag: '🇯🇵', risk: 'High',
+        intro: 'Strict anti-stimulant laws. Adderall/Vicks are ILLEGAL.',
+        banned: ['Adderall', 'Pseudoephedrine', 'Codeine'],
+        dutyFree: { alcohol: '3 Bottles', tobacco: '400 Cigs' },
+        theme: { color: '#dc2626', bg: '#fef2f2', border: '#fca5a5' } // 🔴 Japan Red
+    },
+    'TH': {
+        name: 'Thailand', flag: '🇹🇭', risk: 'High',
+        intro: 'Vapes/E-Cigarettes are STRICTLY BANNED. Jail time possible.',
+        banned: ['E-Cigarettes', 'Vapes', 'Sex Toys'],
+        dutyFree: { alcohol: '1 Liter', tobacco: '200 Cigs' },
+        theme: { color: '#0ea5e9', bg: '#f0f9ff', border: '#bae6fd' } // 🔵 Thai Light Blue
+    },
+    'CN': {
+        name: 'China', flag: '🇨🇳', risk: 'High',
+        intro: 'Strict checks on batteries. Power banks must be <160Wh.',
+        banned: ['Power Banks >160Wh', 'Lighters'],
+        dutyFree: { alcohol: '1.5L', tobacco: '400 Cigs' },
+        theme: { color: '#b91c1c', bg: '#fef2f2', border: '#fca5a5' } // 🔴 China Red
+    },
+    'SG': {
+        name: 'Singapore', flag: '🇸🇬', risk: 'High',
+        intro: 'Chewing gum is banned. Death penalty for drug trafficking.',
+        banned: ['Chewing Gum', 'E-Cigs'],
+        dutyFree: { alcohol: '1L', tobacco: 'None' },
+        theme: { color: '#e11d48', bg: '#fff1f2', border: '#fda4af' } // 🔴 Rose Red
     },
     'IN': {
-        name: 'India',
-        flag: '🇮🇳',
-        risk: 'Medium',
-        intro: 'Satellite phones need license. Gold imports heavily regulated.',
-        banned: ['Satellite Phones', 'Drones', 'Gold >50g'],
-        dutyFree: { alcohol: '2 Liters', tobacco: '200 Cigarettes' },
-        theme: { color: '#ea580c', bg: '#fff7ed', border: '#fdba74' } // Orange
+        name: 'India', flag: '🇮🇳', risk: 'Medium',
+        intro: 'Satellite phones need license. Gold strictly regulated.',
+        banned: ['Satellite Phones', 'Drones', 'Gold Bars'],
+        dutyFree: { alcohol: '2L', tobacco: '100 Cigs' },
+        theme: { color: '#ea580c', bg: '#fff7ed', border: '#fdba74' } // 🟠 India Orange
+    },
+
+    // --- MIDDLE EAST & AMERICAS ---
+    'AE': {
+        name: 'UAE (Dubai)', flag: '🇦🇪', risk: 'Very High',
+        intro: 'Zero tolerance for drugs. Codeine/Tramadol = Jail.',
+        banned: ['Codeine', 'Tramadol', 'Poppy Seeds'],
+        dutyFree: { alcohol: '4L', tobacco: '400 Cigs' },
+        theme: { color: '#059669', bg: '#ecfdf5', border: '#6ee7b7' } // 🟢 Emerald Green (Pan-Arab color)
+    },
+    'MX': {
+        name: 'Mexico', flag: '🇲🇽', risk: 'High',
+        intro: 'Vapes are ILLEGAL. Customs will confiscate them.',
+        banned: ['Vapes', 'E-Cigarettes'],
+        dutyFree: { alcohol: '3L', tobacco: '10 Packs' },
+        theme: { color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0' } // 🟢 Mexico Green
     }
 };
