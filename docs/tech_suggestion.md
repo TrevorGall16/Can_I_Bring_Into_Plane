@@ -1,284 +1,41 @@
-Airport Delay Advisor — Technology Stack \& Build Specification
+# 2. TECH_STACK.md
 
-This document defines the recommended technology stack, tools, and architecture for building the Airport Delay Advisor website. The goal is to ensure the site is free, lightweight, fast, and manageable by a single developer.
+## 1. Primary Stack Selection
+**Selection:** **PATH A (Vanilla JS / Client-Side)**
+**Justification:** The dataset is small (< 500 items). React/Next.js would add unnecessary complexity and build time. We need instant load times on poor airport WiFi.
 
+## 2. Folder Structure
+```text
+/
+├── index.html              # Entry point (Logic + UI + Routing)
+├── sitemap.html            # User-facing HTML sitemap
+├── robots.txt              # Crawl instructions
+├── css/
+│   └── styles.css          # Single CSS file (No pre-processor)
+├── js/
+│   ├── data-embedded.js    # The Database (Items + Affiliate Logic)
+│   └── app.js              # (Optional: If logic grows, extract here. Currently inside index.html)
+└── assets/                 # Favicons and static images
 
+3. Data Structures (data-embedded.js)
+Single Source of Truth: ITEMS_DATA array.
 
-1\. Core Requirements
+Affiliate Logic: AFFILIATE_MAP object maps categories to high-margin offers.
 
-Mobile-first responsive website
+4. API & Logic Layer
+No Backend: All logic runs in the browser.
 
+Routing: Custom history.pushState router.
 
+Rule: On load, check window.location.search (e.g., ?item=razor).
 
+Rule: If found, render result card immediately & inject SEO tags.
 
+Persistence: localStorage used for "My Checklist".
 
-Single-page app (SPA) or lightweight dynamic HTML
+5. Performance Budgets
+Total Page Weight: < 150KB (Gzipped).
 
+First Contentful Paint: < 0.8s.
 
-
-
-
-Minimal external dependencies
-
-
-
-
-
-Free to use technologies
-
-
-
-
-
-Easy to maintain by a solo developer
-
-
-
-
-
-
-
-2\. Recommended Tech Stack
-
-Frontend
-
-HTML5 \& CSS3: Basic structure and styling.
-
-
-
-
-
-TailwindCSS (optional): Rapid styling with utility classes, responsive design.
-
-
-
-
-
-Vanilla JavaScript: Minimal interactivity, autocomplete, tile updates.
-
-
-
-
-
-Optional Lightweight Framework: Alpine.js for reactive elements (easy SPA behavior, no build step needed).
-
-
-
-
-
-Backend / Data Handling
-
-Static JSON file for airport delay data (initial MVP): no backend needed.
-
-
-
-
-
-Optional Node.js / Express server: Only if live updates or data aggregation are required.
-
-
-
-
-
-Fetch API: JavaScript to read JSON data or call API endpoints.
-
-
-
-
-
-Data Sources
-
-Start with a curated manual JSON dataset for ~100 airports.
-
-
-
-
-
-Optional: Integrate public airport delay APIs later.
-
-
-
-
-
-Hosting
-
-GitHub Pages: Free, supports static websites.
-
-
-
-
-
-Optional later: Netlify or Vercel for serverless functions.
-
-
-
-
-
-Version Control
-
-GitHub repository mandatory (track code, assets, and deploy to Pages).
-
-
-
-
-
-Icons \& Assets
-
-Use free icon libraries: Heroicons, Feather Icons.
-
-
-
-
-
-All assets stored locally to minimize load time.
-
-
-
-
-
-Fonts
-
-Use Google Fonts (one single family) or local font to reduce requests.
-
-
-
-
-
-
-
-3\. Project Structure
-
-/airport-delay-advisor
-
-&nbsp; /assets
-
-&nbsp;   /icons
-
-&nbsp;   /flags
-
-&nbsp; /data
-
-&nbsp;   airports.json
-
-&nbsp; /css
-
-&nbsp;   styles.css
-
-&nbsp; /js
-
-&nbsp;   app.js
-
-&nbsp; index.html
-
-
-
-Keep all modules separate: HTML, CSS, JS, JSON.
-
-
-
-
-
-Make all code modular for easy maintenance.
-
-
-
-
-
-
-
-4\. Performance Guidelines
-
-Page load < 1 second.
-
-
-
-
-
-No heavy libraries.
-
-
-
-
-
-Avoid CDN dependencies when possible.
-
-
-
-
-
-Lazy load images/icons if needed.
-
-
-
-
-
-
-
-5\. Development Notes
-
-Start with static version → single JSON dataset.
-
-
-
-
-
-Implement search autocomplete locally.
-
-
-
-
-
-Add responsive grid for delay indicators.
-
-
-
-
-
-Test on mobile and desktop simultaneously.
-
-
-
-
-
-Push every session to GitHub.
-
-
-
-
-
-
-
-6\. Optional Future Enhancements
-
-Use serverless functions to fetch live data.
-
-
-
-
-
-Add caching for offline speed.
-
-
-
-
-
-Add more airports gradually.
-
-
-
-
-
-Implement ads via lightweight ad scripts without slowing page.
-
-
-
-
-
-
-
-This document gives a complete, solo-developer-friendly blueprint for building the Airport Delay Advisor website using free, simple, and maintainable technologies.
-
-
-
-
-
+External Scripts: Lazy load all Ads/Analytics.

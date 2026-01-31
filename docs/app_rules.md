@@ -1,678 +1,109 @@
-Dev Rules \& Best Practices (Rewritten)
+1. Project Identity & North Star
+Project Name: Can I Bring This On A Plane?
 
-This document defines the rules and workflow standards for all future app and website projects. These rules are based on issues observed in previous builds, with the goal of preventing wasted time, avoiding configuration traps, and ensuring clean, predictable development.
+Internal ID: com.studio.canibring
 
+Strategic North Star: "This site is a Pre-Flight Compliance Report, not just a search engine."
 
+Rule: UI must feel authoritative, calming, and "official."
 
-1\. The "Forever Name" Rule
+Rule: We prioritize Retention (Checklist) over generic browsing.
 
-Before starting any project, we decide together on one permanent project name (Bundle ID / Package Name). This name must:
+2. Technology & Architecture Rules
+Stack Strategy: Path A (Vanilla JS + HTML + CSS).
 
-Never include my real name.
+Build System: STRICTLY NONE.
 
+No npm run build.
 
+No Webpack/Vite/Parcel.
 
+No React/Vue/Angular.
 
+Routing:
 
-Follow the format: com.studio.projectname (all lowercase, no underscores).
+Must use history.pushState for virtual navigation.
 
+Zero Soft 404s: App must parse ?item=slug on load and render the correct content immediately.
 
+Dependencies:
 
+Forbidden: jQuery, Bootstrap, Large Animation Libraries.
 
+Allowed: FontAwesome (CDN), Google Fonts (Inter).
 
-Be locked in before running Flutter create.
+3. Development Workflow (AI & Human)
+Read Before Write: AI must read index.html and styles.css fully before proposing changes.
 
+Atomic Changes: Do not rewrite the entire index.html if only changing one function. Use precise "Search & Replace" instructions.
 
+Mobile First: All CSS must be written for Mobile (320px+) first, then media query for Desktop (768px+).
 
+No "Placeholder" Code: Do not write // ... rest of code. Always provide the complete functional block.
 
+4. Data Integrity Rules (ITEMS_DATA)
+Single Source: All item data lives in the ITEMS_DATA array within the JS.
 
-Command example:
+Slug Inviolability: Once an item is published with a slug (e.g., razor-blade), it cannot be changed without a 301 redirect strategy (to preserve SEO).
 
-flutter create --org com.studio project\_name
+Status States:
 
+allowed (Visual: Green/Check)
 
+restricted (Visual: Amber/Warning)
 
-This prevents ID mismatches acDev Rules \& Best Practices (Rewritten)
+prohibited (Visual: Red/Cross)
 
-This document defines the rules and workflow standards for all future app and website projects. These rules are based on issues observed in previous builds, with the goal of preventing wasted time, avoiding configuration traps, and ensuring clean, predictable development.
+Monetization Mapping (AFFILIATE_MAP):
 
+Every item category MUST map to a key in AFFILIATE_MAP.
 
+Revenue Rule: If the category is "Electronics" or "Valuables", the primary affiliate MUST be High-Margin (eSIM/Insurance), not Low-Margin (Cables).
 
-1\. The "Forever Name" Rule
+5. UI/UX "Anxiety Relief" Standards
+Color Psychology:
 
-Before starting any project, we decide together on one permanent project name (Bundle ID / Package Name). This name must:
+Use Blues (#2563eb) and Greens (#16a34a) for safety/trust.
 
-Never include my real name.
+Use Red (#dc2626) only for "Prohibited" status.
 
+Anti-Pattern: Do not use "Alarmist" colors (bright orange/red) for general UI elements.
 
+Language Protocol:
 
+Forbidden: "Add to Bag" (Shopping context).
 
+Mandatory: "Add to Checklist" (Compliance context).
 
-Follow the format: com.studio.projectname (all lowercase, no underscores).
+Forbidden: "Buy this" (Sales context).
 
+Mandatory: "Recommended Gear" or "Travel Protection" (Service context).
 
+Feedback: Every user action (Save, Click, Copy) must have immediate visual feedback (Toast, Icon change).
 
+6. SEO & Traffic Protocols
+Canonical Tags: Must be dynamic. A view of /?item=razor must inject <link rel="canonical" href=".../?item=razor"> to prevent duplicate content flags.
 
+Schema Markup: JSON-LD FAQPage must be injected for every item view to target "People Also Ask" snippets.
 
-Be locked in before running Flutter create.
+Title Tags: Format: Can I bring [Item] on a plane? - [Year] Rules.
 
+7. Error Handling & Stability
+Null Checks: Always check if document.getElementById('...') exists before modifying it (prevent console errors on partial renders or missing modals).
 
+Fallback Logic: If AFFILIATE_MAP has no match for a category, fall back to "Default" (Travel Insurance/Adapter).
 
+Offline Capability: The app logic (search/filtering) must function 100% offline after the initial load.
 
+8. Git & Version Control
+Commit Format: type: message
 
-Command example:
+feat: add esim affiliate logic
 
-flutter create --org com.studio project\_name
+fix: canonical tag generation
 
+style: update checklist modal icons
 
+content: add new liquid rules
 
-This prevents ID mismatches across Android, iOS, Google Play, and any external services.
-
-
-
-2\. The Master Keystore Strategy
-
-We no longer generate random keys for each app.
-
-Rules:
-
-Use one universal Keystore stored safely (ex: Documents/DevKeys/master\_key.jks).
-
-
-
-
-
-The same password is reused for all apps.
-
-
-
-
-
-New apps may use the same alias or a new alias.
-
-
-
-
-
-This ensures zero risk of losing signing credentials.
-
-
-
-3\. The iOS-on-Windows Protocol
-
-Since iOS can't be tested directly without a Mac, changes must be minimal and controlled.
-
-Only modify these two files:
-
-ios/Runner/Info.plist → Add permissions early (Internet, Ads, Photos, etc.).
-
-
-
-
-
-pubspec.yaml → Add remove\_alpha\_ios: true for icons.
-
-
-
-
-
-Do not modify any other iOS configuration unless explicitly required.
-
-
-
-4\. Visual Assets First
-
-Common issue: ghost icons, cached assets, or mismatched resolutions.
-
-Rules:
-
-Create a 1024×1024 solid-background icon immediately.
-
-
-
-
-
-No placeholder icons.
-
-
-
-
-
-Run flutter\_launcher\_icons on day one.
-
-
-
-
-
-Whenever images change: flutter clean.
-
-
-
-
-
-
-
-5\. AdMob \& External IDs
-
-We previously mixed up App IDs and Unit IDs, causing crashes.
-
-Rules:
-
-Create all entries before writing a single line of Ad code.
-
-
-
-
-
-Android: Add the App ID to AndroidManifest.
-
-
-
-
-
-iOS: Add the App ID to Info.plist.
-
-
-
-
-
-Only then: write Dart code.
-
-
-
-
-
-
-
-6\. GitHub Workflow (Mandatory)
-
-To avoid lost files, unsynced changes, or overwritten configs:
-
-Rules:
-
-Every project must have a GitHub repo created at the start.
-
-
-
-
-
-Push code at least once per work session.
-
-
-
-
-
-Commits must be descriptive (e.g., feat: add home layout, fix: icon not loading).
-
-
-
-
-
-Always push before asking the assistant to refactor or add files.
-
-
-
-
-
-This ensures traceability and safe rollbacks.
-
-
-
-7\. Module \& Package Discipline
-
-Past issue: trying to fix broken packages instead of downgrading.
-
-Rules:
-
-Never update packages automatically.
-
-
-
-
-
-If a module is outdated or incompatible → downgrade first.
-
-
-
-
-
-Only update when explicitly necessary.
-
-
-
-
-
-
-
-8\. Modification Rules for the Assistant
-
-To avoid large, unnecessary rewrites:
-
-Modify only what the user asks.
-
-
-
-
-
-Do not rewrite entire files unless explicitly requested.
-
-
-
-
-
-Do not introduce new architecture patterns.
-
-
-
-
-
-Keep all code clean and simple.
-
-
-
-
-
-Ask clarifying questions whenever unsure.
-
-
-
-
-
-Follow all documents inside /docs.
-
-
-
-
-
-
-
-9\. Performance \& UX Standards
-
-Fast loading.
-
-
-
-
-
-No heavy animations.
-
-
-
-
-
-Minimal dependencies.
-
-
-
-
-
-Small, modular code.
-
-
-
-
-
-
-
-Summary Checklist
-
-Permanent project name chosen upfront (no real names).
-
-
-
-
-
-Master Keystore reused.
-
-
-
-
-
-Minimal iOS edits.
-
-
-
-
-
-Visual assets prepared first.
-
-
-
-
-
-AdMob IDs configured before writing code.
-
-
-
-
-
-GitHub repo created at the start.
-
-
-
-
-
-Avoid unnecessary package updates.
-
-
-
-
-
-Keep modifications simple and scoped.
-
-
-
-
-
-
-
-End of document.
-
-
-
-ross Android, iOS, Google Play, and any external services.
-
-
-
-2\. The Master Keystore Strategy
-
-We no longer generate random keys for each app.
-
-Rules:
-
-Use one universal Keystore stored safely (ex: Documents/DevKeys/master\_key.jks).
-
-
-
-
-
-The same password is reused for all apps.
-
-
-
-
-
-New apps may use the same alias or a new alias.
-
-
-
-
-
-This ensures zero risk of losing signing credentials.
-
-
-
-3\. The iOS-on-Windows Protocol
-
-Since iOS can't be tested directly without a Mac, changes must be minimal and controlled.
-
-Only modify these two files:
-
-ios/Runner/Info.plist → Add permissions early (Internet, Ads, Photos, etc.).
-
-
-
-
-
-pubspec.yaml → Add remove\_alpha\_ios: true for icons.
-
-
-
-
-
-Do not modify any other iOS configuration unless explicitly required.
-
-
-
-4\. Visual Assets First
-
-Common issue: ghost icons, cached assets, or mismatched resolutions.
-
-Rules:
-
-Create a 1024×1024 solid-background icon immediately.
-
-
-
-
-
-No placeholder icons.
-
-
-
-
-
-Run flutter\_launcher\_icons on day one.
-
-
-
-
-
-Whenever images change: flutter clean.
-
-
-
-
-
-
-
-5\. AdMob \& External IDs
-
-We previously mixed up App IDs and Unit IDs, causing crashes.
-
-Rules:
-
-Create all entries before writing a single line of Ad code.
-
-
-
-
-
-Android: Add the App ID to AndroidManifest.
-
-
-
-
-
-iOS: Add the App ID to Info.plist.
-
-
-
-
-
-Only then: write Dart code.
-
-
-
-
-
-
-
-6\. GitHub Workflow (Mandatory)
-
-To avoid lost files, unsynced changes, or overwritten configs:
-
-Rules:
-
-Every project must have a GitHub repo created at the start.
-
-
-
-
-
-Push code at least once per work session.
-
-
-
-
-
-Commits must be descriptive (e.g., feat: add home layout, fix: icon not loading).
-
-
-
-
-
-Always push before asking the assistant to refactor or add files.
-
-
-
-
-
-This ensures traceability and safe rollbacks.
-
-
-
-7\. Module \& Package Discipline
-
-Past issue: trying to fix broken packages instead of downgrading.
-
-Rules:
-
-Never update packages automatically.
-
-
-
-
-
-If a module is outdated or incompatible → downgrade first.
-
-
-
-
-
-Only update when explicitly necessary.
-
-
-
-
-
-
-
-8\. Modification Rules for the Assistant
-
-To avoid large, unnecessary rewrites:
-
-Modify only what the user asks.
-
-
-
-
-
-Do not rewrite entire files unless explicitly requested.
-
-
-
-
-
-Do not introduce new architecture patterns.
-
-
-
-
-
-Keep all code clean and simple.
-
-
-
-
-
-Ask clarifying questions whenever unsure.
-
-
-
-
-
-Follow all documents inside /docs.
-
-
-
-
-
-
-
-9\. Performance \& UX Standards
-
-Fast loading.
-
-
-
-
-
-No heavy animations.
-
-
-
-
-
-Minimal dependencies.
-
-
-
-
-
-Small, modular code.
-
-
-
-
-
-
-
-Summary Checklist
-
-Permanent project name chosen upfront (no real names).
-
-
-
-
-
-Master Keystore reused.
-
-
-
-
-
-Minimal iOS edits.
-
-
-
-
-
-Visual assets prepared first.
-
-
-
-
-
-AdMob IDs configured before writing code.
-
-
-
-
-
-GitHub repo created at the start.
-
-
-
-
-
-Avoid unnecessary package updates.
-
-
-
-
-
-Keep modifications simple and scoped.
-
-
-
-
-
-
-
-End of document.
-
-
-
-
-
+Rule: Never push code that breaks ITEMS_DATA syntax (e.g., trailing commas in JSON). Validation is mandatory.
