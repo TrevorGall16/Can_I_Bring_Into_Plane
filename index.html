@@ -50,8 +50,8 @@
             <div class="navbar-actions">
                 <a href="contact.html" class="nav-link">Contact</a>
                 <a href="privacy.html" class="nav-link">Privacy</a>
-                <button class="bag-btn" id="bagFAB" title="My Carry-On Bag">
-                    <i class="fa-solid fa-suitcase-rolling"></i>
+                <button class="bag-btn" id="bagFAB" title="My Checklist">
+                    <i class="fa-solid fa-clipboard-check"></i>
                     <span class="bag-counter" id="bagCounter">0</span>
                 </button>
             </div>
@@ -936,14 +936,14 @@ function showMyBagModal() {
     const restrictedCount = bagList.filter(i => i.carryOn === 'restricted').length;
     const prohibitedCount = bagList.filter(i => i.carryOn === 'prohibited').length;
 
-    let content = '<h3>🎒 My Carry-On Bag</h3>';
+    let content = '<h2 style="margin:0 0 15px 0; font-size:1.25rem;">Pre-Flight Compliance Report</h2>';
     if (savedItems.size === 0) {
-        content += '<p>Your bag is empty. Add items to track them!</p>';
+        content += '<p>Your checklist is empty. Add items to verify compliance!</p>';
     } else {
         content += `<div style="background:#f8f9fa; padding:10px; border-radius:5px; margin-bottom:15px; display:flex; justify-content:space-around; font-size:0.9em;"><span style="color:green">✅ ${allowedCount} Allowed</span><span style="color:orange">⚠️ ${restrictedCount} Restricted</span><span style="color:red">❌ ${prohibitedCount} Prohibited</span></div><ul style="list-style:none; padding:0;">`;
         bagList.forEach(item => {
-            const icon = item.carryOn === 'allowed' ? '✅' : (item.carryOn === 'prohibited' ? '❌' : '⚠️');
-            content += `<li style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;"><span>${icon} <strong>${item.name}</strong></span><button onclick="toggleBagItem(${item.id}); showMyBagModal();" style="color:red; border:none; background:none; cursor:pointer;">Remove</button></li>`;
+            const statusBadge = item.carryOn === 'allowed' ? '<span style="background:#dcfce7;color:#166534;padding:2px 6px;border-radius:4px;font-size:0.75rem;margin-right:8px;">✅ OK</span>' : (item.carryOn === 'prohibited' ? '<span style="background:#fee2e2;color:#991b1b;padding:2px 6px;border-radius:4px;font-size:0.75rem;margin-right:8px;">❌ NO</span>' : '<span style="background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:4px;font-size:0.75rem;margin-right:8px;">⚠️ CHECK</span>');
+            content += `<li style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;"><span>${statusBadge}<strong>${item.name}</strong></span><button onclick="toggleBagItem(${item.id}); showMyBagModal();" style="color:red; border:none; background:none; cursor:pointer;">Remove</button></li>`;
         });
         content += '</ul><button onclick="savedItems.clear(); localStorage.setItem(\'myBag\', \'[]\'); updateBagCounter(); showMyBagModal();" style="width:100%; padding:10px; background:#ffebee; color:red; border:none; border-radius:5px; margin-top:10px;">Clear All Items</button>';
     }
@@ -971,31 +971,39 @@ function shareItemLink(id) {
     }
 }
 
-// 💰 MONETIZATION: Contextual Affiliate Mapping
+// 💰 MONETIZATION: High-Margin Affiliate Mapping (eSIM, Insurance, Travel Services)
 const AFFILIATE_MAP = {
-    'liquids': [
-        { name: 'TSA Approved Bottles', icon: 'fa-bottle-water', query: 'tsa approved travel bottles leak proof' },
-        { name: 'Quart Sized Bags', icon: 'fa-bag-shopping', query: 'tsa approved quart size bags clear' }
-    ],
     'electronics': [
-        { name: 'Tech Organizer', icon: 'fa-plug', query: 'travel electronics organizer bag' },
-        { name: 'Portable Charger', icon: 'fa-battery-full', query: 'anker portable charger travel' }
+        { name: 'eSIM Data Plan', icon: 'fa-wifi', query: 'international esim data plan travel', note: 'Avoid roaming fees' },
+        { name: 'Tech Insurance', icon: 'fa-shield-halved', query: 'travel insurance electronics protection' }
     ],
     'medication': [
-        { name: 'Pill Organizer', icon: 'fa-pills', query: 'travel pill organizer moisture proof' },
+        { name: 'Medical Insurance', icon: 'fa-user-nurse', query: 'travel medical insurance international' },
         { name: 'Insulin Cooler', icon: 'fa-temperature-low', query: 'insulin cooler travel case tsa approved' }
     ],
-    'toiletries': [
-        { name: 'Toiletry Bag', icon: 'fa-suitcase', query: 'hanging toiletry bag travel' },
-        { name: 'Solid Toiletries', icon: 'fa-soap', query: 'travel size solid shampoo bar' }
+    'liquids': [
+        { name: 'Leakproof Bottles', icon: 'fa-bottle-water', query: 'tsa approved travel bottles leak proof' },
+        { name: 'Toiletry Bag', icon: 'fa-bag-shopping', query: 'tsa approved quart size bags clear' }
     ],
-    'comfort': [
-        { name: 'Travel Pillow', icon: 'fa-bed', query: 'memory foam travel pillow airplane' },
-        { name: 'Sleep Mask', icon: 'fa-eye-slash', query: 'contoured sleep mask travel' }
+    'toiletries': [
+        { name: 'Leakproof Bottles', icon: 'fa-bottle-water', query: 'tsa approved travel bottles leak proof' },
+        { name: 'Toiletry Bag', icon: 'fa-bag-shopping', query: 'hanging toiletry bag travel waterproof' }
+    ],
+    'baby': [
+        { name: 'Family Travel Insurance', icon: 'fa-shield-heart', query: 'family travel insurance kids baby' },
+        { name: 'Diaper Bag', icon: 'fa-baby', query: 'travel diaper bag backpack airplane' }
+    ],
+    'sports': [
+        { name: 'Sports Gear Insurance', icon: 'fa-shield-halved', query: 'travel insurance sports equipment protection' },
+        { name: 'Equipment Bag', icon: 'fa-dumbbell', query: 'sports equipment travel bag airline' }
+    ],
+    'customs': [
+        { name: 'Travel Insurance', icon: 'fa-shield-heart', query: 'comprehensive travel insurance international' },
+        { name: 'eSIM Data Plan', icon: 'fa-wifi', query: 'international esim data plan travel' }
     ],
     'default': [
-        { name: 'Digital Luggage Scale', icon: 'fa-weight-hanging', query: 'digital luggage scale portable' },
-        { name: 'Universal Adapter', icon: 'fa-earth-americas', query: 'universal travel power adapter' }
+        { name: 'Travel Insurance', icon: 'fa-shield-heart', query: 'comprehensive travel insurance safetywing' },
+        { name: 'Universal Adapter', icon: 'fa-earth-americas', query: 'universal travel power adapter worldwide' }
     ]
 };
 
@@ -1108,7 +1116,7 @@ function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush = fals
                 ${affiliateHTML}
             </div>
              <button class="${savedItems.has(item.id) ? 'action-btn saved' : 'action-btn'}" onclick="toggleBagItem(${item.id})" style="margin-top: 10px; width: 100%;">
-                ${savedItems.has(item.id) ? '✅ Saved to Bag' : '➕ Add to My Bag'}
+                ${savedItems.has(item.id) ? '✅ On Checklist' : '➕ Add to Checklist'}
             </button>
         </div>
 
