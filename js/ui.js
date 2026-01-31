@@ -537,30 +537,47 @@ function displayRelatedItems(currentItem) {
 }
 
 // ---------------------------------------------------------
-// DISPLAY CATEGORY RESULTS (Clean Outline Edition)
+// DISPLAY CATEGORY RESULTS (Layout & Sort Fixed)
 // ---------------------------------------------------------
 export function displayCategoryResults(category, skipHistoryPush = false) {
     if (!skipHistoryPush && window.navManager) window.navManager.pushCategoryState(category);
     
-    // UI Cleanup
+    // 1. LAYOUT FIX: Hide EVERYTHING on the home page
+    const elementsToHide = [
+        'welcomeMessage', 
+        'quickGuide', 
+        'popularSearches', 
+        'travelMustHaves', 
+        'securityGuide', 
+        'howItWorks',
+        'resultCard',
+        'resultAd', 
+        'destinationReport',
+        'homeContent' // Catch-all if you have a wrapper
+    ];
+    elementsToHide.forEach(id => {
+        document.getElementById(id)?.classList.add('hidden');
+    });
+
+    // Show the Results Panel
     const midPanel = document.getElementById('middlePanel');
     if (midPanel) midPanel.classList.remove('hidden');
     window.scrollTo(0, 0);
 
-    document.getElementById('resultCard')?.classList.add('hidden');
-    document.getElementById('resultAd')?.classList.add('hidden');
-    document.getElementById('destinationReport')?.classList.add('hidden');
-
-    // Sticky Bar Logic
+    // 2. STICKY BAR FIX: Force the "Mode" visuals
     const sticky = document.getElementById('stickyDestBar');
     const dest = window.currentDestination;
     if (sticky && dest) {
         sticky.classList.remove('hidden');
-        sticky.style.borderLeft = `5px solid ${dest.theme?.color || '#2563eb'}`;
+        sticky.style.display = 'flex'; // Ensure flex layout
+        // Apply the Theme Color to the border
+        sticky.style.border = `2px solid ${dest.theme?.color || '#2563eb'}`;
+        sticky.style.background = '#ffffff';
+        
         const flagEl = document.getElementById('stickyFlag');
         const textEl = document.getElementById('stickyText');
         if (flagEl) flagEl.innerText = dest.flag;
-        if (textEl) textEl.innerHTML = `Mode: <strong>${dest.name}</strong>`;
+        if (textEl) textEl.innerHTML = `Mode: <strong style="color:${dest.theme?.color}">${dest.name}</strong>`;
     }
 
     // Filter Items
@@ -570,19 +587,19 @@ export function displayCategoryResults(category, skipHistoryPush = false) {
     if (titleEl) titleEl.textContent = category.toUpperCase();
     if (countEl) countEl.textContent = `${items.length} items`;
 
-    // Sort Logic
+    // 3. SORT FIX: Green (Safe) -> Orange -> Red (Banned)
     const destCode = window.currentDestinationCode;
     items.sort((a, b) => {
-        const isBannedA = destCode && a.customs_restricted?.includes(destCode) ? 1 : 0;
-        const isBannedB = destCode && b.customs_restricted?.includes(destCode) ? 1 : 0;
-        if (isBannedA !== isBannedB) return isBannedB - isBannedA;
-
-        const getScore = (i) => {
-            if (i.carryOn === 'prohibited' && i.checked === 'prohibited') return 0;
-            if (i.carryOn === 'prohibited' || i.checked === 'restricted') return 1;
-            return 2;
+        // Helper to get score: 3=Safe, 2=Mixed, 1=Prohibited, 0=Banned
+        const getScore = (item) => {
+            const isBanned = destCode && item.customs_restricted?.includes(destCode);
+            if (isBanned) return 0; // Bottom
+            
+            if (item.carryOn === 'allowed' && item.checked === 'allowed') return 3; // Top (Green)
+            if (item.carryOn === 'prohibited' && item.checked === 'prohibited') return 1; // Low
+            return 2; // Middle (Orange/Mixed)
         };
-        return getScore(a) - getScore(b);
+        return getScore(b) - getScore(a); // Descending order (3 down to 0)
     });
 
     // Render Grid
@@ -591,7 +608,7 @@ export function displayCategoryResults(category, skipHistoryPush = false) {
     list.innerHTML = '';
 
     items.forEach(item => {
-        // --- 1. DESIGN LOGIC ---
+        // --- DESIGN LOGIC ---
         let gradient = '';
         let accentColor = '';
         let bannerHTML = '';
@@ -603,27 +620,27 @@ export function displayCategoryResults(category, skipHistoryPush = false) {
         if (isDestBanned) {
             // 🔴 BANNED
             gradient = 'linear-gradient(to top, #fef2f2 0%, #ffffff 100%)';
-            accentColor = '#ef4444'; // Red Border
+            accentColor = '#ef4444'; 
             const destName = window.currentDestination ? window.currentDestination.name.toUpperCase() : 'THIS COUNTRY';
-            bannerHTML = `<div style="background:#ef4444; color:white; font-size:0.65rem; padding:3px 10px; border-radius:0 0 0 6px; position:absolute; top:0; right:0; font-weight:700; letter-spacing:0.5px; box-shadow: -1px 1px 2px rgba(0,0,0,0.1);">⛔ BANNED IN ${destName}</div>`;
+            bannerHTML = `<div style="background:#ef4444; color:white; font-size:0.65rem; padding:3px 10px; border-radius:0 0 0 6px; position:absolute; top:0; right:0; font-weight:700; letter-spacing:0.5px;">⛔ BANNED IN ${destName}</div>`;
         } 
         else if (isFullyAllowed) {
             // 🟢 SAFE
             gradient = 'linear-gradient(to top, #f0fdf4 0%, #ffffff 100%)';
-            accentColor = '#86efac'; // Soft Green Border
+            accentColor = '#86efac';
         } 
         else if (isMixed) {
             // 🟠 MIXED
             gradient = 'linear-gradient(to top, #fff7ed 0%, #ffffff 100%)';
-            accentColor = '#fdba74'; // Soft Orange Border
+            accentColor = '#fdba74';
         } 
         else {
-            // 🔴 PROHIBITED
+            // 🔴 PROHIBITED (Global)
             gradient = 'linear-gradient(to top, #fff1f2 0%, #ffffff 100%)';
-            accentColor = '#fda4af'; // Soft Red Border
+            accentColor = '#fda4af';
         }
 
-        // --- 2. BUILD CARD ---
+        // --- BUILD CARD ---
         const div = document.createElement('div');
         div.className = 'category-card';
         div.onclick = () => window.openItemModal(item.id);
@@ -631,7 +648,7 @@ export function displayCategoryResults(category, skipHistoryPush = false) {
         div.style.cssText = `
             position: relative;
             background: ${gradient};
-            border: 1px solid ${accentColor}; /* Thin Full Border */
+            border: 1px solid ${accentColor};
             border-radius: 12px;
             padding: 18px 20px;
             margin-bottom: 15px;
@@ -640,33 +657,18 @@ export function displayCategoryResults(category, skipHistoryPush = false) {
             justify-content: space-between;
             cursor: pointer;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.2s ease;
         `;
         
-        // Hover
-        div.onmouseover = () => { div.style.transform = 'translateY(-2px)'; div.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.05)'; };
-        div.onmouseout = () => { div.style.transform = 'translateY(0)'; div.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.05)'; };
-
         // Badge Pill Style
-        const pillStyle = `
-            font-size: 0.75rem; 
-            padding: 5px 10px; 
-            border-radius: 20px; 
-            font-weight: 600; 
-            display: flex; 
-            align-items: center; 
-            gap: 6px;
-            width: fit-content;
-        `;
+        const pillStyle = `font-size: 0.75rem; padding: 5px 10px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 6px; width: fit-content;`;
 
         div.innerHTML = `
             ${bannerHTML}
-            
             <div style="flex:1;">
                 <h3 style="margin:0; font-size:1.15rem; font-weight:700; color:#0f172a; letter-spacing:-0.5px;">${item.name}</h3>
                 <div style="font-size:0.85rem; color:#64748b; margin-top:5px; font-weight:500;">Tap to view details</div>
             </div>
-
             <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
                 <div style="${pillStyle} background:${item.carryOn === 'allowed' ? '#dcfce7' : '#fee2e2'}; color:${item.carryOn === 'allowed' ? '#166534' : '#991b1b'};">
                     <i class="fa-solid fa-suitcase"></i> 
@@ -681,6 +683,7 @@ export function displayCategoryResults(category, skipHistoryPush = false) {
         list.appendChild(div);
     });
 }
+
 // ---------------------------------------------------------
 // SHOW COUNTRY RULES
 // ---------------------------------------------------------
@@ -1088,7 +1091,7 @@ export function renderDestinationReport(dest) {
                 <span style="font-size:1.5rem">${dest.flag}</span> ${dest.name} Rules
             </h2>
             <div class="report-header-actions">
-                <span class="risk-badge risk-${dest.risk}">Risk: ${dest.risk}</span>
+                <span class="risk-badge risk-${dest.risk.replace(/\s+/g, '')}">Risk: ${dest.risk}</span>
             </div>
         </div>
         <div class="report-body">
@@ -1150,10 +1153,14 @@ export function minimizeDestinationReport() {
     // Show Welcome (default browse mode)
     if (welcome) welcome.classList.remove('hidden');
 
-    // Show Sticky Bar with destination context
+    // Show Sticky Bar with full themed border
     if (sticky && dest) {
         sticky.classList.remove('hidden');
-        sticky.style.borderLeft = `5px solid ${dest.theme?.color || '#2563eb'}`;
+        sticky.classList.add('themed');
+        // Apply full colored border (left, right, bottom)
+        sticky.style.borderColor = dest.theme?.color || '#2563eb';
+        sticky.style.setProperty('--theme-bg', dest.theme?.bg || '#eff6ff');
+        sticky.style.background = `linear-gradient(to right, ${dest.theme?.bg || '#eff6ff'}, white)`;
         document.getElementById('stickyFlag').innerText = dest.flag;
         document.getElementById('stickyText').innerHTML = `Mode: <strong>${dest.name}</strong>`;
     }

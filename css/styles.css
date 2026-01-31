@@ -63,21 +63,11 @@ body {
 }
 
 .navbar-country {
-    flex: 1;
-    max-width: 200px;
+    display: none !important; /* This hides the container */
 }
 
 .country-selector-nav {
-    width: 100%;
-    padding: 8px 12px;
-    font-size: 0.875rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    background: #f8fafc;
-    color: #1e293b;
-    cursor: pointer;
-    outline: none;
-    transition: all 0.2s;
+    display: none !important; /* This hides the input itself */
 }
 
 .country-selector-nav:focus {
@@ -1391,6 +1381,28 @@ select:focus-visible {
 }
 .dest-card .flag { font-size: 1.5rem; }
 
+/* Risk-Level Card Accents */
+.dest-veryhigh {
+    border-left: 4px solid #dc2626;
+    background: #fef2f2;
+}
+.dest-veryhigh:hover {
+    border-color: #dc2626;
+    background: #fee2e2;
+}
+.dest-high {
+    border-left: 4px solid #f59e0b;
+}
+.dest-high:hover {
+    border-color: #f59e0b;
+}
+.dest-medium {
+    border-left: 4px solid #22c55e;
+}
+.dest-medium:hover {
+    border-color: #22c55e;
+}
+
 .dest-modal { max-width: 450px !important; }
 
 .modal-footer-note {
@@ -1449,7 +1461,8 @@ select:focus-visible {
     letter-spacing: 0.5px;
 }
 .risk-High { background: #fee2e2; color: #991b1b; }
-.risk-Medium { background: #ffedd5; color: #9a3412; }
+.risk-Medium { background: #dcfce7; color: #166534; }
+.risk-Very-High, .risk-VeryHigh { background: #7f1d1d; color: #ffffff; }
 
 .report-body { padding: 20px; }
 
@@ -1617,14 +1630,21 @@ select:focus-visible {
     top: 60px; /* Below Navbar */
     z-index: 90;
     background: white;
-    padding: 10px 20px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    padding: 12px 20px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #e2e8f0;
-    border-left: 5px solid #2563eb;
+    border: 2px solid;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    margin: 0 20px;
     animation: slideDown 0.3s ease;
+}
+
+/* Full themed sticky bar when active */
+.dest-sticky-bar.themed {
+    background: linear-gradient(to right, var(--theme-bg), white);
 }
 
 @keyframes slideDown {
