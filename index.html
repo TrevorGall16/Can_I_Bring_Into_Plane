@@ -61,6 +61,15 @@
         </div>
     </nav>
 
+    <!-- STICKY DESTINATION BAR - UX Refinement -->
+    <div id="stickyDestBar" class="dest-sticky-bar hidden">
+        <div class="sticky-content">
+            <span id="stickyFlag"></span>
+            <span id="stickyText">Traveling to <strong>Japan</strong></span>
+        </div>
+        <button onclick="window.openDestinationModal()" class="sticky-change-btn">Change</button>
+    </div>
+
     <!-- HERO SEARCH SECTION -->
     <section class="hero-search">
         <h1 class="hero-title">Can I bring this on a plane?</h1>
@@ -356,6 +365,6 @@
 </div>
 
 <!-- ES6 Modular JavaScript Architecture -->
-<script type="module" src="js/app.js?v=600"></script>
+<script type="module" src="js/app.js?v=800"></script>
 </body>
 </html>

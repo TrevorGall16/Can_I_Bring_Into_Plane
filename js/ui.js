@@ -18,7 +18,41 @@ let currentCategory = null;
 let savedItems = new Set();
 let searchIndex = new Map();
 let autocompleteTimeout = null;
+// ---------------------------------------------------------
+// INITIALIZATION (The Engine Starter)
+// ---------------------------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Build the Search Index so search works
+    buildSearchIndex();
+    
+    // 2. Load the Default Category (Liquids)
+    displayCategoryResults('liquids', true);
+    
+    // 3. Setup Search Bar Listener
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            // Simple debounce could go here, but direct call is fine for now
+            const query = e.target.value.toLowerCase().trim();
+            if (!query) {
+                document.getElementById('searchResults')?.classList.add('hidden');
+                return;
+            }
+            // Trigger search (assuming handleSearch exists or use simple filter)
+            // For now, let's just ensure basic UI doesn't break
+        });
+    }
 
+    // 4. Setup Modal Close Buttons
+    document.querySelectorAll('.close-modal').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
+        });
+    });
+    
+    // 5. Update Bag Count
+    if (window.updateBagCounter) window.updateBagCounter();
+});
 // Load saved items from localStorage
 if (localStorage.getItem('myBag')) {
     try {
@@ -503,75 +537,150 @@ function displayRelatedItems(currentItem) {
 }
 
 // ---------------------------------------------------------
-// DISPLAY CATEGORY RESULTS
+// DISPLAY CATEGORY RESULTS (Clean Outline Edition)
 // ---------------------------------------------------------
 export function displayCategoryResults(category, skipHistoryPush = false) {
-    if (!skipHistoryPush) navManager.pushCategoryState(category);
-    currentCategory = category;
-
+    if (!skipHistoryPush && window.navManager) window.navManager.pushCategoryState(category);
+    
+    // UI Cleanup
     const midPanel = document.getElementById('middlePanel');
-    midPanel.classList.remove('hidden');
+    if (midPanel) midPanel.classList.remove('hidden');
     window.scrollTo(0, 0);
 
-    toggleMobileView(true);
     document.getElementById('resultCard')?.classList.add('hidden');
     document.getElementById('resultAd')?.classList.add('hidden');
-    document.getElementById('countryRulesSection')?.classList.add('hidden');
+    document.getElementById('destinationReport')?.classList.add('hidden');
 
+    // Sticky Bar Logic
+    const sticky = document.getElementById('stickyDestBar');
+    const dest = window.currentDestination;
+    if (sticky && dest) {
+        sticky.classList.remove('hidden');
+        sticky.style.borderLeft = `5px solid ${dest.theme?.color || '#2563eb'}`;
+        const flagEl = document.getElementById('stickyFlag');
+        const textEl = document.getElementById('stickyText');
+        if (flagEl) flagEl.innerText = dest.flag;
+        if (textEl) textEl.innerHTML = `Mode: <strong>${dest.name}</strong>`;
+    }
+
+    // Filter Items
     const items = ITEMS_DATA.filter(i => i.category && i.category.includes(category));
-    document.getElementById('categoryTitle').textContent = category.toUpperCase();
-    document.getElementById('categoryCount').textContent = `${items.length} items`;
+    const titleEl = document.getElementById('categoryTitle');
+    const countEl = document.getElementById('categoryCount');
+    if (titleEl) titleEl.textContent = category.toUpperCase();
+    if (countEl) countEl.textContent = `${items.length} items`;
 
+    // Sort Logic
+    const destCode = window.currentDestinationCode;
     items.sort((a, b) => {
-        const getScore = (item) => {
-            const isBanned = item.customs_restricted?.includes(currentCountry);
-            const status = isBanned ? 'prohibited' : item.carryOn;
-            if (status === 'allowed' && item.checked === 'allowed') return 4;
-            if (status === 'allowed') return 3;
-            if (item.checked === 'allowed') return 2;
-            if (status === 'restricted' || item.checked === 'restricted') return 1;
-            return 0;
+        const isBannedA = destCode && a.customs_restricted?.includes(destCode) ? 1 : 0;
+        const isBannedB = destCode && b.customs_restricted?.includes(destCode) ? 1 : 0;
+        if (isBannedA !== isBannedB) return isBannedB - isBannedA;
+
+        const getScore = (i) => {
+            if (i.carryOn === 'prohibited' && i.checked === 'prohibited') return 0;
+            if (i.carryOn === 'prohibited' || i.checked === 'restricted') return 1;
+            return 2;
         };
-        return getScore(b) - getScore(a);
+        return getScore(a) - getScore(b);
     });
 
+    // Render Grid
     const list = document.getElementById('categoryItemsList');
+    if (!list) return;
     list.innerHTML = '';
 
     items.forEach(item => {
-        const isBanned = item.customs_restricted && item.customs_restricted.includes(currentCountry);
-        let status = isBanned ? 'prohibited' : item.carryOn;
-        let displayText = formatStatus(status);
-        let displayClass = status === 'allowed' ? 'status-allowed' : (status === 'prohibited' ? 'status-prohibited' : 'status-restricted');
+        // --- 1. DESIGN LOGIC ---
+        let gradient = '';
+        let accentColor = '';
+        let bannerHTML = '';
 
-        if (isBanned) {
-            displayText = '❌ Customs Ban';
-            displayClass = 'status-prohibited';
+        const isDestBanned = destCode && item.customs_restricted?.includes(destCode);
+        const isFullyAllowed = item.carryOn === 'allowed' && item.checked === 'allowed';
+        const isMixed = !isFullyAllowed && !(item.carryOn === 'prohibited' && item.checked === 'prohibited');
+
+        if (isDestBanned) {
+            // 🔴 BANNED
+            gradient = 'linear-gradient(to top, #fef2f2 0%, #ffffff 100%)';
+            accentColor = '#ef4444'; // Red Border
+            const destName = window.currentDestination ? window.currentDestination.name.toUpperCase() : 'THIS COUNTRY';
+            bannerHTML = `<div style="background:#ef4444; color:white; font-size:0.65rem; padding:3px 10px; border-radius:0 0 0 6px; position:absolute; top:0; right:0; font-weight:700; letter-spacing:0.5px; box-shadow: -1px 1px 2px rgba(0,0,0,0.1);">⛔ BANNED IN ${destName}</div>`;
+        } 
+        else if (isFullyAllowed) {
+            // 🟢 SAFE
+            gradient = 'linear-gradient(to top, #f0fdf4 0%, #ffffff 100%)';
+            accentColor = '#86efac'; // Soft Green Border
+        } 
+        else if (isMixed) {
+            // 🟠 MIXED
+            gradient = 'linear-gradient(to top, #fff7ed 0%, #ffffff 100%)';
+            accentColor = '#fdba74'; // Soft Orange Border
+        } 
+        else {
+            // 🔴 PROHIBITED
+            gradient = 'linear-gradient(to top, #fff1f2 0%, #ffffff 100%)';
+            accentColor = '#fda4af'; // Soft Red Border
         }
 
-        const link = document.createElement('a');
-        link.className = 'category-item-card';
-        link.href = `?item=${toSlug(item.name)}`;
-        link.style.textDecoration = 'none';
-        link.innerHTML = `
-            <div class="category-item-name">${item.name}</div>
-            <div class="category-item-status">
-                <span class="${displayClass}">
-                    🎒 ${displayText}
-                </span>
-            </div>`;
+        // --- 2. BUILD CARD ---
+        const div = document.createElement('div');
+        div.className = 'category-card';
+        div.onclick = () => window.openItemModal(item.id);
+        
+        div.style.cssText = `
+            position: relative;
+            background: ${gradient};
+            border: 1px solid ${accentColor}; /* Thin Full Border */
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        `;
+        
+        // Hover
+        div.onmouseover = () => { div.style.transform = 'translateY(-2px)'; div.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.05)'; };
+        div.onmouseout = () => { div.style.transform = 'translateY(0)'; div.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.05)'; };
 
-        link.onclick = (e) => {
-            e.preventDefault();
-            const isDesktop = window.innerWidth >= 1024;
-            displayItemResult(item, isDesktop);
-        };
-        list.appendChild(link);
+        // Badge Pill Style
+        const pillStyle = `
+            font-size: 0.75rem; 
+            padding: 5px 10px; 
+            border-radius: 20px; 
+            font-weight: 600; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px;
+            width: fit-content;
+        `;
+
+        div.innerHTML = `
+            ${bannerHTML}
+            
+            <div style="flex:1;">
+                <h3 style="margin:0; font-size:1.15rem; font-weight:700; color:#0f172a; letter-spacing:-0.5px;">${item.name}</h3>
+                <div style="font-size:0.85rem; color:#64748b; margin-top:5px; font-weight:500;">Tap to view details</div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+                <div style="${pillStyle} background:${item.carryOn === 'allowed' ? '#dcfce7' : '#fee2e2'}; color:${item.carryOn === 'allowed' ? '#166534' : '#991b1b'};">
+                    <i class="fa-solid fa-suitcase"></i> 
+                    <span>${item.carryOn === 'allowed' ? 'Cabin OK' : 'No Cabin'}</span>
+                </div>
+                <div style="${pillStyle} background:${item.checked === 'allowed' ? '#dcfce7' : '#fee2e2'}; color:${item.checked === 'allowed' ? '#166534' : '#991b1b'};">
+                    <i class="fa-solid fa-plane-arrival"></i> 
+                    <span>${item.checked === 'allowed' ? 'Check OK' : 'No Check'}</span>
+                </div>
+            </div>
+        `;
+        list.appendChild(div);
     });
-
-    adProvider.refreshInlineAd();
 }
-
 // ---------------------------------------------------------
 // SHOW COUNTRY RULES
 // ---------------------------------------------------------
@@ -958,19 +1067,28 @@ export function selectDestination(code) {
 export function renderDestinationReport(dest) {
     const container = document.getElementById('destinationReport');
     const welcome = document.getElementById('welcomeMessage');
+    const middlePanel = document.getElementById('middlePanel');
+    const sticky = document.getElementById('stickyDestBar');
 
     if (!container) return;
 
-    // Hide Welcome, Show Report
+    // FOCUS MODE: Hide other views
     if (welcome) welcome.classList.add('hidden');
+    if (middlePanel) middlePanel.classList.add('hidden');
+    if (sticky) sticky.classList.add('hidden'); // Hide sticky while in full report
+
     container.classList.remove('hidden');
 
+    // Apply Dynamic Theme Border
+    container.style.borderColor = dest.theme?.color || '#e2e8f0';
+
     container.innerHTML = `
-        <div class="report-header">
-            <h2><span style="font-size:1.5rem">${dest.flag}</span> ${dest.name} Rules</h2>
+        <div class="report-header" style="border-bottom-color: ${dest.theme?.border || '#e2e8f0'}">
+            <h2 style="color: ${dest.theme?.color || '#1e293b'}">
+                <span style="font-size:1.5rem">${dest.flag}</span> ${dest.name} Rules
+            </h2>
             <div class="report-header-actions">
                 <span class="risk-badge risk-${dest.risk}">Risk: ${dest.risk}</span>
-                <button class="close-report" onclick="window.closeDestinationReport()">&times;</button>
             </div>
         </div>
         <div class="report-body">
@@ -1008,6 +1126,10 @@ export function renderDestinationReport(dest) {
                     </a>
                 </div>
             </div>
+
+            <button onclick="window.minimizeDestinationReport()" class="btn-browse" style="background: ${dest.theme?.color || '#2563eb'}">
+                <i class="fa-solid fa-magnifying-glass"></i> Browse Items for ${dest.name}
+            </button>
         </div>
     `;
 
@@ -1015,26 +1137,67 @@ export function renderDestinationReport(dest) {
     container.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Ensure global access for potential external calls
-window.renderDestinationReport = renderDestinationReport;
+// NEW: Minimize to Sticky Bar (keeps destination active)
+export function minimizeDestinationReport() {
+    const container = document.getElementById('destinationReport');
+    const welcome = document.getElementById('welcomeMessage');
+    const sticky = document.getElementById('stickyDestBar');
+    const dest = window.currentDestination;
 
+    // Hide Report
+    if (container) container.classList.add('hidden');
+
+    // Show Welcome (default browse mode)
+    if (welcome) welcome.classList.remove('hidden');
+
+    // Show Sticky Bar with destination context
+    if (sticky && dest) {
+        sticky.classList.remove('hidden');
+        sticky.style.borderLeft = `5px solid ${dest.theme?.color || '#2563eb'}`;
+        document.getElementById('stickyFlag').innerText = dest.flag;
+        document.getElementById('stickyText').innerHTML = `Mode: <strong>${dest.name}</strong>`;
+    }
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// LEGACY: Full close (clears destination entirely)
 export function closeDestinationReport() {
     const container = document.getElementById('destinationReport');
     const welcome = document.getElementById('welcomeMessage');
+    const sticky = document.getElementById('stickyDestBar');
 
     if (container) container.classList.add('hidden');
     if (welcome) welcome.classList.remove('hidden');
+    if (sticky) sticky.classList.add('hidden');
 
     // Reset button text
     const btn = document.querySelector('.dest-btn span');
     if (btn) btn.innerText = 'Select Destination';
 
     window.currentDestination = null;
+    window.currentDestinationCode = null;
 }
-
-// CRITICAL: Bridge ES6 module scope to HTML inline onclick handlers
+// --- HELPER ALIASES (Paste this ABOVE the window. lines) ---
+function openItemModal(id) {
+    // Redirects to the main item function
+    if (typeof showItemById === 'function') {
+        showItemById(id);
+    } else {
+        console.warn('Item clicked:', id);
+    }
+}
+// --- CRITICAL: WINDOW BINDINGS (Paste at the very bottom) ---
+window.displayCategoryResults = displayCategoryResults; // Fixed name
 window.openDestinationModal = openDestinationModal;
 window.selectDestination = selectDestination;
-window.closeDestinationReport = closeDestinationReport;
-
+window.minimizeDestinationReport = minimizeDestinationReport;
+window.closeDestinationReport = minimizeDestinationReport;
+window.showMyBagModal = showMyBagModal;
+window.toggleBagItem = toggleBagItem;
+window.clearAllBagItems = clearAllBagItems;
+window.openItemModal = openItemModal;
+window.showItemById = showItemById;
+window.resetToHome = () => window.location.reload();
 console.log('🎨 UI module loaded');

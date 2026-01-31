@@ -1606,3 +1606,163 @@ select:focus-visible {
     padding: 30px 0;
     color: #64748b;
 }
+
+/* =========================================
+   UX REFINEMENT: STICKY BAR & VIEW SWITCHING
+   ========================================= */
+
+/* Sticky "Mini Mode" Bar */
+.dest-sticky-bar {
+    position: sticky;
+    top: 60px; /* Below Navbar */
+    z-index: 90;
+    background: white;
+    padding: 10px 20px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    border-left: 5px solid #2563eb;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.sticky-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+}
+
+#stickyFlag {
+    font-size: 1.25rem;
+}
+
+.sticky-change-btn {
+    background: none;
+    border: 1px solid #cbd5e1;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: #64748b;
+    transition: all 0.2s;
+}
+.sticky-change-btn:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+}
+
+/* Browse Button (Inside Report) */
+.btn-browse {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-browse:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Dynamic Theme Border for Report */
+.dest-report {
+    border-width: 2px;
+    border-style: solid;
+}
+
+/* Mobile adjustments */
+@media (max-width: 639px) {
+    .dest-sticky-bar {
+        padding: 8px 15px;
+    }
+    .sticky-content {
+        font-size: 0.85rem;
+    }
+}
+
+/* =========================================
+   UX CONSOLIDATION: TRAFFIC LIGHT GRID
+   ========================================= */
+
+/* BANNED Card - Red Alert */
+.card-banned {
+    background: #fef2f2 !important;
+    border: 2px solid #fca5a5 !important;
+    position: relative;
+}
+.card-banned:hover {
+    background: #fee2e2 !important;
+    border-color: #f87171 !important;
+    transform: translateY(-1px);
+}
+
+/* SAFE Card - Green Hint */
+.card-safe {
+    border-left: 4px solid #22c55e;
+}
+.card-safe:hover {
+    background: #f0fdf4;
+    border-color: #22c55e;
+}
+
+/* RESTRICTED Card - Yellow Hint */
+.card-restricted {
+    border-left: 4px solid #f59e0b;
+}
+.card-restricted:hover {
+    background: #fffbeb;
+    border-color: #f59e0b;
+}
+
+/* Ban Banner inside card */
+.card-ban-banner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(90deg, #fef2f2, #fee2e2);
+    color: #991b1b;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 10px;
+    border-bottom: 2px solid #fca5a5;
+    text-align: center;
+}
+
+/* Adjust card padding when banner present */
+.card-banned .category-item-name {
+    margin-top: 24px;
+}
+
+/* Status badge refinements */
+.status-allowed {
+    background: #dcfce7;
+    color: #166534;
+}
+.status-prohibited {
+    background: #fee2e2;
+    color: #991b1b;
+    font-weight: 600;
+}
+.status-restricted {
+    background: #fef3c7;
+    color: #92400e;
+}

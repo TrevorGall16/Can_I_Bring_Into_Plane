@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(node generate-sitemap.js:*)",
-      "Bash(del \"D:\\\\Projects\\\\Website\\\\Airport\\\\Can_I_Bring_Into_Plane\\\\js\\\\data-embedded.js\" \"D:\\\\Projects\\\\Website\\\\Airport\\\\Can_I_Bring_Into_Plane\\\\js\\\\app-old.js\")"
+      "Bash(del \"D:\\\\Projects\\\\Website\\\\Airport\\\\Can_I_Bring_Into_Plane\\\\js\\\\data-embedded.js\" \"D:\\\\Projects\\\\Website\\\\Airport\\\\Can_I_Bring_Into_Plane\\\\js\\\\app-old.js\")",
+      "Bash(node:*)",
+      "Bash(node --check:*)"
     ]
   }
 }
