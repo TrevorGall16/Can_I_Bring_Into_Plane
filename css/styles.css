@@ -1216,7 +1216,7 @@ select:focus-visible {
    PHASE 1: BAGGAGE BRIDGE CARD STYLING
    ========================================= */
 .special-baggage-card {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
     color: #ffffff !important;
     text-decoration: none;
     display: flex;
@@ -1226,9 +1226,12 @@ select:focus-visible {
     border-radius: 12px;
     box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
     width: 100%;
     box-sizing: border-box;
+    /* Override .category-card animation that causes invisibility */
+    opacity: 1 !important;
+    animation: none !important;
 }
 
 .special-baggage-card:hover {
@@ -1774,4 +1777,213 @@ select:focus-visible {
 .status-restricted {
     background: #fef3c7;
     color: #92400e;
+}
+
+/* =========================================
+   PHASE 4: CATEGORY GRID & CARD ANIMATIONS
+   ========================================= */
+
+.category-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.category-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    animation: slideUp 0.3s ease-out forwards;
+    opacity: 0;
+}
+
+.category-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Staggered animation for cards */
+.category-card:nth-child(1) { animation-delay: 0ms; }
+.category-card:nth-child(2) { animation-delay: 30ms; }
+.category-card:nth-child(3) { animation-delay: 60ms; }
+.category-card:nth-child(4) { animation-delay: 90ms; }
+.category-card:nth-child(5) { animation-delay: 120ms; }
+.category-card:nth-child(6) { animation-delay: 150ms; }
+.category-card:nth-child(7) { animation-delay: 180ms; }
+.category-card:nth-child(8) { animation-delay: 210ms; }
+.category-card:nth-child(9) { animation-delay: 240ms; }
+.category-card:nth-child(10) { animation-delay: 270ms; }
+
+/* =========================================
+   PHASE 4: CONTEXTUAL MONETIZATION CARDS
+   ========================================= */
+
+.contextual-ad-card {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+    border-radius: 14px;
+    padding: 20px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+    animation: slideUp 0.4s ease-out forwards;
+    border: 2px solid transparent;
+}
+
+.contextual-ad-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.3);
+}
+
+/* Card Variants */
+.contextual-ad-card.insurance {
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+}
+.contextual-ad-card.insurance:hover {
+    box-shadow: 0 12px 30px rgba(124, 58, 237, 0.35);
+}
+
+.contextual-ad-card.protection {
+    background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+}
+.contextual-ad-card.protection:hover {
+    box-shadow: 0 12px 30px rgba(8, 145, 178, 0.35);
+}
+
+.contextual-ad-card.travel-bag {
+    background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+}
+.contextual-ad-card.travel-bag:hover {
+    box-shadow: 0 12px 30px rgba(234, 88, 12, 0.35);
+}
+
+.contextual-ad-card.baby-gear {
+    background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+}
+.contextual-ad-card.baby-gear:hover {
+    box-shadow: 0 12px 30px rgba(236, 72, 153, 0.35);
+}
+
+.contextual-ad-card.camping {
+    background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+}
+.contextual-ad-card.camping:hover {
+    box-shadow: 0 12px 30px rgba(22, 163, 74, 0.35);
+}
+
+.contextual-ad-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.contextual-ad-content {
+    flex: 1;
+}
+
+.contextual-ad-content h4 {
+    margin: 0 0 4px 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.contextual-ad-content p {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+.contextual-ad-arrow {
+    font-size: 1.2rem;
+    opacity: 0.7;
+    transition: transform 0.2s;
+}
+
+.contextual-ad-card:hover .contextual-ad-arrow {
+    transform: translateX(4px);
+    opacity: 1;
+}
+
+.contextual-ad-badge {
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    background: #fbbf24;
+    color: #78350f;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* =========================================
+   STICKY FOOTER AD
+   ========================================= */
+
+.sticky-footer-ad {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid #e2e8f0;
+}
+
+.sticky-footer-ad.hidden {
+    display: none;
+}
+
+.sticky-footer-ad .ad-close-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #f1f5f9;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.sticky-footer-ad .ad-close-btn:hover {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+/* Add bottom padding to body when sticky ad is visible */
+body.has-sticky-ad {
+    padding-bottom: 70px;
+}
+
+/* Hide on very small screens */
+@media (max-width: 400px) {
+    .sticky-footer-ad {
+        padding: 8px;
+    }
 }

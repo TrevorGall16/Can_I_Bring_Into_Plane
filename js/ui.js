@@ -593,6 +593,9 @@ export function displayItemResult(item, keepMiddlePanel = false, skipHistoryPush
         document.getElementById('resultAd')?.classList.add('hidden');
         document.getElementById('searchInput').value = '';
 
+        // SEO: Clean up dynamic schemas
+        removeSchemas();
+
         const midPanel = document.getElementById('middlePanel');
         if (midPanel && !midPanel.classList.contains('hidden')) {
             // Stay on category view
@@ -654,6 +657,128 @@ function updatePageSEO(title, queryParam) {
         if (ogTitle) ogTitle.content = title;
         if (twTitle) twTitle.content = title;
     } catch (e) { console.warn('Meta tag update failed', e); }
+}
+
+// ---------------------------------------------------------
+// CONTEXTUAL MONETIZATION MAP
+// ---------------------------------------------------------
+const CONTEXTUAL_ADS = {
+    medication: {
+        icon: '🏥',
+        title: 'Travel Medical Insurance',
+        subtitle: 'Cover confiscated meds & medical emergencies abroad',
+        url: 'https://safetywing.com/nomad-insurance/?referenceID=canibringonplane',
+        variant: 'insurance'
+    },
+    electronics: {
+        icon: '🛡️',
+        title: 'Protect Your Electronics',
+        subtitle: 'TSA-approved locks & padded laptop sleeves',
+        url: 'https://www.amazon.com/s?k=tsa+approved+laptop+sleeve&tag=canibringonpl-20',
+        variant: 'protection'
+    },
+    liquids: {
+        icon: '🧴',
+        title: 'TSA-Approved Travel Bottles',
+        subtitle: '3.4oz leak-proof containers that pass security',
+        url: 'https://www.amazon.com/s?k=tsa+approved+toiletry+bottles&tag=canibringonpl-20',
+        variant: 'travel-bag'
+    },
+    toiletries: {
+        icon: '✈️',
+        title: 'Clear Toiletry Bags',
+        subtitle: 'TSA-compliant quart bags for smooth screening',
+        url: 'https://www.amazon.com/s?k=tsa+approved+clear+toiletry+bag&tag=canibringonpl-20',
+        variant: 'travel-bag'
+    },
+    baby: {
+        icon: '👶',
+        title: 'Travel Baby Gear',
+        subtitle: 'Portable formula dispensers & diaper bags',
+        url: 'https://www.amazon.com/s?k=travel+baby+gear+airplane&tag=canibringonpl-20',
+        variant: 'baby-gear'
+    },
+    camping: {
+        icon: '🏕️',
+        title: 'Packable Camping Gear',
+        subtitle: 'TSA-friendly multi-tools & compact stoves',
+        url: 'https://www.amazon.com/s?k=tsa+friendly+camping+gear&tag=canibringonpl-20',
+        variant: 'camping'
+    },
+    food: {
+        icon: '🍱',
+        title: 'Travel Snack Containers',
+        subtitle: 'Leak-proof containers for in-flight meals',
+        url: 'https://www.amazon.com/s?k=travel+food+container+airplane&tag=canibringonpl-20',
+        variant: 'travel-bag'
+    },
+    sports: {
+        icon: '🎒',
+        title: 'Sports Equipment Bags',
+        subtitle: 'Padded bags that protect gear in checked luggage',
+        url: 'https://www.amazon.com/s?k=sports+equipment+travel+bag&tag=canibringonpl-20',
+        variant: 'protection'
+    },
+    tools: {
+        icon: '🔧',
+        title: 'TSA Multi-Tool Guide',
+        subtitle: 'Which tools can fly? Check our expert picks',
+        url: 'https://www.amazon.com/s?k=tsa+compliant+multi+tool&tag=canibringonpl-20',
+        variant: 'protection'
+    },
+    weapons: {
+        icon: '🛂',
+        title: 'Travel Insurance for Confiscation',
+        subtitle: 'Get covered if items are seized at security',
+        url: 'https://safetywing.com/nomad-insurance/?referenceID=canibringonplane',
+        variant: 'insurance'
+    },
+    hazardous: {
+        icon: '⚠️',
+        title: 'Know Before You Go',
+        subtitle: 'Travel insurance for unexpected confiscations',
+        url: 'https://safetywing.com/nomad-insurance/?referenceID=canibringonplane',
+        variant: 'insurance'
+    },
+    music: {
+        icon: '🎸',
+        title: 'Instrument Flight Cases',
+        subtitle: 'Protective cases approved for cabin storage',
+        url: 'https://www.amazon.com/s?k=instrument+flight+case+carry+on&tag=canibringonpl-20',
+        variant: 'protection'
+    },
+    fashion: {
+        icon: '👗',
+        title: 'Garment Travel Bags',
+        subtitle: 'Keep suits & dresses wrinkle-free in transit',
+        url: 'https://www.amazon.com/s?k=garment+bag+carry+on+travel&tag=canibringonpl-20',
+        variant: 'travel-bag'
+    },
+    household: {
+        icon: '🏠',
+        title: 'Packing Cubes & Organizers',
+        subtitle: 'Maximize luggage space for household items',
+        url: 'https://www.amazon.com/s?k=packing+cubes+travel+organizer&tag=canibringonpl-20',
+        variant: 'travel-bag'
+    },
+    art: {
+        icon: '🎨',
+        title: 'Art Supply Travel Cases',
+        subtitle: 'Protect brushes, paints & supplies in transit',
+        url: 'https://www.amazon.com/s?k=art+supply+travel+case&tag=canibringonpl-20',
+        variant: 'protection'
+    },
+    customs: {
+        icon: '🛂',
+        title: 'Customs Declaration Help',
+        subtitle: 'Travel insurance that covers duty disputes',
+        url: 'https://safetywing.com/nomad-insurance/?referenceID=canibringonplane',
+        variant: 'insurance'
+    }
+};
+
+function getContextualAd(category) {
+    return CONTEXTUAL_ADS[category] || null;
 }
 
 // ---------------------------------------------------------
@@ -719,10 +844,32 @@ export function displayCategoryResults(category, skipHistoryPush = false) {
         return getScore(b) - getScore(a); // High score first
     });
 
+    // 📊 SEO: Inject Category Schema (ItemList + FAQPage)
+    injectCategorySchema(category, items);
+
     // 5. RENDER GRID (Clean Look)
     const list = document.getElementById('categoryItemsList');
     if (!list) return;
     list.innerHTML = '';
+
+    // 💰 CONTEXTUAL MONETIZATION: Inject relevant ad card at top
+    const contextualAd = getContextualAd(category);
+    if (contextualAd) {
+        const adCard = document.createElement('a');
+        adCard.href = contextualAd.url;
+        adCard.target = '_blank';
+        adCard.rel = 'noopener sponsored';
+        adCard.className = `contextual-ad-card ${contextualAd.variant}`;
+        adCard.innerHTML = `
+            <div class="contextual-ad-icon">${contextualAd.icon}</div>
+            <div class="contextual-ad-content">
+                <h4>${contextualAd.title}</h4>
+                <p>${contextualAd.subtitle}</p>
+            </div>
+            <div class="contextual-ad-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+        `;
+        list.appendChild(adCard);
+    }
 
     items.forEach(item => {
         let gradient = 'linear-gradient(to top, #f0fdf4 0%, #ffffff 100%)'; // Default Green
@@ -989,32 +1136,399 @@ export function shareItemLink(id) {
 }
 
 // ---------------------------------------------------------
-// SEO FUNCTIONS
+// SEO FUNCTIONS - Enhanced JSON-LD Schema
 // ---------------------------------------------------------
 function injectSchema(item) {
-    const existing = document.getElementById('dynamic-schema');
-    if (existing) existing.remove();
+    // Remove existing schemas
+    document.querySelectorAll('[data-dynamic-schema]').forEach(el => el.remove());
 
-    const cleanNote = item.note.replace(/[✅❌⚠️💡]/g, '').trim();
+    const cleanNote = item.note.replace(/[✅❌⚠️💡🚨📞]/g, '').trim();
+    const slug = toSlug(item.name);
+    const pageUrl = `https://www.canibringonplane.com/?item=${slug}`;
 
-    const schemaData = {
+    // Get destination context
+    const dest = window.currentDestination;
+    const destCode = window.currentDestinationCode;
+    const isDestBanned = destCode && item.customs_restricted?.includes(destCode);
+
+    // Build status text
+    const carryOnStatus = item.carryOn === 'allowed' ? 'Yes, allowed' :
+                          item.carryOn === 'prohibited' ? 'No, prohibited' : 'Restricted';
+    const checkedStatus = item.checked === 'allowed' ? 'Yes, allowed' :
+                          item.checked === 'prohibited' ? 'No, prohibited' : 'Restricted';
+
+    // Build destination-aware answer
+    let answerText = `Carry-on: ${carryOnStatus}. Checked luggage: ${checkedStatus}. ${cleanNote}`;
+    if (dest && isDestBanned) {
+        answerText = `WARNING: ${item.name} is BANNED in ${dest.name}. Do not pack this item when traveling to ${dest.name}. ${answerText}`;
+    } else if (dest) {
+        answerText = `When traveling to ${dest.name}: ${answerText}`;
+    }
+
+    // 1. FAQPage Schema (Multiple Questions)
+    const faqSchema = {
         "@context": "https://schema.org",
         "@type": "FAQPage",
-        "mainEntity": [{
-            "@type": "Question",
-            "name": `Is ${item.name} allowed on a plane?`,
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": `In carry-on luggage, ${item.name} is ${item.carryOn}. In checked bags, it is ${item.checked}. ${cleanNote}`
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": dest
+                    ? `Can I bring ${item.name} on a plane to ${dest.name}?`
+                    : `Can I bring ${item.name} on a plane?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": answerText
+                }
+            },
+            {
+                "@type": "Question",
+                "name": `Is ${item.name} allowed in carry-on luggage?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `${carryOnStatus}. ${item.carryOn === 'allowed'
+                        ? `You can pack ${item.name} in your carry-on bag.`
+                        : item.carryOn === 'prohibited'
+                        ? `${item.name} is not allowed in the cabin. You must check it or leave it at home.`
+                        : `${item.name} has restrictions. Check with your airline for specific rules.`}`
+                }
+            },
+            {
+                "@type": "Question",
+                "name": `Can I put ${item.name} in checked baggage?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `${checkedStatus}. ${item.checked === 'allowed'
+                        ? `You can pack ${item.name} in your checked luggage.`
+                        : item.checked === 'prohibited'
+                        ? `${item.name} is prohibited in checked bags due to safety regulations.`
+                        : `${item.name} may be allowed with certain conditions. Verify with your airline.`}`
+                }
             }
-        }]
+        ]
     };
 
-    const script = document.createElement('script');
-    script.id = 'dynamic-schema';
-    script.type = 'application/ld+json';
-    script.text = JSON.stringify(schemaData);
-    document.head.appendChild(script);
+    // Add destination-specific FAQ if destination selected
+    if (dest && isDestBanned) {
+        faqSchema.mainEntity.push({
+            "@type": "Question",
+            "name": `Is ${item.name} legal in ${dest.name}?`,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": `No. ${item.name} is prohibited by ${dest.name} customs and border control. Attempting to bring this item may result in confiscation, fines, or legal penalties.`
+            }
+        });
+    }
+
+    // 2. BreadcrumbList Schema
+    const category = Array.isArray(item.category) ? item.category[0] : item.category;
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://www.canibringonplane.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": category ? category.charAt(0).toUpperCase() + category.slice(1) : "Items",
+                "item": `https://www.canibringonplane.com/?category=${category || 'all'}`
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": item.name,
+                "item": pageUrl
+            }
+        ]
+    };
+
+    // 3. WebPage Schema with ItemReviewed
+    const webPageSchema = {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": dest
+            ? `Can I bring ${item.name} to ${dest.name}? - Airport Security Rules`
+            : `Can I bring ${item.name} on a plane? - Airport Security Rules`,
+        "description": `Find out if ${item.name} is allowed in carry-on or checked luggage. ${cleanNote.substring(0, 150)}`,
+        "url": pageUrl,
+        "inLanguage": "en-US",
+        "isPartOf": {
+            "@type": "WebSite",
+            "name": "Can I Bring On Plane",
+            "url": "https://www.canibringonplane.com/"
+        },
+        "about": {
+            "@type": "Thing",
+            "name": item.name,
+            "description": `Travel security information for ${item.name}`
+        },
+        "dateModified": new Date().toISOString().split('T')[0]
+    };
+
+    // 4. HowTo Schema (for restricted items)
+    let howToSchema = null;
+    if (item.carryOn === 'restricted' || item.checked === 'restricted') {
+        howToSchema = {
+            "@context": "https://schema.org",
+            "@type": "HowTo",
+            "name": `How to pack ${item.name} for air travel`,
+            "description": `Step-by-step guide for traveling with ${item.name}`,
+            "step": [
+                {
+                    "@type": "HowToStep",
+                    "name": "Check airline policy",
+                    "text": `Contact your airline to confirm their specific policy for ${item.name}.`
+                },
+                {
+                    "@type": "HowToStep",
+                    "name": "Review TSA guidelines",
+                    "text": `Verify current TSA rules as they may change. ${cleanNote.substring(0, 100)}`
+                },
+                {
+                    "@type": "HowToStep",
+                    "name": "Pack appropriately",
+                    "text": item.carryOn === 'allowed'
+                        ? `Place ${item.name} in your carry-on bag for easy screening.`
+                        : `Pack ${item.name} in checked luggage if allowed, or consider alternatives.`
+                }
+            ]
+        };
+    }
+
+    // Inject all schemas
+    const schemas = [faqSchema, breadcrumbSchema, webPageSchema];
+    if (howToSchema) schemas.push(howToSchema);
+
+    schemas.forEach((schema, index) => {
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.setAttribute('data-dynamic-schema', 'true');
+        script.id = `dynamic-schema-${index}`;
+        script.text = JSON.stringify(schema);
+        document.head.appendChild(script);
+    });
+}
+
+// Remove all dynamic schemas (call on modal close)
+function removeSchemas() {
+    document.querySelectorAll('[data-dynamic-schema]').forEach(el => el.remove());
+}
+
+// Inject schema for category pages (ItemList + CollectionPage)
+function injectCategorySchema(category, items) {
+    removeSchemas(); // Clear existing
+
+    const displayName = category.charAt(0).toUpperCase() + category.slice(1);
+    const pageUrl = `https://www.canibringonplane.com/?category=${category}`;
+    const dest = window.currentDestination;
+
+    // 1. CollectionPage Schema
+    const collectionSchema = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": dest
+            ? `${displayName} Allowed on Planes to ${dest.name}`
+            : `${displayName} Allowed on Planes - TSA Rules`,
+        "description": `Complete guide to ${category} items allowed in carry-on and checked luggage. ${items.length} items with TSA rules.`,
+        "url": pageUrl,
+        "inLanguage": "en-US",
+        "isPartOf": {
+            "@type": "WebSite",
+            "name": "Can I Bring On Plane",
+            "url": "https://www.canibringonplane.com/"
+        },
+        "numberOfItems": items.length
+    };
+
+    // 2. ItemList Schema (top 10 items for rich results)
+    const itemListSchema = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": `${displayName} - Airport Security Rules`,
+        "description": `List of ${category} items and their carry-on/checked status`,
+        "numberOfItems": Math.min(items.length, 10),
+        "itemListElement": items.slice(0, 10).map((item, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "name": item.name,
+            "url": `https://www.canibringonplane.com/?item=${toSlug(item.name)}`,
+            "description": `Carry-on: ${item.carryOn}. Checked: ${item.checked}.`
+        }))
+    };
+
+    // 3. BreadcrumbList Schema
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://www.canibringonplane.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": displayName,
+                "item": pageUrl
+            }
+        ]
+    };
+
+    // 4. FAQPage for category (common questions)
+    const categoryFAQs = {
+        liquids: [
+            { q: "What is the TSA 3-1-1 liquid rule?", a: "Liquids must be in containers of 3.4oz (100ml) or less, all fitting in one quart-sized clear bag." },
+            { q: "Can I bring a water bottle through security?", a: "Empty water bottles are allowed. Full bottles must be emptied before the checkpoint." }
+        ],
+        electronics: [
+            { q: "Do laptops need to be removed at security?", a: "Yes, laptops must be removed from bags and placed in a separate bin for X-ray screening." },
+            { q: "Are power banks allowed on planes?", a: "Power banks under 100Wh are allowed in carry-on only. They are prohibited in checked bags." }
+        ],
+        medication: [
+            { q: "Can I bring prescription medication on a plane?", a: "Yes, prescription medication is allowed in carry-on. Keep it in original containers with labels." },
+            { q: "Is there a limit on liquid medication?", a: "Medically necessary liquids are exempt from the 3.4oz rule. Declare them at security." }
+        ],
+        food: [
+            { q: "Can I bring food through airport security?", a: "Solid foods are generally allowed. Liquids, gels, and spreads must follow the 3-1-1 rule." },
+            { q: "Can I bring snacks on the plane?", a: "Yes, most packaged snacks are allowed in carry-on luggage." }
+        ],
+        tools: [
+            { q: "Are scissors allowed on planes?", a: "Scissors under 4 inches from the pivot point are allowed in carry-on." },
+            { q: "Can I bring a screwdriver on a plane?", a: "Screwdrivers under 7 inches are allowed in carry-on. Larger tools must be checked." }
+        ]
+    };
+
+    const faqs = categoryFAQs[category];
+    let faqSchema = null;
+    if (faqs && faqs.length > 0) {
+        faqSchema = {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faqs.map(faq => ({
+                "@type": "Question",
+                "name": faq.q,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": faq.a
+                }
+            }))
+        };
+    }
+
+    // Inject all schemas
+    const schemas = [collectionSchema, itemListSchema, breadcrumbSchema];
+    if (faqSchema) schemas.push(faqSchema);
+
+    schemas.forEach((schema, index) => {
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.setAttribute('data-dynamic-schema', 'true');
+        script.id = `dynamic-schema-cat-${index}`;
+        script.text = JSON.stringify(schema);
+        document.head.appendChild(script);
+    });
+}
+
+// Inject schema for destination pages (TravelGuide + FAQPage)
+function injectDestinationSchema(dest, code) {
+    removeSchemas(); // Clear existing
+
+    const pageUrl = `https://www.canibringonplane.com/?dest=${code}`;
+
+    // 1. TravelGuide/Article Schema
+    const travelGuideSchema = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": `${dest.name} Travel Rules - What You Can and Cannot Bring`,
+        "description": dest.intro,
+        "url": pageUrl,
+        "inLanguage": "en-US",
+        "author": {
+            "@type": "Organization",
+            "name": "Can I Bring On Plane",
+            "url": "https://www.canibringonplane.com/"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Can I Bring On Plane",
+            "url": "https://www.canibringonplane.com/"
+        },
+        "dateModified": new Date().toISOString().split('T')[0],
+        "about": {
+            "@type": "Country",
+            "name": dest.name
+        }
+    };
+
+    // 2. FAQPage for destination
+    const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": `What items are banned in ${dest.name}?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `${dest.name} strictly prohibits: ${dest.banned.join(', ')}. Attempting to bring these items may result in confiscation, fines, or legal action.`
+                }
+            },
+            {
+                "@type": "Question",
+                "name": `What are the duty-free limits for ${dest.name}?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `Duty-free limits for ${dest.name}: Alcohol - ${dest.dutyFree.alcohol}. Tobacco - ${dest.dutyFree.tobacco}. Exceeding these limits may incur customs duties.`
+                }
+            },
+            {
+                "@type": "Question",
+                "name": `Is ${dest.name} strict about customs enforcement?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `${dest.name} has a ${dest.risk} risk level for customs enforcement. ${dest.intro}`
+                }
+            }
+        ]
+    };
+
+    // 3. BreadcrumbList Schema
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://www.canibringonplane.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": `${dest.name} Travel Rules`,
+                "item": pageUrl
+            }
+        ]
+    };
+
+    // Inject all schemas
+    const schemas = [travelGuideSchema, faqSchema, breadcrumbSchema];
+
+    schemas.forEach((schema, index) => {
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.setAttribute('data-dynamic-schema', 'true');
+        script.id = `dynamic-schema-dest-${index}`;
+        script.text = JSON.stringify(schema);
+        document.head.appendChild(script);
+    });
 }
 
 function updateSocialMeta(item) {
@@ -1167,6 +1681,9 @@ export function selectDestination(code) {
         // Re-run checks if bag modal is open
         const bagModal = document.getElementById('bagModal');
         if (bagModal) showMyBagModal();
+
+        // 📊 SEO: Inject Destination Schema
+        injectDestinationSchema(dest, code);
 
         console.log('✈️ Destination selected:', dest.name, dest.flag);
     }
