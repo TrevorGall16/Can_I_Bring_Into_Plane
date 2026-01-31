@@ -50,6 +50,9 @@
             <div class="navbar-actions">
                 <a href="contact.html" class="nav-link">Contact</a>
                 <a href="privacy.html" class="nav-link">Privacy</a>
+                <button class="dest-btn" onclick="window.openDestinationModal()">
+                    <i class="fa-solid fa-earth-americas"></i> <span>Select Destination</span>
+                </button>
                 <button class="bag-btn" id="bagFAB" title="My Checklist">
                     <i class="fa-solid fa-clipboard-check"></i>
                     <span class="bag-counter" id="bagCounter">0</span>
@@ -242,7 +245,13 @@
                 </details>
             </section>
 
-        </div> <div class="category-list-panel hidden" id="middlePanel">
+        </div>
+
+        <!-- DESTINATION REPORT - Phase 3 -->
+        <div id="destinationReport" class="dest-report hidden">
+        </div>
+
+        <div class="category-list-panel hidden" id="middlePanel">
 <div class="panel-header">
                 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
                     <ol itemscope itemtype="https://schema.org/BreadcrumbList">
@@ -318,6 +327,33 @@
             <p class="footer-note">Check with your airline for specific policies. Rules may vary.</p>
         </div>
     </footer>
+
+<!-- DESTINATION MODAL - Phase 2 -->
+<div id="destinationModal" class="modal-overlay hidden">
+    <div class="modal-content dest-modal">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-plane-arrival"></i> Where are you flying?</h2>
+            <button class="close-modal" onclick="document.getElementById('destinationModal').classList.add('hidden')">&times;</button>
+        </div>
+        <div class="dest-grid" id="destGrid">
+            <div class="dest-card" onclick="window.selectDestination('JP')">
+                <span class="flag">🇯🇵</span> <span>Japan</span>
+            </div>
+            <div class="dest-card" onclick="window.selectDestination('TH')">
+                <span class="flag">🇹🇭</span> <span>Thailand</span>
+            </div>
+            <div class="dest-card" onclick="window.selectDestination('FR')">
+                <span class="flag">🇫🇷</span> <span>France</span>
+            </div>
+            <div class="dest-card" onclick="window.selectDestination('IT')">
+                <span class="flag">🇮🇹</span> <span>Italy</span>
+            </div>
+        </div>
+        <div class="modal-footer-note">
+            <p>Selecting a country updates compliance rules for Meds & Vapes.</p>
+        </div>
+    </div>
+</div>
 
 <!-- ES6 Modular JavaScript Architecture -->
 <script type="module" src="js/app.js?v=600"></script>

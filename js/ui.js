@@ -8,6 +8,7 @@
 import { ITEMS_DATA } from './data.js';
 import { AFFILIATE_MAP, countryRules, countrySources } from './config.js';
 import { adProvider } from './ads.js';
+import { DESTINATIONS } from './destinations.js';
 
 // ---------------------------------------------------------
 // STATE
@@ -843,5 +844,99 @@ export function showItemById(id) {
         displayItemResult(item, isMiddlePanelVisible);
     }
 }
+
+// ---------------------------------------------------------
+// DESTINATION MODAL FUNCTIONS (Phase 2)
+// ---------------------------------------------------------
+export function openDestinationModal() {
+    const modal = document.getElementById('destinationModal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+export function selectDestination(code) {
+    const dest = DESTINATIONS[code];
+    if (dest) {
+        // Update State
+        localStorage.setItem('selectedDestination', code);
+        window.currentDestination = dest; // Store for Phase 4 logic
+
+        // Update UI
+        renderDestinationReport(dest);
+        document.getElementById('destinationModal').classList.add('hidden');
+
+        // Update Button Text
+        const btn = document.querySelector('.dest-btn span');
+        if (btn) btn.innerText = dest.name;
+
+        console.log('✈️ Destination selected:', dest.name, dest.flag);
+    }
+}
+
+export function renderDestinationReport(dest) {
+    const container = document.getElementById('destinationReport');
+    const welcome = document.getElementById('welcomeMessage');
+
+    if (!container) return;
+
+    // Hide Welcome, Show Report
+    if (welcome) welcome.classList.add('hidden');
+    container.classList.remove('hidden');
+
+    container.innerHTML = `
+        <div class="report-header">
+            <h2><span style="font-size:1.5rem">${dest.flag}</span> ${dest.name} Rules</h2>
+            <div class="report-header-actions">
+                <span class="risk-badge risk-${dest.risk}">Risk: ${dest.risk}</span>
+                <button class="close-report" onclick="window.closeDestinationReport()">&times;</button>
+            </div>
+        </div>
+        <div class="report-body">
+            <p style="margin-bottom:20px; color:#475569; font-size:0.95rem;">${dest.intro}</p>
+
+            <div class="red-zone">
+                <div class="zone-title"><i class="fa-solid fa-ban"></i> STRICTLY BANNED</div>
+                <div class="banned-tags">
+                    ${dest.banned.map(item => `<span class="ban-tag">${item}</span>`).join('')}
+                </div>
+            </div>
+
+            <div class="blue-zone">
+                <div class="zone-title"><i class="fa-solid fa-gift"></i> DUTY FREE LIMITS</div>
+                <div class="duty-grid">
+                    <div class="duty-item">
+                        <span class="duty-label"><i class="fa-solid fa-wine-bottle"></i> Alcohol</span>
+                        <span class="duty-val">${dest.dutyFree.alcohol}</span>
+                    </div>
+                    <div class="duty-item">
+                        <span class="duty-label"><i class="fa-solid fa-smoking"></i> Tobacco</span>
+                        <span class="duty-val">${dest.dutyFree.tobacco}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Scroll to report
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+export function closeDestinationReport() {
+    const container = document.getElementById('destinationReport');
+    const welcome = document.getElementById('welcomeMessage');
+
+    if (container) container.classList.add('hidden');
+    if (welcome) welcome.classList.remove('hidden');
+
+    // Reset button text
+    const btn = document.querySelector('.dest-btn span');
+    if (btn) btn.innerText = 'Select Destination';
+
+    window.currentDestination = null;
+}
+
+// CRITICAL: Bridge ES6 module scope to HTML inline onclick handlers
+window.openDestinationModal = openDestinationModal;
+window.selectDestination = selectDestination;
+window.closeDestinationReport = closeDestinationReport;
 
 console.log('🎨 UI module loaded');
