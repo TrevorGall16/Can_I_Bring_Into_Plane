@@ -91,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ========== 9. CATEGORY CHIPS (Horizontal Strip) ==========
+    sortCategoryChips(); // Sort A-Z for better UX
     document.querySelectorAll('.category-chip').forEach(chip => {
         chip.addEventListener('click', () => {
             const category = chip.dataset.category;
@@ -177,6 +178,27 @@ export function buildSearchIndex() {
 // ---------------------------------------------------------
 // HELPERS
 // ---------------------------------------------------------
+
+// Sort category chips alphabetically (A-Z)
+function sortCategoryChips() {
+    const container = document.querySelector('.category-strip-inner');
+    if (!container) return;
+
+    const chips = Array.from(container.querySelectorAll('.category-chip'));
+    if (chips.length === 0) return;
+
+    // Sort by text content (A-Z)
+    chips.sort((a, b) => {
+        const textA = a.textContent.trim().toLowerCase();
+        const textB = b.textContent.trim().toLowerCase();
+        return textA.localeCompare(textB);
+    });
+
+    // Re-append in sorted order
+    chips.forEach(chip => container.appendChild(chip));
+    console.log('📋 Category chips sorted A-Z');
+}
+
 export function toSlug(text) {
     return text.toString().toLowerCase()
         .replace(/&/g, 'and')
@@ -781,17 +803,34 @@ function getContextualAd(category) {
     return CONTEXTUAL_ADS[category] || null;
 }
 
-// ---------------------------------------------------------
-// DISPLAY CATEGORY RESULTS (Fixed: SEO + Green-Top Sort)
+/// ---------------------------------------------------------
+// DISPLAY CATEGORY RESULTS (Fixed)
 // ---------------------------------------------------------
 export function displayCategoryResults(category, skipHistoryPush = false) {
     if (!skipHistoryPush && window.navManager) window.navManager.pushCategoryState(category);
-    
-    // 1. SEO UPDATE (The New Stuff)
-    const displayTitle = category.charAt(0).toUpperCase() + category.slice(1);
-    updatePageSEO(`${displayTitle} Rules - Carry-On Guide`, `?category=${category}`);
 
-    // 2. UI CLEANUP (Hide Home Page)
+    // 1. SEO UPDATE - Dynamic Virtual Page Title
+    const displayTitle = category.charAt(0).toUpperCase() + category.slice(1);
+    const dest = window.currentDestination;
+    const destCode = window.currentDestinationCode; // <--- DEFINED HERE (1st time)
+    const year = new Date().getFullYear();
+
+    // Build SEO-optimized title
+    let pageTitle, queryParam;
+    if (dest) {
+        pageTitle = `Can I bring ${displayTitle} to ${dest.name}? - Rules ${year}`;
+        queryParam = `?category=${category}&dest=${destCode}`;
+    } else {
+        pageTitle = `${displayTitle} on a Plane - TSA Carry-On Rules ${year}`;
+        queryParam = `?category=${category}`;
+    }
+    
+    // Safety check for updatePageSEO
+    if (typeof updatePageSEO === 'function') {
+        updatePageSEO(pageTitle, queryParam);
+    }
+
+    // 2. UI CLEANUP
     const elementsToHide = [
         'welcomeMessage', 'quickGuide', 'popularSearches', 
         'travelMustHaves', 'securityGuide', 'howItWorks',
@@ -805,7 +844,6 @@ export function displayCategoryResults(category, skipHistoryPush = false) {
 
     // 3. STICKY BAR LOGIC
     const sticky = document.getElementById('stickyDestBar');
-    const dest = window.currentDestination;
     if (sticky && dest) {
         sticky.classList.remove('hidden');
         sticky.style.display = 'flex';
@@ -818,7 +856,7 @@ export function displayCategoryResults(category, skipHistoryPush = false) {
         if (textEl) textEl.innerHTML = `Mode: <strong style="color:${dest.theme?.color}">${dest.name}</strong>`;
     }
 
-    // 4. FILTER & SORT (Green Safe Items -> TOP)
+    // 4. FILTER & SORT
     const items = ITEMS_DATA.filter(i => i.category && i.category.includes(category));
     
     const titleEl = document.getElementById('categoryTitle');
@@ -826,7 +864,9 @@ export function displayCategoryResults(category, skipHistoryPush = false) {
     if (titleEl) titleEl.textContent = category.toUpperCase();
     if (countEl) countEl.textContent = `${items.length} items`;
 
-    const destCode = window.currentDestinationCode;
+    // --- DELETE THE DUPLICATE LINE THAT WAS HERE ---
+    // We already have 'destCode' from the top of the function.
+
     items.sort((a, b) => {
         const getScore = (item) => {
             // Priority 0: Banned in Destination (Bottom)
@@ -841,107 +881,41 @@ export function displayCategoryResults(category, skipHistoryPush = false) {
             // Priority 2: Mixed/Restricted (Middle)
             return 2;
         };
-        return getScore(b) - getScore(a); // High score first
+        return getScore(b) - getScore(a); 
     });
 
-    // 📊 SEO: Inject Category Schema (ItemList + FAQPage)
-    injectCategorySchema(category, items);
+    // 📊 SEO: Inject Category Schema
+    if (typeof injectCategorySchema === 'function') injectCategorySchema(category, items);
 
-    // 5. RENDER GRID (Clean Look)
+    // 5. RENDER GRID
     const list = document.getElementById('categoryItemsList');
     if (!list) return;
     list.innerHTML = '';
 
-    // 💰 CONTEXTUAL MONETIZATION: Inject relevant ad card at top
-    const contextualAd = getContextualAd(category);
-    if (contextualAd) {
-        const adCard = document.createElement('a');
-        adCard.href = contextualAd.url;
-        adCard.target = '_blank';
-        adCard.rel = 'noopener sponsored';
-        adCard.className = `contextual-ad-card ${contextualAd.variant}`;
-        adCard.innerHTML = `
-            <div class="contextual-ad-icon">${contextualAd.icon}</div>
-            <div class="contextual-ad-content">
-                <h4>${contextualAd.title}</h4>
-                <p>${contextualAd.subtitle}</p>
-            </div>
-            <div class="contextual-ad-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-        `;
-        list.appendChild(adCard);
-    }
-
-    items.forEach(item => {
-        let gradient = 'linear-gradient(to top, #f0fdf4 0%, #ffffff 100%)'; // Default Green
-        let accentColor = '#86efac';
-        let bannerHTML = '';
-
-        const isDestBanned = destCode && item.customs_restricted?.includes(destCode);
-        const isFullyAllowed = item.carryOn === 'allowed' && item.checked === 'allowed';
-        const isMixed = !isFullyAllowed && !(item.carryOn === 'prohibited' && item.checked === 'prohibited');
-
-        if (isDestBanned) {
-            // 🔴 BANNED (Red)
-            gradient = 'linear-gradient(to top, #fef2f2 0%, #ffffff 100%)';
-            accentColor = '#ef4444'; 
-            const destName = window.currentDestination ? window.currentDestination.name.toUpperCase() : 'THIS COUNTRY';
-            bannerHTML = `<div style="background:#ef4444; color:white; font-size:0.65rem; padding:3px 10px; border-radius:0 0 0 6px; position:absolute; top:0; right:0; font-weight:700; letter-spacing:0.5px;">⛔ BANNED IN ${destName}</div>`;
-        } 
-        else if (isFullyAllowed) {
-            // 🟢 SAFE (Green)
-            gradient = 'linear-gradient(to top, #f0fdf4 0%, #ffffff 100%)';
-            accentColor = '#86efac';
-        } 
-        else if (isMixed) {
-            // 🟠 MIXED (Orange)
-            gradient = 'linear-gradient(to top, #fff7ed 0%, #ffffff 100%)';
-            accentColor = '#fdba74';
-        } 
-        else {
-            // 🔴 PROHIBITED (Red)
-            gradient = 'linear-gradient(to top, #fff1f2 0%, #ffffff 100%)';
-            accentColor = '#fda4af';
+    // 💰 CONTEXTUAL MONETIZATION
+    if (typeof getContextualAd === 'function') {
+        const contextualAd = getContextualAd(category);
+        if (contextualAd) {
+            const adCard = document.createElement('a');
+            adCard.href = contextualAd.url;
+            adCard.target = '_blank';
+            adCard.rel = 'noopener sponsored';
+            adCard.className = `contextual-ad-card ${contextualAd.variant}`;
+            adCard.innerHTML = `
+                <div class="contextual-ad-icon">${contextualAd.icon}</div>
+                <div class="contextual-ad-content">
+                    <h4>${contextualAd.title}</h4>
+                    <p>${contextualAd.subtitle}</p>
+                </div>
+                <div class="contextual-ad-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            `;
+            list.appendChild(adCard);
         }
+    }
+    
+ items.forEach(item => renderItemCard(item, list, destCode));
+ }
 
-        const div = document.createElement('div');
-        div.className = 'category-card';
-        div.onclick = () => window.openItemModal(item.id);
-        
-        div.style.cssText = `
-            position: relative;
-            background: ${gradient};
-            border: 1px solid ${accentColor};
-            border-radius: 12px;
-            padding: 18px 20px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            transition: transform 0.1s;
-        `;
-        
-        const pillStyle = `font-size: 0.75rem; padding: 5px 10px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 6px; width: fit-content;`;
-
-        div.innerHTML = `
-            ${bannerHTML}
-            <div style="flex:1;">
-                <h3 style="margin:0; font-size:1.1rem; font-weight:700; color:#0f172a;">${item.name}</h3>
-                <div style="font-size:0.85rem; color:#64748b; margin-top:4px;">Tap for details</div>
-            </div>
-            <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
-                <div style="${pillStyle} background:${item.carryOn === 'allowed' ? '#dcfce7' : '#fee2e2'}; color:${item.carryOn === 'allowed' ? '#166534' : '#991b1b'};">
-                    <i class="fa-solid fa-suitcase"></i> ${item.carryOn === 'allowed' ? 'Cabin OK' : 'No Cabin'}
-                </div>
-                <div style="${pillStyle} background:${item.checked === 'allowed' ? '#dcfce7' : '#fee2e2'}; color:${item.checked === 'allowed' ? '#166534' : '#991b1b'};">
-                    <i class="fa-solid fa-plane-arrival"></i> ${item.checked === 'allowed' ? 'Check OK' : 'No Check'}
-                </div>
-            </div>
-        `;
-        list.appendChild(div);
-    });
-}
 
 
 // ---------------------------------------------------------
@@ -1658,12 +1632,14 @@ export function selectDestination(code) {
         window.currentDestination = dest;
         window.currentDestinationCode = code; // Store 'JP', 'TH', etc.
 
-        // SEO: Dynamic Page Title & Meta
-        document.title = `What to bring to ${dest.name}? - Carry-On Rules ${dest.flag}`;
-        updateMetaTag('og:title', `${dest.name} Travel Rules - What's Banned? ${dest.flag}`);
-        updateMetaTag('og:description', dest.intro);
-        updateMetaTag('twitter:title', `${dest.name} Travel Rules ${dest.flag}`);
+        // SEO: Dynamic Virtual Page Title & Meta (Aggressive for Google indexing)
+        const year = new Date().getFullYear();
+        document.title = `What Can I Bring to ${dest.name}? - Banned Items & Rules ${year}`;
+        updateMetaTag('og:title', `${dest.name} Travel Rules ${year} - What's Banned? ${dest.flag}`);
+        updateMetaTag('og:description', `Complete guide to ${dest.name} customs rules. Banned items: ${dest.banned.slice(0, 3).join(', ')}. Duty-free limits and more.`);
+        updateMetaTag('twitter:title', `${dest.name} Travel Rules ${year} ${dest.flag}`);
         updateMetaTag('twitter:description', dest.intro);
+        updateMetaTag('description', `${dest.name} travel rules ${year}: What items are banned? Duty-free limits, customs regulations, and TSA guidelines for flying to ${dest.name}.`);
 
         // Update URL without reload
         const url = new URL(window.location);
@@ -1837,3 +1813,35 @@ window.handleSearch = handleSearch;
 window.navManager = navManager;
 
 console.log('🎨 UI module loaded');
+// ---------------------------------------------------------
+// HELPER: RENDER ITEM CARD (The Missing Paintbrush)
+// ---------------------------------------------------------
+function renderItemCard(item, container, destCode) {
+    let bg = 'linear-gradient(to top, #f0fdf4 0%, #ffffff 100%)'; // Green default
+    let border = '#86efac';
+    let banner = '';
+
+    const isBanned = destCode && item.customs_restricted?.includes(destCode);
+    
+    if (isBanned) {
+        bg = 'linear-gradient(to top, #fef2f2 0%, #ffffff 100%)'; // Red
+        border = '#ef4444';
+        const cName = window.currentDestination ? window.currentDestination.name.toUpperCase() : 'THIS COUNTRY';
+        banner = `<div style="background:#ef4444; color:white; font-size:0.6rem; padding:3px 8px; position:absolute; top:0; right:0; border-radius:0 0 0 6px; font-weight:bold;">⛔ BANNED IN ${cName}</div>`;
+    } else if (item.carryOn === 'prohibited') {
+        bg = 'linear-gradient(to top, #fff1f2, #fff)'; // Pink
+        border = '#fda4af';
+    }
+
+    const div = document.createElement('div');
+    div.className = 'category-card'; // Enables Animation
+    div.onclick = () => window.openItemModal(item.id);
+    div.style.cssText = `position:relative; background:${bg}; border:1px solid ${border}; border-radius:12px; padding:16px; margin-bottom:12px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 4px rgba(0,0,0,0.02); animation: slideUp 0.3s ease-out forwards;`;
+    
+    div.innerHTML = `
+        ${banner}
+        <div><h3 style="margin:0; font-size:1rem; font-weight:700;">${item.name}</h3></div>
+        <div style="font-size:0.75rem; font-weight:600;">${item.carryOn === 'allowed' ? '✅ Cabin' : '❌ Cabin'}</div>
+    `;
+    container.appendChild(div);
+}

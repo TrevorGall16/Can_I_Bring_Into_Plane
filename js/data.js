@@ -1546,7 +1546,36 @@ export const ITEMS_DATA = [
         carryOn: "allowed",
         checked: "restricted",
         note: "✅ <strong>Carry-On Recommended.</strong> Ask flight attendants if there is closet space in First Class. Do not check it (loss risk)."
-    }
+    },
+    /* --- UPDATE THESE SPECIFIC ITEMS BASED ON YOUR GSC DATA --- */
+
+{
+    id: 'yogurt_fix',
+    name: "Yogurt / Pudding",
+    carryOn: "restricted",
+    checked: "allowed",
+    category: ["food", "liquids"],
+    keywords: ["yogurt", "yoghurt", "pudding", "jello", "gelatin"],
+    note: "⚠️ LIQUID RULE APPLIES. If container is >3.4oz (100ml), it is BANNED in carry-on, even if sealed. Freeze it solid to bypass this rule."
+},
+{
+    id: 'rice_cooker',
+    name: "Rice Cooker / Kitchen Appliances",
+    carryOn: "allowed",
+    checked: "allowed",
+    category: ["electronics", "household"],
+    keywords: ["rice cooker", "microwave", "blender", "kitchen", "appliance"],
+    note: "✅ ALLOWED. Must fit in overhead bin. Remove cord for screening. Note: Blenders with blades are BANNED in carry-on."
+},
+{
+    id: 'fishing_pole',
+    name: "Fishing Pole / Rod",
+    carryOn: "restricted",
+    checked: "allowed",
+    category: ["sports", "tools"],
+    keywords: ["fishing", "rod", "pole", "hook", "tackle"],
+    note: "⚠️ EXPENSIVE. Allowed in carry-on ONLY if it fits in overhead bin (hook/tackle must be sheathed). Hooks are dangerous items."
+}
 ];
 
 // Generate slugs for all items
