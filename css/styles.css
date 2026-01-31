@@ -1232,3 +1232,67 @@ select:focus-visible {
     margin: 0 8px;
     color: #ccc;
 }
+
+/* =========================================
+   PHASE 1: BAGGAGE BRIDGE CARD STYLING
+   ========================================= */
+.special-baggage-card {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff !important;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.special-baggage-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4);
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.special-card-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
+}
+
+.special-icon {
+    font-size: 1.5rem;
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.2);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.special-text h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff !important;
+    margin: 0 0 4px 0;
+}
+
+.special-text p {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9) !important;
+    margin: 0;
+}
+
+.special-arrow {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.7) !important;
+    flex-shrink: 0;
+}
