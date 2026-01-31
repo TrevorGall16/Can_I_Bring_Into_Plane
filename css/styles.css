@@ -1519,3 +1519,90 @@ select:focus-visible {
     padding: 0;
 }
 .close-report:hover { color: #ef4444; }
+
+/* =========================================
+   PHASE 4: DESTINATION MONETIZATION
+   ========================================= */
+.monetization-row {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed rgba(0,0,0,0.1);
+}
+
+.aff-btn {
+    display: flex;
+    width: 100%;
+    text-decoration: none;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.aff-btn:hover { transform: translateY(-2px); }
+
+/* INSURANCE BUTTON (Red Zone Context) */
+.btn-insurance {
+    background: white;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+}
+.btn-insurance:hover {
+    background: #fef2f2;
+    box-shadow: 0 2px 4px rgba(220, 38, 38, 0.1);
+}
+
+/* eSIM BUTTON (Blue Zone Context) */
+.btn-esim {
+    background: white;
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
+}
+.btn-esim:hover {
+    background: #eff6ff;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
+}
+
+/* =========================================
+   PHASE 5: SMART CHECKLIST STYLES
+   ========================================= */
+.compliance-header {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1e40af;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.banned-item-row {
+    background: #fef2f2 !important;
+    border-color: #fca5a5 !important;
+}
+
+.bag-warning {
+    font-size: 0.75rem;
+    color: #dc2626;
+    font-weight: 700;
+    margin-top: 4px;
+    margin-left: 30px;
+}
+
+.bag-main-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.empty-bag-state {
+    text-align: center;
+    padding: 30px 0;
+    color: #64748b;
+}

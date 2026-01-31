@@ -633,24 +633,102 @@ export function updateBagCounter() {
 
 export function showMyBagModal() {
     const bagList = Array.from(savedItems).map(id => ITEMS_DATA.find(i => i.id === id)).filter(i => i);
-    const allowedCount = bagList.filter(i => i.carryOn === 'allowed').length;
-    const restrictedCount = bagList.filter(i => i.carryOn === 'restricted').length;
-    const prohibitedCount = bagList.filter(i => i.carryOn === 'prohibited').length;
 
-    let content = '<h2 style="margin:0 0 15px 0; font-size:1.25rem;">Pre-Flight Compliance Report</h2>';
+    // 🧠 SMART LOGIC: Check for country-banned items
+    const getItemStatus = (item) => {
+        // Check if item is banned in the selected destination
+        if (window.currentDestinationCode && item.customs_restricted) {
+            if (item.customs_restricted.includes(window.currentDestinationCode)) {
+                return { status: 'banned', badge: '⛔', label: `BANNED IN ${window.currentDestination.name.toUpperCase()}` };
+            }
+        }
+        // Default carry-on status
+        if (item.carryOn === 'allowed') return { status: 'allowed', badge: '✅', label: 'OK' };
+        if (item.carryOn === 'prohibited') return { status: 'prohibited', badge: '❌', label: 'NO' };
+        return { status: 'restricted', badge: '⚠️', label: 'CHECK' };
+    };
+
+    // Count items by status (including banned)
+    let allowedCount = 0, restrictedCount = 0, prohibitedCount = 0, bannedCount = 0;
+    bagList.forEach(item => {
+        const { status } = getItemStatus(item);
+        if (status === 'banned') bannedCount++;
+        else if (status === 'allowed') allowedCount++;
+        else if (status === 'restricted') restrictedCount++;
+        else prohibitedCount++;
+    });
+
+    // 🌍 COMPLIANCE HEADER (New)
+    let complianceHeader = '';
+    if (window.currentDestination) {
+        complianceHeader = `
+            <div class="compliance-header">
+                Checking rules for: <strong>${window.currentDestination.flag} ${window.currentDestination.name}</strong>
+            </div>`;
+    }
+
+    let content = `
+        <h2 style="margin:0 0 15px 0; font-size:1.25rem;">
+            <i class="fa-solid fa-clipboard-check"></i> Pre-Flight Compliance
+        </h2>
+        ${complianceHeader}
+    `;
+
     if (savedItems.size === 0) {
-        content += '<p>Your checklist is empty. Add items to verify compliance!</p>';
+        content += `
+            <div class="empty-bag-state" style="text-align:center; padding:30px 0;">
+                <i class="fa-solid fa-clipboard-list" style="font-size:3rem; color:#cbd5e1; margin-bottom:15px;"></i>
+                <p>Your checklist is empty.</p>
+                <p style="font-size:0.9rem; color:#64748b;">Add items to verify compliance.</p>
+            </div>`;
     } else {
-        content += `<div style="background:#f8f9fa; padding:10px; border-radius:5px; margin-bottom:15px; display:flex; justify-content:space-around; font-size:0.9em;"><span style="color:green">✅ ${allowedCount} Allowed</span><span style="color:orange">⚠️ ${restrictedCount} Restricted</span><span style="color:red">❌ ${prohibitedCount} Prohibited</span></div><ul style="list-style:none; padding:0;">`;
+        // Stats bar with banned count if applicable
+        let statsHtml = `<span style="color:green">✅ ${allowedCount}</span>`;
+        statsHtml += `<span style="color:orange">⚠️ ${restrictedCount}</span>`;
+        statsHtml += `<span style="color:red">❌ ${prohibitedCount}</span>`;
+        if (bannedCount > 0) {
+            statsHtml += `<span style="color:#991b1b; font-weight:700;">⛔ ${bannedCount} BANNED</span>`;
+        }
+
+        content += `<div style="background:#f8f9fa; padding:10px; border-radius:5px; margin-bottom:15px; display:flex; justify-content:space-around; font-size:0.9em; flex-wrap:wrap; gap:8px;">${statsHtml}</div><ul style="list-style:none; padding:0; margin:0;">`;
+
         bagList.forEach(item => {
-            const statusBadge = item.carryOn === 'allowed'
-                ? '<span style="background:#dcfce7;color:#166534;padding:2px 6px;border-radius:4px;font-size:0.75rem;margin-right:8px;">✅ OK</span>'
-                : (item.carryOn === 'prohibited'
-                    ? '<span style="background:#fee2e2;color:#991b1b;padding:2px 6px;border-radius:4px;font-size:0.75rem;margin-right:8px;">❌ NO</span>'
-                    : '<span style="background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:4px;font-size:0.75rem;margin-right:8px;">⚠️ CHECK</span>');
-            content += `<li style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;"><span>${statusBadge}<strong>${item.name}</strong></span><button onclick="window.toggleBagItem(${item.id}); window.showMyBagModal();" style="color:red; border:none; background:none; cursor:pointer;">Remove</button></li>`;
+            const { status, badge, label } = getItemStatus(item);
+            const isBanned = status === 'banned';
+
+            const badgeStyle = isBanned
+                ? 'background:#fee2e2;color:#991b1b;padding:2px 6px;border-radius:4px;font-size:0.75rem;margin-right:8px;font-weight:700;'
+                : (status === 'allowed'
+                    ? 'background:#dcfce7;color:#166534;padding:2px 6px;border-radius:4px;font-size:0.75rem;margin-right:8px;'
+                    : (status === 'prohibited'
+                        ? 'background:#fee2e2;color:#991b1b;padding:2px 6px;border-radius:4px;font-size:0.75rem;margin-right:8px;'
+                        : 'background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:4px;font-size:0.75rem;margin-right:8px;'));
+
+            const rowStyle = isBanned
+                ? 'padding:10px; border-bottom:1px solid #fca5a5; background:#fef2f2; display:flex; justify-content:space-between; align-items:flex-start;'
+                : 'padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;';
+
+            let warningHtml = '';
+            if (isBanned) {
+                warningHtml = `<div class="bag-warning" style="font-size:0.75rem; color:#dc2626; font-weight:700; margin-top:4px;">❌ ${label}</div>`;
+            }
+
+            content += `
+                <li style="${rowStyle}">
+                    <div>
+                        <div class="bag-main-row" style="display:flex; align-items:center; gap:10px;">
+                            <span style="${badgeStyle}">${badge} ${isBanned ? 'BAN' : label}</span>
+                            <strong>${item.name}</strong>
+                        </div>
+                        ${warningHtml}
+                    </div>
+                    <button onclick="window.toggleBagItem(${item.id}); window.showMyBagModal();" style="color:red; border:none; background:none; cursor:pointer; flex-shrink:0;">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </li>`;
         });
-        content += '</ul><button onclick="window.clearAllBagItems();" style="width:100%; padding:10px; background:#ffebee; color:red; border:none; border-radius:5px; margin-top:10px;">Clear All Items</button>';
+
+        content += '</ul><button onclick="window.clearAllBagItems();" style="width:100%; padding:10px; background:#ffebee; color:red; border:none; border-radius:5px; margin-top:10px; cursor:pointer;">Clear All Items</button>';
     }
 
     let modal = document.getElementById('bagModal');
@@ -856,9 +934,10 @@ export function openDestinationModal() {
 export function selectDestination(code) {
     const dest = DESTINATIONS[code];
     if (dest) {
-        // Update State
+        // Update State - STORE THE CODE GLOBALLY
         localStorage.setItem('selectedDestination', code);
-        window.currentDestination = dest; // Store for Phase 4 logic
+        window.currentDestination = dest;
+        window.currentDestinationCode = code; // Store 'JP', 'TH', etc.
 
         // Update UI
         renderDestinationReport(dest);
@@ -867,6 +946,10 @@ export function selectDestination(code) {
         // Update Button Text
         const btn = document.querySelector('.dest-btn span');
         if (btn) btn.innerText = dest.name;
+
+        // Re-run checks if bag modal is open
+        const bagModal = document.getElementById('bagModal');
+        if (bagModal) showMyBagModal();
 
         console.log('✈️ Destination selected:', dest.name, dest.flag);
     }
@@ -898,6 +981,12 @@ export function renderDestinationReport(dest) {
                 <div class="banned-tags">
                     ${dest.banned.map(item => `<span class="ban-tag">${item}</span>`).join('')}
                 </div>
+
+                <div class="monetization-row">
+                    <a href="https://safetywing.com/nomad-insurance/" target="_blank" class="aff-btn btn-insurance">
+                        <i class="fa-solid fa-user-shield"></i> Don't risk fines. Get Travel Insurance.
+                    </a>
+                </div>
             </div>
 
             <div class="blue-zone">
@@ -912,6 +1001,12 @@ export function renderDestinationReport(dest) {
                         <span class="duty-val">${dest.dutyFree.tobacco}</span>
                     </div>
                 </div>
+
+                <div class="monetization-row">
+                    <a href="https://www.airalo.com/" target="_blank" class="aff-btn btn-esim">
+                        <i class="fa-solid fa-wifi"></i> Avoid roaming fees. Get ${dest.name} eSIM.
+                    </a>
+                </div>
             </div>
         </div>
     `;
@@ -919,6 +1014,9 @@ export function renderDestinationReport(dest) {
     // Scroll to report
     container.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
+// Ensure global access for potential external calls
+window.renderDestinationReport = renderDestinationReport;
 
 export function closeDestinationReport() {
     const container = document.getElementById('destinationReport');
