@@ -660,25 +660,55 @@ function displayRelatedItems(currentItem) {
 }
 
 // ---------------------------------------------------------
-// SEO HELPER (Paste this right above displayCategoryResults)
+// SEO MANAGER (The Google Whisperer)
 // ---------------------------------------------------------
-function updatePageSEO(title, queryParam) {
-    // 1. Update Browser Tab Title
+function updatePageSEO(title, queryParams) {
+    // 1. Update the Browser Tab Title
     document.title = title;
-    
-    // 2. Update URL (Cleanly)
-    if (window.history.pushState) {
-        const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}${queryParam}`;
-        window.history.pushState({path: newUrl}, '', newUrl);
+
+    // 2. Update the "Canonical URL" (Crucial for avoiding duplicate content)
+    // This tells Google: "This ?dest=JP URL is the REAL page, not a duplicate."
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.setAttribute('rel', 'canonical');
+        document.head.appendChild(canonical);
+    }
+    // Force the canonical to match the specific filter
+    const finalUrl = window.location.origin + window.location.pathname + (queryParams || '');
+    canonical.setAttribute('href', finalUrl);
+
+    // 3. Update Meta Description (The text people see in Google)
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) {
+        metaDesc = document.createElement('meta');
+        metaDesc.setAttribute('name', 'description');
+        document.head.appendChild(metaDesc);
     }
 
-    // 3. Update Meta Tags (Safety Wrapped)
-    try {
-        const ogTitle = document.querySelector('meta[property="og:title"]');
-        const twTitle = document.querySelector('meta[name="twitter:title"]');
-        if (ogTitle) ogTitle.content = title;
-        if (twTitle) twTitle.content = title;
-    } catch (e) { console.warn('Meta tag update failed', e); }
+    // Generate a smart description based on the title
+    let descText = "Check TSA and airline carry-on rules for 150+ items. Avoid confiscation and fines.";
+    
+    if (title.includes('Can I bring')) {
+        // Virtual Page Description
+        descText = `Official 2026 travel rules: ${title} Find out if it is allowed in Carry-On or Checked bags. Avoid airport security issues.`;
+    } else if (title.includes('Rules')) {
+        // Destination Description
+        descText = `Flying to ${title.split(' ')[0]}? See the full list of BANNED items, medication rules, and duty-free limits before you pack.`;
+    }
+
+    metaDesc.setAttribute('content', descText);
+    
+    // 4. Update OpenGraph (For Facebook/WhatsApp/iMessage previews)
+    const setMeta = (prop, val) => {
+        let el = document.querySelector(`meta[property="${prop}"]`) || document.querySelector(`meta[name="${prop}"]`);
+        if (el) el.setAttribute('content', val);
+    };
+    
+    setMeta('og:title', title);
+    setMeta('twitter:title', title);
+    setMeta('og:description', descText);
+    setMeta('og:url', finalUrl);
 }
 
 // ---------------------------------------------------------
