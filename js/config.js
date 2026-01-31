@@ -6,10 +6,11 @@
  */
 
 // ---------------------------------------------------------
-// HIGH-MARGIN AFFILIATE MAPPING
-// Strategy: eSIM, Insurance, Specialized Travel Gear
+// HIGH-MARGIN AFFILIATE MAPPING (Universal Version)
+// Strategy: Always upsell eSIM & Insurance if category is unknown.
 // ---------------------------------------------------------
 export const AFFILIATE_MAP = {
+    // 💰 HIGH MARGIN (Tech & Essentials)
     'electronics': [
         { name: 'eSIM Data Plan', icon: 'fa-wifi', query: 'international esim data plan travel', note: 'Avoid roaming fees' },
         { name: 'Tech Insurance', icon: 'fa-shield-halved', query: 'travel insurance electronics protection' }
@@ -22,25 +23,34 @@ export const AFFILIATE_MAP = {
         { name: 'Leakproof Bottles', icon: 'fa-bottle-water', query: 'tsa approved travel bottles leak proof' },
         { name: 'Toiletry Bag', icon: 'fa-bag-shopping', query: 'tsa approved quart size bags clear' }
     ],
-    'toiletries': [
-        { name: 'Leakproof Bottles', icon: 'fa-bottle-water', query: 'tsa approved travel bottles leak proof' },
-        { name: 'Toiletry Bag', icon: 'fa-bag-shopping', query: 'hanging toiletry bag travel waterproof' }
+    
+    // 🏠 HOUSEHOLD & TOOLS (The ones you were missing)
+    'household': [
+        { name: 'Travel Insurance', icon: 'fa-shield-halved', query: 'travel insurance world nomads safetywing' },
+        { name: 'Space Saver Bags', icon: 'fa-layer-group', query: 'compression packing cubes travel' }
     ],
-    'baby': [
-        { name: 'Family Travel Insurance', icon: 'fa-shield-heart', query: 'family travel insurance kids baby' },
-        { name: 'Diaper Bag', icon: 'fa-baby', query: 'travel diaper bag backpack airplane' }
+    'tools': [
+        { name: 'TSA Multi-Tool', icon: 'fa-screwdriver-wrench', query: 'tsa compliant multitool' },
+        { name: 'Hard Case', icon: 'fa-suitcase', query: 'heavy duty equipment travel case' }
     ],
     'sports': [
-        { name: 'Sports Gear Insurance', icon: 'fa-shield-halved', query: 'travel insurance sports equipment protection' },
-        { name: 'Equipment Bag', icon: 'fa-dumbbell', query: 'sports equipment travel bag airline' }
+        { name: 'Sports Insurance', icon: 'fa-person-skiing', query: 'travel insurance extreme sports coverage' },
+        { name: 'Gear Protector', icon: 'fa-suitcase-rolling', query: 'golf club travel bag hard case' }
     ],
-    'customs': [
-        { name: 'Travel Insurance', icon: 'fa-shield-heart', query: 'comprehensive travel insurance international' },
-        { name: 'eSIM Data Plan', icon: 'fa-wifi', query: 'international esim data plan travel' }
+    'baby': [
+        { name: 'Travel Stroller', icon: 'fa-baby-carriage', query: 'airplane compact stroller overhead bin' },
+        { name: 'Family Insurance', icon: 'fa-shield-heart', query: 'family travel insurance international' }
     ],
+    'fashion': [
+        { name: 'Wrinkle Spray', icon: 'fa-spray-can', query: 'travel size wrinkle releaser' },
+        { name: 'Garment Bag', icon: 'fa-shirt', query: 'carry on garment bag suit' }
+    ],
+
+    // 🛡️ THE SAFETY NET (Crucial!)
+    // If the category is unknown (or missing), SHOW THIS:
     'default': [
-        { name: 'Travel Insurance', icon: 'fa-shield-heart', query: 'comprehensive travel insurance safetywing' },
-        { name: 'Universal Adapter', icon: 'fa-earth-americas', query: 'universal travel power adapter worldwide' }
+        { name: 'Travel Insurance', icon: 'fa-shield-halved', query: 'travel insurance international' },
+        { name: 'eSIM Data Plan', icon: 'fa-wifi', query: 'international esim data plan' }
     ]
 };
 
