@@ -943,7 +943,7 @@ export function displayCategoryResults(category, skipHistoryPush = false) {
         }
     }
     
- items.forEach(item => renderItemCard(item, list, destCode));
+ items.forEach((item, index) => renderItemCard(item, list, destCode, index));
  }
 
 
@@ -1843,35 +1843,62 @@ window.handleSearch = handleSearch;
 window.navManager = navManager;
 
 console.log('🎨 UI module loaded');
-// ---------------------------------------------------------
-// HELPER: RENDER ITEM CARD (The Missing Paintbrush)
-// ---------------------------------------------------------
-function renderItemCard(item, container, destCode) {
-    let bg = 'linear-gradient(to top, #f0fdf4 0%, #ffffff 100%)'; // Green default
+/**
+ * RENDER ITEM CARD (Enhanced with Native Ads)
+ * Replaces the existing function in ui.js
+ */
+function renderItemCard(item, container, destCode, index = 0) {
+    // 1. Basic Card Setup
+    let bg = 'linear-gradient(to top, #f0fdf4 0%, #ffffff 100%)';
     let border = '#86efac';
     let banner = '';
 
     const isBanned = destCode && item.customs_restricted?.includes(destCode);
     
     if (isBanned) {
-        bg = 'linear-gradient(to top, #fef2f2 0%, #ffffff 100%)'; // Red
+        bg = 'linear-gradient(to top, #fef2f2 0%, #ffffff 100%)';
         border = '#ef4444';
         const cName = window.currentDestination ? window.currentDestination.name.toUpperCase() : 'THIS COUNTRY';
         banner = `<div style="background:#ef4444; color:white; font-size:0.6rem; padding:3px 8px; position:absolute; top:0; right:0; border-radius:0 0 0 6px; font-weight:bold;">⛔ BANNED IN ${cName}</div>`;
     } else if (item.carryOn === 'prohibited') {
-        bg = 'linear-gradient(to top, #fff1f2, #fff)'; // Pink
+        bg = 'linear-gradient(to top, #fff1f2, #fff)';
         border = '#fda4af';
     }
 
+    // 2. Create the Item Card
     const div = document.createElement('div');
-    div.className = 'category-card'; // Enables Animation
+    div.className = 'category-card';
     div.onclick = () => window.openItemModal(item.id);
     div.style.cssText = `position:relative; background:${bg}; border:1px solid ${border}; border-radius:12px; padding:16px; margin-bottom:12px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 4px rgba(0,0,0,0.02); animation: slideUp 0.3s ease-out forwards;`;
     
     div.innerHTML = `
         ${banner}
-        <div><h3 style="margin:0; font-size:1rem; font-weight:700;">${item.name}</h3></div>
-        <div style="font-size:0.75rem; font-weight:600;">${item.carryOn === 'allowed' ? '✅ Cabin' : '❌ Cabin'}</div>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <div style="font-size:1.5rem;">${item.icon || '✈️'}</div>
+            <div>
+                <h3 style="margin:0; font-size:1rem; font-weight:700; color:#1e293b;">${item.name}</h3>
+                <div style="font-size:0.75rem; color:#64748b;">${item.category[0].toUpperCase()}</div>
+            </div>
+        </div>
+        <div style="text-align:right;">
+            <div style="font-size:0.75rem; font-weight:600; color:${item.carryOn === 'allowed' ? '#166534' : '#991b1b'}">
+                ${item.carryOn === 'allowed' ? '✅ Cabin' : '❌ Cabin'}
+            </div>
+        </div>
     `;
     container.appendChild(div);
+
+    // 3. 🔥 NATIVE AD INJECTION (Every 5th item)
+    if ((index + 1) % 5 === 0) {
+        const adSlot = document.createElement('div');
+        adSlot.className = 'native-ad-container';
+        // We use the fallback renderer because it looks cleaner in the list than a banner
+        import('./ads.js').then(m => {
+            // Pick a relevant category if possible
+            const adType = item.category.includes('liquids') ? 'liquids' : 
+                           item.category.includes('electronics') ? 'electronics' : 'generic';
+            m.adProvider.renderFallback(adSlot, adType);
+        });
+        container.appendChild(adSlot);
+    }
 }
