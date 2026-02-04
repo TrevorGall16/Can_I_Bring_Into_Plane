@@ -1,4 +1,4 @@
-User-agent: *
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
 Allow: /
 
 Sitemap: https://www.canibringonplane.com/sitemap.xml

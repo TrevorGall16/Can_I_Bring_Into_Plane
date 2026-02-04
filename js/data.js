@@ -1550,7 +1550,7 @@ export const ITEMS_DATA = [
     /* --- UPDATE THESE SPECIFIC ITEMS BASED ON YOUR GSC DATA --- */
 
 {
-    id: 'yogurt_fix',
+    id: 23,
     name: "Yogurt / Pudding",
     carryOn: "restricted",
     checked: "allowed",
@@ -1559,7 +1559,7 @@ export const ITEMS_DATA = [
     note: "⚠️ LIQUID RULE APPLIES. If container is >3.4oz (100ml), it is BANNED in carry-on, even if sealed. Freeze it solid to bypass this rule."
 },
 {
-    id: 'rice_cooker',
+    id: 170,
     name: "Rice Cooker / Kitchen Appliances",
     carryOn: "allowed",
     checked: "allowed",
@@ -1568,16 +1568,15 @@ export const ITEMS_DATA = [
     note: "✅ ALLOWED. Must fit in overhead bin. Remove cord for screening. Note: Blenders with blades are BANNED in carry-on."
 },
 {
-    id: 'fishing_pole',
+    id: 5000,
     name: "Fishing Pole / Rod",
     carryOn: "restricted",
     checked: "allowed",
     category: ["sports", "tools"],
     keywords: ["fishing", "rod", "pole", "hook", "tackle"],
-    note: "⚠️ EXPENSIVE. Allowed in carry-on ONLY if it fits in overhead bin (hook/tackle must be sheathed). Hooks are dangerous items."
+    note: "⚠️ RESTRICTED. Allowed in carry-on ONLY if it fits in overhead bin (hooks and tackle must be sheathed). Hooks are considered dangerous items."
 }
-];
-
+]
 // Generate slugs for all items
 ITEMS_DATA.forEach(item => {
     if (!item.slug) {

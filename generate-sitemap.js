@@ -1,147 +1,110 @@
 /**
- * Sitemap Generator for Can I Bring Into Plane
- * Usage: node scripts/generate_sitemap.js
+ * AIRPORT CHECKER - SITEMAP GENERATOR (VM EDITION)
+ * Uses Node.js Virtual Machine to safely execute and extract data.
  */
-
 const fs = require('fs');
 const path = require('path');
+const vm = require('vm');
 
-// CONFIGURATION
+// 1. CONFIG
 const SITE_URL = 'https://www.canibringonplane.com';
+const DESTINATIONS = ['JP', 'CN', 'AE', 'SG', 'TH', 'FR', 'IT', 'UK', 'MX', 'IN'];
+const CATEGORIES = ['liquids', 'electronics', 'medication', 'food', 'batteries', 'vapes', 'tools', 'sports', 'household'];
 
-// PATHS (Using __dirname makes this robust no matter where you run it from)
-const DATA_FILE_PATH = path.join(__dirname, 'js/data-embedded.js');
-const OUTPUT_FILE_PATH = path.join(__dirname, 'sitemap.xml');
+// 2. LOAD DATA
+let items = [];
+try {
+    const dataPath = path.join(__dirname, 'js/data.js');
+    if (!fs.existsSync(dataPath)) throw new Error(`File not found: ${dataPath}`);
+    
+    console.log(`📖 Reading data from: ${dataPath}`);
+    const rawCode = fs.readFileSync(dataPath, 'utf8');
 
-// ✅ CORRECTED SLUG LOGIC (Matches index.html exactly)
-function createSlug(text) {
+    // PREPARE THE CODE FOR THE VM:
+    // 1. Remove "import" statements (if any) to prevent crashes
+    // 2. Change "export const ITEMS_DATA" to "var ITEMS_DATA" so the VM can capture it
+    const cleanCode = rawCode
+        .replace(/import\s+.*?;/g, '') 
+        .replace(/export\s+const\s+ITEMS_DATA/, 'var ITEMS_DATA');
+
+    // EXECUTE IN SANDBOX
+    const sandbox = {};
+    vm.createContext(sandbox);
+    vm.runInNewContext(cleanCode, sandbox);
+
+    if (!sandbox.ITEMS_DATA) {
+        throw new Error("Script ran, but ITEMS_DATA was not found. Check your variable name in data.js.");
+    }
+
+    items = sandbox.ITEMS_DATA;
+    console.log(`✅ Successfully loaded ${items.length} items.`);
+
+} catch (error) {
+    console.error(`❌ FATAL ERROR: ${error.message}`);
+    process.exit(1);
+}
+
+// 3. SLUG HELPER (Matches your UI logic)
+function toSlug(text) {
     return text.toString().toLowerCase()
-        .replace(/&/g, 'and')      // Fixes "&" -> "and" (MISSING IN YOUR OLD SCRIPT)
-        .replace(/\+/g, 'plus')    // Fixes "+" -> "plus" (MISSING IN YOUR OLD SCRIPT)
+        .replace(/&/g, 'and')
+        .replace(/\+/g, 'plus')
         .replace(/[()]/g, '')
-        .replace(/\//g, '-')
-        .replace(/[^\w\s-]/g, '')
+        .replace(/\//g, '-')      // Handles "Yogurt / Pudding" correctly
+        .replace(/[^a-z0-9\s-]/g, '')
         .replace(/\s+/g, '-')
         .replace(/-+/g, '-')
         .trim();
 }
 
-function getCurrentDate() {
-    return new Date().toISOString().split('T')[0];
-}
+const currentDate = new Date().toISOString().split('T')[0];
 
-function generateSitemap() {
-    console.log('🚀 Starting sitemap generation...');
-    console.log(`📂 Reading data from: ${DATA_FILE_PATH}`);
-
-    let fileContent;
-    try {
-        if (!fs.existsSync(DATA_FILE_PATH)) {
-            throw new Error(`Data file not found at ${DATA_FILE_PATH}`);
-        }
-        fileContent = fs.readFileSync(DATA_FILE_PATH, 'utf8');
-    } catch (error) {
-        console.error(`❌ Error reading data file:`, error.message);
-        process.exit(1);
-    }
-
-    // Extract ITEMS_DATA
-    let itemsData;
-    try {
-        const dataMatch = fileContent.match(/const ITEMS_DATA = (\[[\s\S]*?\]);/);
-        if (!dataMatch) throw new Error('Could not find ITEMS_DATA array in file content');
-        
-        // Safe-ish eval for build script
-        itemsData = eval('(' + dataMatch[1] + ')');
-    } catch (error) {
-        console.error('❌ Error parsing ITEMS_DATA:', error.message);
-        process.exit(1);
-    }
-
-    console.log(`✅ Found ${itemsData.length} items`);
-
-    const currentDate = getCurrentDate();
-    
-    // XML Header
-    let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+// 4. GENERATE XML
+console.log("🛠️ Building sitemap matrix...");
+let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-`;
+  <url>
+    <loc>${SITE_URL}/</loc>
+    <lastmod>${currentDate}</lastmod>
+    <priority>1.0</priority>
+  </url>`;
 
-    // 1. Static Pages - ADDED sitemap.html HERE
-    const staticPages = ['', 'contact.html', 'privacy.html', 'sitemap.html'];
+// Add Categories
+CATEGORIES.forEach(cat => {
+    xml += `
+  <url>
+    <loc>${SITE_URL}/?category=${cat}</loc>
+    <lastmod>${currentDate}</lastmod>
+    <priority>0.8</priority>
+  </url>`;
+});
+
+// Add Items + Destination Matrix
+items.forEach(item => {
+    const slug = toSlug(item.name);
     
-    staticPages.forEach(page => {
-        const priority = page === '' ? '1.0' : '0.3';
-        const url = page === '' ? SITE_URL + '/' : `${SITE_URL}/${page}`;
-        sitemap += `  <url>
-    <loc>${url}</loc>
+    // Global Item Page
+    xml += `
+  <url>
+    <loc>${SITE_URL}/?item=${slug}</loc>
     <lastmod>${currentDate}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>${priority}</priority>
-  </url>\n`;
-    });
+    <changefreq>monthly</changefreq>
+  </url>`;
 
-    // 2. Categories - ONLY visible categories from index.html
-    // These match the data-category values in the visible UI buttons
-    const VISIBLE_CATEGORIES = [
-        'liquids', 'electronics', 'food', 'toiletries', 'medication',
-        'tools', 'sports', 'baby', 'customs', 'camping', 'household',
-        'art', 'weapons', 'hazardous'
-    ];
-
-    const allCategories = new Set();
-    itemsData.forEach(item => {
-        if (Array.isArray(item.category)) {
-            item.category.forEach(c => allCategories.add(c));
-        } else if (item.category) {
-            allCategories.add(item.category);
-        }
-    });
-
-    // Filter to only include visible categories
-    const visibleCategories = [...allCategories].filter(cat =>
-        VISIBLE_CATEGORIES.includes(cat)
-    );
-
-    console.log(`✅ Filtered categories: ${allCategories.size} total → ${visibleCategories.length} visible`);
-    if (allCategories.size > visibleCategories.length) {
-        const hidden = [...allCategories].filter(cat => !VISIBLE_CATEGORIES.includes(cat));
-        console.log(`⚠️  Hidden categories (not in UI): ${hidden.join(', ')}`);
-    }
-
-    visibleCategories.forEach(cat => {
-        const catUrl = `${SITE_URL}/?category=${cat}`;
-        sitemap += `  <url>
-    <loc>${catUrl}</loc>
+    // Destination combinations
+    DESTINATIONS.forEach(dest => {
+        xml += `
+  <url>
+    <loc>${SITE_URL}/?dest=${dest}&amp;item=${slug}</loc>
     <lastmod>${currentDate}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>\n`;
+    <changefreq>monthly</changefreq>
+  </url>`;
     });
+});
 
-    // 3. Items
-    itemsData.forEach(item => {
-        const slug = createSlug(item.name);
-        const itemUrl = `${SITE_URL}/?item=${slug}`;
-        
-        sitemap += `  <url>
-    <loc>${itemUrl}</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>\n`;
-    });
+xml += `\n</urlset>`;
 
-    sitemap += `</urlset>`;
-
-    try {
-        fs.writeFileSync(OUTPUT_FILE_PATH, sitemap, 'utf8');
-        console.log(`✅ Sitemap written to: ${OUTPUT_FILE_PATH}`);
-        console.log(`   Total URLs: ${staticPages.length + visibleCategories.length + itemsData.length}`);
-    } catch (error) {
-         console.error(`❌ Error writing sitemap file:`, error.message);
-         process.exit(1);
-    }
-}
-
-generateSitemap();
+// 5. SAVE FILE
+const outputPath = path.join(__dirname, 'sitemap.xml');
+fs.writeFileSync(outputPath, xml);
+console.log(`🚀 SUCCESS! sitemap.xml generated with ${items.length * (DESTINATIONS.length + 1) + CATEGORIES.length + 1} URLs.`);
