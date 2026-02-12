@@ -1,0 +1,27 @@
+# ==========================================================================
+# SCENARIO B: Netlify Prerendering for SEO
+# Uses an Edge Function to detect bots and proxy to Prerender.io.
+# Set PRERENDER_TOKEN in Netlify dashboard: Site settings > Environment variables
+# ==========================================================================
+
+[build]
+  publish = "."
+
+# Wire the edge function to all paths
+[[edge_functions]]
+  function = "prerender"
+  path = "/*"
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Cache sitemap for 1 day
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"

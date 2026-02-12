@@ -1,110 +1,130 @@
 /**
- * AIRPORT CHECKER - SITEMAP GENERATOR (VM EDITION)
- * Uses Node.js Virtual Machine to safely execute and extract data.
+ * GENERATE-SITEMAP.JS — Node.js Sitemap Generator
+ * Reads real data from js/data.js and js/destinations.js via VM sandbox.
+ *
+ * URL patterns (matching router.js):
+ *   /                          Home
+ *   /?item=slug                Item page
+ *   /?category=slug            Category page
+ *   /?dest=CODE                Destination page
+ *   /?dest=CODE&item=slug      Matrix (high-value only)
+ *
+ * Run:  node generate-sitemap.js
  */
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 
-// 1. CONFIG
 const SITE_URL = 'https://www.canibringonplane.com';
-const DESTINATIONS = ['JP', 'CN', 'AE', 'SG', 'TH', 'FR', 'IT', 'UK', 'MX', 'IN'];
-const CATEGORIES = ['liquids', 'electronics', 'medication', 'food', 'batteries', 'vapes', 'tools', 'sports', 'household'];
+const today = new Date().toISOString().split('T')[0];
 
-// 2. LOAD DATA
-let items = [];
-try {
-    const dataPath = path.join(__dirname, 'js/data.js');
-    if (!fs.existsSync(dataPath)) throw new Error(`File not found: ${dataPath}`);
-    
-    console.log(`📖 Reading data from: ${dataPath}`);
-    const rawCode = fs.readFileSync(dataPath, 'utf8');
+// ---------------------------------------------------------------------------
+// 1. VM loader — safely executes ES6 module files and extracts the export
+// ---------------------------------------------------------------------------
+function loadExport(file, varName) {
+    const filePath = path.join(__dirname, file);
+    if (!fs.existsSync(filePath)) throw new Error(`File not found: ${filePath}`);
 
-    // PREPARE THE CODE FOR THE VM:
-    // 1. Remove "import" statements (if any) to prevent crashes
-    // 2. Change "export const ITEMS_DATA" to "var ITEMS_DATA" so the VM can capture it
-    const cleanCode = rawCode
-        .replace(/import\s+.*?;/g, '') 
-        .replace(/export\s+const\s+ITEMS_DATA/, 'var ITEMS_DATA');
+    const code = fs.readFileSync(filePath, 'utf8')
+        .replace(/import\s+.*?from\s+['"].*?['"];?/g, '')   // strip imports
+        .replace(/export\s+const\s+/g, 'var ');              // export const → var
 
-    // EXECUTE IN SANDBOX
-    const sandbox = {};
-    vm.createContext(sandbox);
-    vm.runInNewContext(cleanCode, sandbox);
+    const ctx = { console };   // provide console so data.js's console.log works
+    vm.createContext(ctx);
+    vm.runInNewContext(code, ctx);
 
-    if (!sandbox.ITEMS_DATA) {
-        throw new Error("Script ran, but ITEMS_DATA was not found. Check your variable name in data.js.");
-    }
-
-    items = sandbox.ITEMS_DATA;
-    console.log(`✅ Successfully loaded ${items.length} items.`);
-
-} catch (error) {
-    console.error(`❌ FATAL ERROR: ${error.message}`);
-    process.exit(1);
+    if (!ctx[varName]) throw new Error(`${varName} not found in ${file}`);
+    return ctx[varName];
 }
 
-// 3. SLUG HELPER (Matches your UI logic)
+// ---------------------------------------------------------------------------
+// 2. Load real data
+// ---------------------------------------------------------------------------
+const items        = loadExport('js/data.js', 'ITEMS_DATA');
+const destinations = loadExport('js/destinations.js', 'DESTINATIONS');
+const destCodes    = Object.keys(destinations);
+
+console.log(`Loaded ${items.length} items, ${destCodes.length} destinations`);
+
+// Extract every unique category from the items array (no hardcoding)
+const categories = [...new Set(items.flatMap(i => i.category || []))].sort();
+console.log(`${categories.length} categories: ${categories.join(', ')}`);
+
+// ---------------------------------------------------------------------------
+// 3. Slug helper — mirrors state.js toSlug() exactly
+// ---------------------------------------------------------------------------
 function toSlug(text) {
     return text.toString().toLowerCase()
         .replace(/&/g, 'and')
         .replace(/\+/g, 'plus')
         .replace(/[()]/g, '')
-        .replace(/\//g, '-')      // Handles "Yogurt / Pudding" correctly
-        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\//g, '-')
+        .replace(/[^\w\s-]/g, '')
         .replace(/\s+/g, '-')
         .replace(/-+/g, '-')
         .trim();
 }
 
-const currentDate = new Date().toISOString().split('T')[0];
+// ---------------------------------------------------------------------------
+// 4. Destination ↔ customs_restricted mapping
+//    Only generate matrix URLs when an item is customs-relevant for that dest.
+// ---------------------------------------------------------------------------
+const DEST_COUNTRIES = {
+    FR: ['France', 'EU'],
+    IT: ['Italy', 'EU'],
+    UK: ['UK'],
+    JP: ['Japan'],
+    TH: ['Thailand'],
+    CN: ['China'],
+    SG: ['Singapore'],
+    IN: ['India'],
+    AE: ['UAE'],
+    MX: ['Mexico']
+};
 
-// 4. GENERATE XML
-console.log("🛠️ Building sitemap matrix...");
-let xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>${SITE_URL}/</loc>
-    <lastmod>${currentDate}</lastmod>
-    <priority>1.0</priority>
-  </url>`;
+// ---------------------------------------------------------------------------
+// 5. Build URL list
+// ---------------------------------------------------------------------------
+const urls = [];
 
-// Add Categories
-CATEGORIES.forEach(cat => {
-    xml += `
-  <url>
-    <loc>${SITE_URL}/?category=${cat}</loc>
-    <lastmod>${currentDate}</lastmod>
-    <priority>0.8</priority>
-  </url>`;
-});
+function add(loc, priority, changefreq) {
+    let entry = `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${today}</lastmod>\n    <priority>${priority}</priority>`;
+    if (changefreq) entry += `\n    <changefreq>${changefreq}</changefreq>`;
+    entry += '\n  </url>';
+    urls.push(entry);
+}
 
-// Add Items + Destination Matrix
+// Home
+add(`${SITE_URL}/`, '1.0');
+
+// Categories
+categories.forEach(cat => add(`${SITE_URL}/?category=${cat}`, '0.8'));
+
+// Destinations (standalone)
+destCodes.forEach(code => add(`${SITE_URL}/?dest=${code}`, '0.7'));
+
+// Items + high-value destination matrix
 items.forEach(item => {
-    const slug = toSlug(item.name);
-    
-    // Global Item Page
-    xml += `
-  <url>
-    <loc>${SITE_URL}/?item=${slug}</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>monthly</changefreq>
-  </url>`;
+    const slug = item.slug || toSlug(item.name);
 
-    // Destination combinations
-    DESTINATIONS.forEach(dest => {
-        xml += `
-  <url>
-    <loc>${SITE_URL}/?dest=${dest}&amp;item=${slug}</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>monthly</changefreq>
-  </url>`;
-    });
+    // Item page
+    add(`${SITE_URL}/?item=${slug}`, '0.6', 'monthly');
+
+    // Matrix: only when item.customs_restricted mentions this destination's countries
+    if (item.customs_restricted && item.customs_restricted.length) {
+        destCodes.forEach(code => {
+            const names = DEST_COUNTRIES[code] || [];
+            if (names.some(n => item.customs_restricted.includes(n))) {
+                add(`${SITE_URL}/?dest=${code}&amp;item=${slug}`, '0.5', 'monthly');
+            }
+        });
+    }
 });
 
-xml += `\n</urlset>`;
+// ---------------------------------------------------------------------------
+// 6. Write sitemap.xml
+// ---------------------------------------------------------------------------
+const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>`;
 
-// 5. SAVE FILE
-const outputPath = path.join(__dirname, 'sitemap.xml');
-fs.writeFileSync(outputPath, xml);
-console.log(`🚀 SUCCESS! sitemap.xml generated with ${items.length * (DESTINATIONS.length + 1) + CATEGORIES.length + 1} URLs.`);
+fs.writeFileSync(path.join(__dirname, 'sitemap.xml'), xml);
+console.log(`sitemap.xml generated: ${urls.length} URLs`);

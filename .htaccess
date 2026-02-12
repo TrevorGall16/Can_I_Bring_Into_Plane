@@ -1,0 +1,32 @@
+# ==========================================================================
+# SCENARIO A: Apache Prerendering for SEO
+# Detects bots and proxies requests to Prerender.io for pre-rendered HTML.
+# Replace YOUR_PRERENDER_TOKEN with your actual token from prerender.io.
+# ==========================================================================
+
+<IfModule mod_headers.c>
+    RequestHeader set X-Prerender-Token "YOUR_PRERENDER_TOKEN"
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # ---- Skip static assets ----
+    RewriteCond %{REQUEST_URI} \.(js|css|xml|less|png|jpg|jpeg|gif|pdf|txt|ico|rss|zip|mp3|rar|exe|wmv|doc|avi|ppt|mpg|mpeg|tif|wav|mov|psd|ai|xls|mp4|m4a|swf|dat|dmg|iso|flv|m4v|torrent|ttf|woff|woff2|svg|eot|webp|avif|json)$ [NC]
+    RewriteRule ^ - [L]
+
+    # ---- Detect search engine and social media bots ----
+    RewriteCond %{HTTP_USER_AGENT} googlebot|bingbot|yandex|baiduspider|facebookexternalhit|twitterbot|linkedinbot|slackbot|whatsapp|discordbot|applebot|redditbot|telegrambot|rogerbot|embedly|quora\ link\ preview|pinterest\/0\.|pinterestbot|flipboard|tumblr|bitlybot|nuzzel|qwantify|ia_archiver|google-inspectiontool [NC,OR]
+    RewriteCond %{QUERY_STRING} _escaped_fragment_
+
+    # ---- Proxy matching requests to Prerender.io ----
+    RewriteRule ^(.*) https://service.prerender.io/https://www.canibringonplane.com/$1 [P,L]
+</IfModule>
+
+# ---- Cache headers for sitemap ----
+<IfModule mod_expires.c>
+    <FilesMatch "sitemap\.xml$">
+        ExpiresActive On
+        ExpiresDefault "access plus 1 day"
+    </FilesMatch>
+</IfModule>
