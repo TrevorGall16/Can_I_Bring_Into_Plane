@@ -1,16 +1,16 @@
 /**
- * ADS.JS - Airport Carry-On Checker (Hybrid Monetization)
- * Integrates Adsterra (High CPM) + Amazon Native Fallbacks (AdBlock Proof)
+ * ADS.JS - Airport Carry-On Checker (Final Robust Version)
+ * Features: AdBlock "Bait" Detection + Native Amazon Fallbacks
  */
 
 export const adProvider = {
-    // 1. YOUR CONFIGURATION
+    // 1. CONFIGURATION
     config: {
         adsterraKey: '1eb6f5f58fd51d48c864a2232bd79e77', // Your Real Key
         amazonTag: 'canibringonpl-20', // Your Amazon Tag
     },
 
-    // 2. THE FALLBACK ADS (Load these if AdBlock is detected)
+    // 2. FALLBACK CONTENT (Amazon Cards)
     fallbacks: {
         generic: {
             title: "Travel Smart",
@@ -38,25 +38,50 @@ export const adProvider = {
         }
     },
 
-    // 3. INITIALIZATION (Called by ui.js)
-    initStickyFooter: function() {
-        const footer = document.getElementById('stickyFooterAd');
-        // If your HTML doesn't have a footer div yet, this prevents errors
-        if (!footer) return; 
+    // 3. DETECTOR: The "Bait" Trick (Fixes the White Bar issue)
+    checkAdBlock: function(callback) {
+        // Create a fake ad element that AdBlockers automatically hide
+        const bait = document.createElement('div');
+        bait.innerHTML = '&nbsp;';
+        bait.className = 'adsbox pub_300x250 banner-ads';
+        bait.style.position = 'absolute';
+        bait.style.top = '-9999px';
+        bait.style.left = '-9999px';
+        document.body.appendChild(bait);
 
-        // Attempt to load Adsterra
-        this.injectAdsterra(footer, '728', '90');
-
-        // Check back in 2 seconds. If empty = AdBlock blocked it.
+        // Wait 150ms to see if the browser deletes/hides it
         setTimeout(() => {
-            if (footer.clientHeight < 10 || footer.innerHTML.trim() === "") {
-                console.log("🚫 AdBlock detected. Swapping to Native Fallback.");
-                this.renderFallback(footer, 'generic');
-            }
-        }, 2500);
+            const isBlocked = (bait.offsetHeight === 0 || bait.clientHeight === 0 || window.getComputedStyle(bait).display === 'none');
+            document.body.removeChild(bait);
+            if (callback) callback(isBlocked);
+        }, 150);
     },
 
-    // 4. INJECT ADSTERRA (The high-paying ads)
+    // 4. INITIALIZATION (Called by ui.js)
+    initStickyFooter: function() {
+        const footer = document.getElementById('stickyFooterAd');
+        if (!footer) return;
+
+        // Run the Detector
+        this.checkAdBlock((blocked) => {
+            if (blocked) {
+                console.log("🚫 AdBlock Detected (Bait Method). Loading Fallback.");
+                this.renderFallback(footer, 'generic');
+            } else {
+                console.log("✅ No AdBlock. Loading Adsterra.");
+                this.injectAdsterra(footer, '728', '90');
+                
+                // Safety Net: If Adsterra fails network-side, check if the box is empty
+                setTimeout(() => {
+                    if (footer.clientHeight < 10) { 
+                        this.renderFallback(footer, 'generic');
+                    }
+                }, 3000);
+            }
+        });
+    },
+
+    // 5. INJECT ADSTERRA (The High-Paying Ads)
     injectAdsterra: function(container, width, height) {
         try {
             container.innerHTML = '';
@@ -71,6 +96,7 @@ export const adProvider = {
             const doc = iframe.contentWindow.document;
             doc.open();
             doc.write(`
+                <body style="margin:0;padding:0;">
                 <script type="text/javascript">
                     atOptions = { 
                         'key' : '${this.config.adsterraKey}', 
@@ -81,6 +107,7 @@ export const adProvider = {
                     };
                 <\/script>
                 <script type="text/javascript" src="https://www.highperformanceformat.com/${this.config.adsterraKey}/invoke.js"><\/script>
+                </body>
             `);
             doc.close();
         } catch (e) {
@@ -89,46 +116,44 @@ export const adProvider = {
         }
     },
 
-    // 5. RENDER FALLBACK (The "Stealth" Amazon Card)
+    // 6. RENDER FALLBACK (The Amazon Card)
+    // REQUIRED for ui.js to work!
     renderFallback: function(container, type = 'generic') {
         const ad = this.fallbacks[type] || this.fallbacks.generic;
         const link = `https://www.amazon.com/s?k=${encodeURIComponent(ad.query)}&tag=${this.config.amazonTag}`;
 
-        // This HTML looks like a helpful tip, not a spammy ad.
+        // Flexbox layout to fill the container perfectly
         container.innerHTML = `
             <a href="${link}" target="_blank" style="
                 display: flex; 
                 align-items: center; 
-                justify-content: space-between;
+                justify-content: center;
+                gap: 20px;
                 text-decoration: none; 
                 color: #1e293b; 
                 background: ${ad.color}; 
-                border: 1px solid rgba(0,0,0,0.05);
-                border-radius: 12px;
-                padding: 12px 16px; 
                 width: 100%; 
+                height: 100%; 
+                padding: 0 20px;
                 box-sizing: border-box;
-                font-family: inherit;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-                margin: 8px 0;
-                transition: transform 0.2s;">
+                font-family: system-ui, -apple-system, sans-serif;">
                 
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <div style="font-size: 24px; background:white; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; box-shadow:0 1px 3px rgba(0,0,0,0.1);">${ad.icon}</div>
-                    <div style="text-align:left;">
-                        <div style="font-weight: 800; font-size: 14px; color: #0f172a;">${ad.title}</div>
-                        <div style="font-size: 12px; opacity: 0.8; color: #334155;">${ad.text}</div>
-                    </div>
+                <div style="font-size: 32px;">${ad.icon}</div>
+                
+                <div style="text-align:left; display: flex; flex-direction: column; justify-content: center;">
+                    <div style="font-weight: 800; font-size: 16px; color: #0f172a;">${ad.title}</div>
+                    <div style="font-size: 13px; opacity: 0.8; color: #334155;">${ad.text}</div>
                 </div>
                 
                 <div style="
                     background: #0f172a; 
                     color: white; 
-                    padding: 8px 14px; 
+                    padding: 8px 16px; 
                     border-radius: 99px; 
-                    font-size: 11px; 
+                    font-size: 13px; 
                     font-weight: bold;
-                    white-space: nowrap;">
+                    white-space: nowrap;
+                    margin-left: auto;">
                     ${ad.btn} ➜
                 </div>
             </a>

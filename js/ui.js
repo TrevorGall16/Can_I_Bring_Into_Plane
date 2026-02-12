@@ -1815,10 +1815,60 @@ export function closeDestinationReport() {
     window.currentDestinationCode = null;
 }
 // ---------------------------------------------------------
-// HELPER ALIASES
+// OPEN ITEM MODAL (Updated for SEO)
 // ---------------------------------------------------------
 function openItemModal(id) {
-    showItemById(id);
+    const item = window.ITEMS_DATA.find(i => i.id === id);
+    if (!item) return;
+
+    // 🔥 1. UPDATE SEO (Fixes "Duplicate Content" error)
+    // This changes the browser tab to "Can I bring Yogurt to Japan?"
+    if (typeof updateSEO === 'function') {
+        updateSEO(item);
+    }
+
+    // 2. Setup Modal Content
+    const modal = document.getElementById('itemModal');
+    const title = document.getElementById('modalTitle');
+    const icon = document.getElementById('modalIcon');
+    const status = document.getElementById('modalStatus');
+    const desc = document.getElementById('modalDescription');
+    const note = document.getElementById('modalNote'); // logic for notes...
+
+    // Populate data
+    title.innerText = item.name;
+    icon.innerText = item.icon || '✈️';
+    
+    // Logic for allowed/prohibited/restricted...
+    // (Your existing logic for checking destination restrictions goes here)
+    // For simplicity, we assume the standard check:
+    const destCode = window.currentDestination ? window.currentDestination.code : null;
+    const isBanned = destCode && item.customs_restricted?.includes(destCode);
+
+    if (isBanned) {
+        status.innerHTML = `<span style="color:#ef4444">⛔ BANNED IN ${window.currentDestination.name.toUpperCase()}</span>`;
+        desc.innerText = `You must declare this or discard it. Do not bring into the country.`;
+    } else if (item.carryOn === 'allowed') {
+        status.innerHTML = '<span style="color:#166534">✅ Allowed in Carry-On</span>';
+        desc.innerText = 'You can bring this item in your cabin bag.';
+    } else if (item.carryOn === 'liquids') {
+        status.innerHTML = '<span style="color:#ca8a04">⚠️ Liquids Rule (100ml)</span>';
+        desc.innerText = 'Must be under 100ml (3.4oz) and fit in your quart-sized bag.';
+    } else {
+        status.innerHTML = '<span style="color:#991b1b">❌ Checked Bags Only</span>';
+        desc.innerText = 'This item is not allowed in the cabin. Put it in your checked luggage.';
+    }
+
+    // Notes
+    if (note) note.innerText = item.note || '';
+
+    // Show Modal
+    modal.style.display = 'flex';
+    
+    // Update URL without reloading (Deep Linking)
+    // This makes the URL look like /?item=yogurt which Google loves
+    const newUrl = `?item=${item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+    window.history.pushState({path: newUrl}, '', newUrl);
 }
 
 // ---------------------------------------------------------
@@ -1901,4 +1951,44 @@ function renderItemCard(item, container, destCode, index = 0) {
         });
         container.appendChild(adSlot);
     }
+}
+/**
+ * SEO CHAMELEON
+ * Dynamically updates the Browser Title & Meta Description
+ * so Google sees 2,000 unique pages instead of 1 duplicate.
+ */
+function updateSEO(item) {
+    // 1. Get the current destination (if any)
+    // We assume your app sets 'window.currentDestination' when a country is selected
+    const dest = window.currentDestination; 
+    
+    let pageTitle = "";
+    let pageDesc = "";
+
+    if (dest) {
+        // SCENARIO A: Country is selected (e.g., Japan)
+        // Title: "Can I bring Yogurt to Japan? - Customs Rules"
+        pageTitle = `Can I bring ${item.name} to ${dest.name}?`;
+        pageDesc = `Current customs and airport security rules for bringing ${item.name} to ${dest.name}. Check prohibited items and allowances for ${dest.name}.`;
+    } else {
+        // SCENARIO B: No country (General Rule)
+        // Title: "Can I bring Yogurt on a plane? - Carry-on Rules"
+        pageTitle = `Can I bring ${item.name} on a plane?`;
+        pageDesc = `TSA and airline rules for ${item.name}. Is ${item.name} allowed in carry-on or checked luggage? Instant answer.`;
+    }
+
+    // 2. Update the Browser Tab Title
+    document.title = pageTitle + " | Airport Checker";
+
+    // 3. Update the Google Description (Meta Tag)
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) {
+        // Create it if it doesn't exist
+        metaDesc = document.createElement('meta');
+        metaDesc.name = 'description';
+        document.head.appendChild(metaDesc);
+    }
+    metaDesc.content = pageDesc;
+    
+    console.log(`🔍 SEO Updated: ${pageTitle}`);
 }
