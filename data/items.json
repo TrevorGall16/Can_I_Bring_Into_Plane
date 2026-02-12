@@ -28,6 +28,26 @@
       "keywords": ["laptop", "computer", "macbook", "notebook", "pc"]
     },
     {
+    "id": 172,
+    "name": "Traditional Medicine / Herbal Remedies (TCM)",
+    "carryOn": "allowed",
+    "checked": "allowed",
+    "category": ["medication", "food"],
+    "keywords": ["herbs", "roots", "dried", "fungus", "tea", "chinese medicine", "ginseng"],
+    "note": "⚠️ CUSTOMS WARNING: Generally allowed on the plane, but often BANNED by Customs (especially in US, AU, NZ). Declare it or face fines.",
+    "customs_restricted": ["US", "AU", "NZ"] 
+},
+{
+    "id": 173,
+    "name": "Vitamins / Supplements",
+    "carryOn": "allowed",
+    "checked": "allowed",
+    "category": ["medication", "food"],
+    "keywords": ["pills", "tablets", "capsules", "multivitamin", "melatonin", "fish oil", "protein", "magnesium"],
+    "note": "✓ Pills, tablets, and capsules allowed in any amount. Keep in original packaging if possible. ⚠️ International: Some supplements (melatonin, certain herbs) may be restricted in specific countries (e.g. Japan, UAE).",
+    "customs_restricted": ["JP", "AE"]
+},
+    {
       "id": 4,
       "name": "Power Bank",
       "carryOn": "allowed",
