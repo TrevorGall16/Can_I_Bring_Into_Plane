@@ -1815,14 +1815,19 @@ export function closeDestinationReport() {
     window.currentDestinationCode = null;
 }
 // ---------------------------------------------------------
-// OPEN ITEM MODAL (Updated for SEO)
+// OPEN ITEM MODAL (Fixed Data Source)
 // ---------------------------------------------------------
 function openItemModal(id) {
-    const item = window.ITEMS_DATA.find(i => i.id === id);
-    if (!item) return;
+    // FIX: Use 'ITEMS_DATA' directly (imported at top), NOT 'window.ITEMS_DATA'
+    const item = ITEMS_DATA.find(i => i.id === id);
+    
+    if (!item) {
+        console.error("❌ Error: Item not found with ID:", id);
+        return;
+    }
+    console.log("✅ Opening Modal for:", item.name);
 
-    // 🔥 1. UPDATE SEO (Fixes "Duplicate Content" error)
-    // This changes the browser tab to "Can I bring Yogurt to Japan?"
+    // 1. UPDATE SEO (Chameleon)
     if (typeof updateSEO === 'function') {
         updateSEO(item);
     }
@@ -1833,15 +1838,13 @@ function openItemModal(id) {
     const icon = document.getElementById('modalIcon');
     const status = document.getElementById('modalStatus');
     const desc = document.getElementById('modalDescription');
-    const note = document.getElementById('modalNote'); // logic for notes...
+    const note = document.getElementById('modalNote'); 
 
     // Populate data
     title.innerText = item.name;
     icon.innerText = item.icon || '✈️';
     
-    // Logic for allowed/prohibited/restricted...
-    // (Your existing logic for checking destination restrictions goes here)
-    // For simplicity, we assume the standard check:
+    // Logic for allowed/prohibited...
     const destCode = window.currentDestination ? window.currentDestination.code : null;
     const isBanned = destCode && item.customs_restricted?.includes(destCode);
 
@@ -1859,18 +1862,15 @@ function openItemModal(id) {
         desc.innerText = 'This item is not allowed in the cabin. Put it in your checked luggage.';
     }
 
-    // Notes
     if (note) note.innerText = item.note || '';
 
     // Show Modal
     modal.style.display = 'flex';
     
-    // Update URL without reloading (Deep Linking)
-    // This makes the URL look like /?item=yogurt which Google loves
+    // Update URL (Deep Linking)
     const newUrl = `?item=${item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
     window.history.pushState({path: newUrl}, '', newUrl);
 }
-
 // ---------------------------------------------------------
 // MODULE-LEVEL WINDOW BINDINGS (Backup for early access)
 // Primary bindings are in DOMContentLoaded above
