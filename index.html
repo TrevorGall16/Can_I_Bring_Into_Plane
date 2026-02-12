@@ -45,10 +45,10 @@
             <div class="navbar-actions">
                 <a href="contact.html" class="nav-link">Contact</a>
                 <a href="privacy.html" class="nav-link">Privacy</a>
-                <button class="dest-btn" onclick="window.openDestinationModal()">
+                <button class="dest-btn" data-action="open-destination">
                     <i class="fa-solid fa-earth-americas"></i> <span>Select Destination</span>
                 </button>
-                <button class="bag-btn" id="bagFAB" title="My Checklist">
+                <button class="bag-btn" id="bagFAB" data-action="show-bag" title="My Checklist">
                     <i class="fa-solid fa-clipboard-check"></i>
                     <span class="bag-counter" id="bagCounter">0</span>
                 </button>
@@ -62,7 +62,7 @@
             <span id="stickyFlag"></span>
             <span id="stickyText">Traveling to <strong>Japan</strong></span>
         </div>
-        <button onclick="window.openDestinationModal()" class="sticky-change-btn">Change</button>
+        <button data-action="open-destination" class="sticky-change-btn">Change</button>
     </div>
 
     <!-- HERO SEARCH SECTION -->
@@ -93,53 +93,53 @@
     <!-- HORIZONTAL CATEGORY STRIP -->
     <section class="category-strip">
         <div class="category-strip-inner">
-            <button class="category-chip" data-category="liquids">
+            <button class="category-chip" data-action="show-category" data-category="liquids">
                 <i class="fa-solid fa-bottle-water"></i> Liquids
             </button>
-            <button class="category-chip" data-category="electronics">
+            <button class="category-chip" data-action="show-category" data-category="electronics">
                 <i class="fa-solid fa-mobile-screen"></i> Electronics
             </button>
-            <button class="category-chip" data-category="food">
+            <button class="category-chip" data-action="show-category" data-category="food">
                 <i class="fa-solid fa-apple-whole"></i> Food
             </button>
-            <button class="category-chip" data-category="toiletries">
+            <button class="category-chip" data-action="show-category" data-category="toiletries">
                 <i class="fa-solid fa-pump-soap"></i> Toiletries
             </button>
-            <button class="category-chip" data-category="medication">
+            <button class="category-chip" data-action="show-category" data-category="medication">
                 <i class="fa-solid fa-pills"></i> Medication
             </button>
-            <button class="category-chip" data-category="tools">
+            <button class="category-chip" data-action="show-category" data-category="tools">
                 <i class="fa-solid fa-screwdriver-wrench"></i> Tools
             </button>
-            <button class="category-chip" data-category="sports">
+            <button class="category-chip" data-action="show-category" data-category="sports">
                 <i class="fa-solid fa-futbol"></i> Sports
             </button>
-            <button class="category-chip" data-category="baby">
+            <button class="category-chip" data-action="show-category" data-category="baby">
                 <i class="fa-solid fa-baby"></i> Baby
             </button>
-            <button class="category-chip" data-category="customs">
+            <button class="category-chip" data-action="show-category" data-category="customs">
                 <i class="fa-solid fa-passport"></i> Customs
             </button>
-            <button class="category-chip" data-category="camping">
+            <button class="category-chip" data-action="show-category" data-category="camping">
                 <i class="fa-solid fa-campground"></i> Camping
             </button>
-            <button class="category-chip" data-category="music">
+            <button class="category-chip" data-action="show-category" data-category="music">
                 <i class="fa-solid fa-music"></i> Music
             </button>
 
-            <button class="category-chip" data-category="fashion">
+            <button class="category-chip" data-action="show-category" data-category="fashion">
                 <i class="fa-solid fa-shirt"></i> Fashion
             </button>
-            <button class="category-chip" data-category="household">
+            <button class="category-chip" data-action="show-category" data-category="household">
                 <i class="fa-solid fa-house-chimney"></i> Household
             </button>
-            <button class="category-chip" data-category="art">
+            <button class="category-chip" data-action="show-category" data-category="art">
                 <i class="fa-solid fa-palette"></i> Art
             </button>
-            <button class="category-chip" data-category="weapons">
+            <button class="category-chip" data-action="show-category" data-category="weapons">
                 <i class="fa-solid fa-shield-halved"></i> Self Defense
             </button>
-            <button class="category-chip" data-category="hazardous">
+            <button class="category-chip" data-action="show-category" data-category="hazardous">
                 <i class="fa-solid fa-triangle-exclamation"></i> Restricted
             </button>
         </div>
@@ -197,14 +197,14 @@
             <section class="popular-section">
                 <h3>Popular Searches</h3>
                 <div class="popular-tags">
-                    <button class="popular-tag" data-item="laptop">Laptop</button>
-                    <button class="popular-tag" data-item="water bottle">Water Bottle</button>
-                    <button class="popular-tag" data-item="power bank">Power Bank</button>
-                    <button class="popular-tag" data-item="scissors">Scissors</button>
-                    <button class="popular-tag" data-item="shampoo">Shampoo</button>
-                    <button class="popular-tag" data-item="lighter">Lighter</button>
-                    <button class="popular-tag" data-item="razor">Razor</button>
-                    <button class="popular-tag" data-item="e-cigarette">E-Cigarette</button>
+                    <button class="popular-tag" data-action="show-item-by-name" data-item="laptop">Laptop</button>
+                    <button class="popular-tag" data-action="show-item-by-name" data-item="water bottle">Water Bottle</button>
+                    <button class="popular-tag" data-action="show-item-by-name" data-item="power bank">Power Bank</button>
+                    <button class="popular-tag" data-action="show-item-by-name" data-item="scissors">Scissors</button>
+                    <button class="popular-tag" data-action="show-item-by-name" data-item="shampoo">Shampoo</button>
+                    <button class="popular-tag" data-action="show-item-by-name" data-item="lighter">Lighter</button>
+                    <button class="popular-tag" data-action="show-item-by-name" data-item="razor">Razor</button>
+                    <button class="popular-tag" data-action="show-item-by-name" data-item="e-cigarette">E-Cigarette</button>
                 </div>
             </section>
 
@@ -260,7 +260,7 @@
                 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
                     <ol itemscope itemtype="https://schema.org/BreadcrumbList">
                         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                            <a href="/" itemprop="item" onclick="resetToHome(); return false;">
+                            <a href="/" itemprop="item" data-action="reset-home">
                                 <span itemprop="name">Home</span>
                             </a>
                             <meta itemprop="position" content="1" />
@@ -337,7 +337,7 @@
     <div class="modal-content dest-modal">
         <div class="modal-header">
             <h2><i class="fa-solid fa-plane-arrival"></i> Where are you flying?</h2>
-            <button class="close-modal" onclick="document.getElementById('destinationModal').classList.add('hidden')">&times;</button>
+            <button class="close-modal" data-action="close-modal">&times;</button>
         </div>
         <!-- Countries populated dynamically from destinations.js -->
         <div class="dest-grid" id="destGrid"></div>
@@ -348,6 +348,6 @@
 </div>
 
 <!-- ES6 Modular JavaScript Architecture -->
-<script type="module" src="js/app.js?v=800"></script>
+<script type="module" src="js/app.js?v=900"></script>
 </body>
 </html>
