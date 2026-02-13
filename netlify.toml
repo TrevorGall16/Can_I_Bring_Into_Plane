@@ -1,9 +1,8 @@
 # =========================================================================
 # ==========================================================================
-
 [build]
-  command = "npm run build"
-  publish = "dist"
+  command = ""
+  publish = "."
 
 # Wire the edge function to all paths
 [[edge_functions]]
