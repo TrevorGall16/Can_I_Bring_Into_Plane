@@ -33,9 +33,10 @@ function updatePageSEO(title, queryParams) {
     }
 
     let descText = "Check TSA and airline carry-on rules for 150+ items. Avoid confiscation and fines.";
+    const currentYear = new Date().getFullYear();
 
     if (title.includes('Can I bring')) {
-        descText = `Official 2026 travel rules: ${title} Find out if it is allowed in Carry-On or Checked bags. Avoid airport security issues.`;
+        descText = `Official ${currentYear} travel rules: ${title} Find out if it is allowed in Carry-On or Checked bags. Avoid airport security issues.`;
     } else if (title.includes('Rules')) {
         descText = `Flying to ${title.split(' ')[0]}? See the full list of BANNED items, medication rules, and duty-free limits before you pack.`;
     }

@@ -77,17 +77,20 @@ export const adProvider = {
     // --- 🔥 NEW: MISSING FUNCTIONS ADDED BELOW ---
 
     // REQUIRED by ui.js line 122
-    initWelcomeAd: function() {
-        // Placeholder to prevent crash. You can implement a modal ad here later.
-        console.log("✅ Welcome Ad Initialized");
+initWelcomeAd: function() {
+        const slot = document.getElementById('ad-welcome-slot');
+        if (slot) {
+            this.injectAdsterra(slot, '300', '250');
+            console.log("✅ Welcome Ad Injected");
+        }
     },
 
     // REQUIRED by ui.js line 486
-    refreshInlineAd: function() {
+refreshInlineAd: function() {
         const slot = document.getElementById('ad-inline-slot');
         if (slot) {
-             this.renderFallback(slot, 'generic');
-             console.log("✅ Inline Ad Refreshed");
+            this.injectAdsterra(slot, '300', '250');
+            console.log("✅ Inline Ad Injected");
         }
     },
 
