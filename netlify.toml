@@ -1,11 +1,9 @@
-# ==========================================================================
-# SCENARIO B: Netlify Prerendering for SEO
-# Uses an Edge Function to detect bots and proxy to Prerender.io.
-# Set PRERENDER_TOKEN in Netlify dashboard: Site settings > Environment variables
+# =========================================================================
 # ==========================================================================
 
 [build]
-  publish = "."
+  command = "npm run build"
+  publish = "dist"
 
 # Wire the edge function to all paths
 [[edge_functions]]
