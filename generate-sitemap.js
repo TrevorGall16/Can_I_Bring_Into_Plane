@@ -98,7 +98,7 @@ function add(loc, priority, changefreq) {
 add(`${SITE_URL}/`, '1.0');
 
 // Categories
-categories.forEach(cat => add(`${SITE_URL}/?category=${cat}`, '0.8'));
+categories.forEach(cat => add(`${SITE_URL}/?category=${encodeURIComponent(cat)}`, '0.8'));
 
 // Destinations (standalone)
 destCodes.forEach(code => add(`${SITE_URL}/?dest=${code}`, '0.7'));

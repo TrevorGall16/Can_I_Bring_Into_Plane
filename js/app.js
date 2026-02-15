@@ -85,9 +85,15 @@ document.addEventListener('click', (e) => {
 function loadFromURL() {
     try {
         const url = new URL(window.location);
+        const destCode = url.searchParams.get('dest');
         const itemParam = url.searchParams.get('item');
         const category = url.searchParams.get('category');
         const rulesParam = url.searchParams.get('rules');
+
+        if (destCode && DESTINATIONS[destCode]) {
+            const hasContentParams = Boolean(itemParam || category);
+            selectDestination(destCode, { pushHistory: false, showReport: !hasContentParams });
+        }
 
         if (itemParam) {
             let item = !isNaN(itemParam)
@@ -109,6 +115,8 @@ function loadFromURL() {
                 showCountryRules(countryName);
                 return true;
             }
+        } else if (destCode && DESTINATIONS[destCode]) {
+            return true;
         }
     } catch (e) { }
 
@@ -127,6 +135,8 @@ function setupPopstateHandler() {
                 if (item) displayItemResult(item, false, true);
             } else if (event.state.category) {
                 displayCategoryResults(event.state.category, true);
+            } else if (event.state.dest) {
+                selectDestination(event.state.dest, { pushHistory: false, showReport: true });
             } else if (event.state.home) {
                 resetToHome();
             }
@@ -149,15 +159,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4. SEO: Canonical URL
     const url = new URL(window.location);
-    if (!url.searchParams.get('item') && !url.searchParams.get('category')) {
-        let canonical = document.querySelector('link[rel="canonical"]');
-        if (!canonical) {
-            canonical = document.createElement('link');
-            canonical.setAttribute('rel', 'canonical');
-            document.head.appendChild(canonical);
-        }
-        canonical.setAttribute('href', 'https://www.canibringonplane.com/');
+    const hasVirtualParams = ['item', 'category', 'dest', 'rules']
+        .some(param => url.searchParams.get(param));
+
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.setAttribute('rel', 'canonical');
+        document.head.appendChild(canonical);
     }
+
+    canonical.setAttribute(
+        'href',
+        hasVirtualParams
+            ? `${window.location.origin}${window.location.pathname}${window.location.search}`
+            : 'https://www.canibringonplane.com/'
+    );
 
     // 5. Load from URL (Deep Links)
     loadFromURL();
