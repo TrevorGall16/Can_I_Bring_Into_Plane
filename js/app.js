@@ -159,15 +159,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4. SEO: Canonical URL
     const url = new URL(window.location);
-    if (!url.searchParams.get('item') && !url.searchParams.get('category')) {
-        let canonical = document.querySelector('link[rel="canonical"]');
-        if (!canonical) {
-            canonical = document.createElement('link');
-            canonical.setAttribute('rel', 'canonical');
-            document.head.appendChild(canonical);
-        }
-        canonical.setAttribute('href', 'https://www.canibringonplane.com/');
+    const hasVirtualParams = ['item', 'category', 'dest', 'rules']
+        .some(param => url.searchParams.get(param));
+
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.setAttribute('rel', 'canonical');
+        document.head.appendChild(canonical);
     }
+
+    canonical.setAttribute(
+        'href',
+        hasVirtualParams
+            ? `${window.location.origin}${window.location.pathname}${window.location.search}`
+            : 'https://www.canibringonplane.com/'
+    );
 
     // 5. Load from URL (Deep Links)
     loadFromURL();
