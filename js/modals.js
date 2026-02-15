@@ -184,7 +184,12 @@ function openDestinationModal() {
     modal.classList.remove('hidden');
 }
 
-function selectDestination(code) {
+function selectDestination(code, options = {}) {
+    const {
+        pushHistory = true,
+        showReport = true
+    } = options;
+
     const dest = DESTINATIONS[code];
     if (dest) {
         localStorage.setItem('selectedDestination', code);
@@ -199,12 +204,16 @@ function selectDestination(code) {
         updateMetaTag('twitter:description', dest.intro);
         updateMetaTag('description', `${dest.name} travel rules ${year}: What items are banned? Duty-free limits, customs regulations, and TSA guidelines for flying to ${dest.name}.`);
 
-        const url = new URL(window.location);
-        url.searchParams.set('dest', code);
-        window.history.pushState({ dest: code }, '', url);
+        if (pushHistory) {
+            const url = new URL(window.location);
+            url.searchParams.set('dest', code);
+            window.history.pushState({ dest: code }, '', url);
+        }
 
-        renderDestinationReport(dest);
-        document.getElementById('destinationModal').classList.add('hidden');
+        if (showReport) {
+            renderDestinationReport(dest);
+        }
+        document.getElementById('destinationModal')?.classList.add('hidden');
 
         const btn = document.querySelector('.dest-btn span');
         if (btn) btn.innerText = dest.name;
