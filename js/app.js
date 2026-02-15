@@ -85,9 +85,15 @@ document.addEventListener('click', (e) => {
 function loadFromURL() {
     try {
         const url = new URL(window.location);
+        const destCode = url.searchParams.get('dest');
         const itemParam = url.searchParams.get('item');
         const category = url.searchParams.get('category');
         const rulesParam = url.searchParams.get('rules');
+
+        if (destCode && DESTINATIONS[destCode]) {
+            const hasContentParams = Boolean(itemParam || category);
+            selectDestination(destCode, { pushHistory: false, showReport: !hasContentParams });
+        }
 
         if (itemParam) {
             let item = !isNaN(itemParam)
@@ -109,6 +115,8 @@ function loadFromURL() {
                 showCountryRules(countryName);
                 return true;
             }
+        } else if (destCode && DESTINATIONS[destCode]) {
+            return true;
         }
     } catch (e) { }
 
@@ -127,6 +135,8 @@ function setupPopstateHandler() {
                 if (item) displayItemResult(item, false, true);
             } else if (event.state.category) {
                 displayCategoryResults(event.state.category, true);
+            } else if (event.state.dest) {
+                selectDestination(event.state.dest, { pushHistory: false, showReport: true });
             } else if (event.state.home) {
                 resetToHome();
             }
